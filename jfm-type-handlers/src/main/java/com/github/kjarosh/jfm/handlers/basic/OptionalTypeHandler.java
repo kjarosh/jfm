@@ -3,7 +3,7 @@ package com.github.kjarosh.jfm.handlers.basic;
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
 import com.github.kjarosh.jfm.api.types.TypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandlerProvider;
+import com.github.kjarosh.jfm.api.types.TypeHandlerService;
 import com.github.kjarosh.jfm.api.types.TypeReference;
 import com.github.kjarosh.jfm.api.types.TypeReferences;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RegisterTypeHandler
 public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
-    private TypeHandlerProvider typeHandlerProvider = FilesystemMapper.instance().getTypeHandlerProvider();
+    private TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
 
     @Override
     public TypeReference<Optional<T>> getHandledType() {
@@ -33,7 +33,7 @@ public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
                 .orElseThrow(AssertionError::new);
 
         @SuppressWarnings("unchecked")
-        TypeHandler<T> innerHandler = (TypeHandler<T>) typeHandlerProvider.getHandlerFor(innerType);
+        TypeHandler<T> innerHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(innerType);
 
         return Optional.of(innerHandler.handleRead(innerType, path));
     }

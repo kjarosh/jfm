@@ -18,6 +18,9 @@ public class TypeHandlersTest extends JfmTestBase {
             Files.write(root.resolve("list"), "a,b,c".getBytes());
         });
 
+        FilesystemMapper.instance().getTypeHandlerService()
+                .registerHandlersFromPackage(TypeHandlersTest.class.getPackage());
+
         this.typeHandlersResource = FilesystemMapper.instance()
                 .getTarget(super.getRoot())
                 .proxy(TypeHandlersResource.class);

@@ -5,13 +5,13 @@ import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
 import com.github.kjarosh.jfm.api.types.TypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandlerProvider;
+import com.github.kjarosh.jfm.api.types.TypeHandlerService;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 
 class FilesystemMapperMethodInvoker {
-    private final TypeHandlerProvider typeHandlerProvider = FilesystemMapper.instance().getTypeHandlerProvider();
+    private final TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
     private final InvokeContext invokeContext;
 
     FilesystemMapperMethodInvoker(InvokeContext invokeContext) {
@@ -21,7 +21,7 @@ class FilesystemMapperMethodInvoker {
     Object invokeRead(Read readAnnotation) {
         try {
             Type type = invokeContext.getReturnType();
-            TypeHandler<?> returnTypeHandler = typeHandlerProvider.getHandlerFor(type);
+            TypeHandler<?> returnTypeHandler = typeHandlerService.getHandlerFor(type);
             return returnTypeHandler.handleRead(type, invokeContext.getFinalPath());
         } catch (IOException e) {
             throw new FilesystemMapperException(

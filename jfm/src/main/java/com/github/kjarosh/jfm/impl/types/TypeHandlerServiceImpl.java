@@ -3,9 +3,12 @@ package com.github.kjarosh.jfm.impl.types;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
 import com.github.kjarosh.jfm.api.types.TypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandlerProvider;
+import com.github.kjarosh.jfm.api.types.TypeHandlerService;
 import com.github.kjarosh.jfm.api.types.TypeReferences;
+import com.github.kjarosh.jfm.handlers.JfmHandlers;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -13,13 +16,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
 
-public class TypeHandlerProviderImpl implements TypeHandlerProvider {
+public class TypeHandlerServiceImpl implements TypeHandlerService {
+    private static final Logger logger = LoggerFactory.getLogger(TypeHandlerServiceImpl.class);
+
     private final ConcurrentMap<Type, TypeHandler<?>> handlers = new ConcurrentHashMap<>();
+
+    private boolean initialized = false;
+
+    private void initialize() {
+        if (initialized) return;
+        initialized = true;
+
+        addHandlers(JfmHandlers.getJfmHandlers());
+    }
+
+    @Override
+    public void addHandler(Class<? extends TypeHandler> handlerClass) {
+        registerTypeHandler(instantiateHandler(handlerClass));
+    }
+
+    @Override
+    public void registerHandlersFromPackage(String packageName) {
+        initialize();
+        addHandlers(new Reflections(packageName)
+                .getSubTypesOf(TypeHandler.class)
+                .stream()
+                .filter(clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class)));
+    }
+
+    public void addHandlers(Stream<Class<? extends TypeHandler>> handlerClasses) {
+        handlerClasses.map(this::instantiateHandler)
+                .forEach(this::registerTypeHandler);
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -29,16 +61,10 @@ public class TypeHandlerProviderImpl implements TypeHandlerProvider {
 
     @Override
     public TypeHandler<?> getHandlerFor(Type type) {
+        initialize();
         type = PrimitiveTypeMapper.mapPossiblePrimitive(type);
 
         TypeHandler<?> handler = findHandler(type);
-        if (handler != null) {
-            return handler;
-        }
-
-        discoverHandlers();
-        handler = findHandler(type);
-
         if (handler != null) {
             return handler;
         }
@@ -84,22 +110,11 @@ public class TypeHandlerProviderImpl implements TypeHandlerProvider {
         return handlersBySimilarity.get(bestSimilarity).get(0);
     }
 
-    @SuppressWarnings("unchecked")
-    private void discoverHandlers() {
-        Set<Class<?>> discovered = new Reflections()
-                .getTypesAnnotatedWith(RegisterTypeHandler.class);
-        discovered.stream()
-                .filter(TypeHandler.class::isAssignableFrom)
-                .map(c -> (Class<TypeHandler<?>>) c)
-                .flatMap(this::instantiateHandler)
-                .forEach(this::registerTypeHandler);
-    }
-
     private void registerTypeHandler(TypeHandler<?> handler) {
         Type type = TypeReferences.getType(handler.getHandledType());
         if (handlers.containsKey(type)) {
             if (handlers.get(type).getClass() == handler.getClass()) {
-                // those are the same handlers
+                logger.info("The handler " + handler.getClass() + " has already been registered");
                 return;
             }
 
@@ -108,13 +123,14 @@ public class TypeHandlerProviderImpl implements TypeHandlerProvider {
                             " duplicates " + handlers.get(type).getClass());
         }
         handlers.put(type, handler);
+        logger.info("Registered a handler for " + type + " (" + handler.getClass() + ")");
     }
 
-    private <T extends TypeHandler> Stream<T> instantiateHandler(Class<T> c) {
+    private <T extends TypeHandler> T instantiateHandler(Class<T> c) {
         try {
-            return Stream.of(c.newInstance());
+            return c.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            return Stream.empty();
+            throw new FilesystemMapperException("Cannot instantiate a type handler", e);
         }
     }
 }

@@ -4,12 +4,15 @@ import com.github.kjarosh.jfm.api.annotations.Path;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 class JfmPathResolver {
     private java.nio.file.Path root;
+    private Map<String, String> pathParams;
 
-    JfmPathResolver(java.nio.file.Path root) {
+    JfmPathResolver(java.nio.file.Path root, Map<String, String> pathParams) {
         this.root = root;
+        this.pathParams = pathParams;
     }
 
     java.nio.file.Path resolveMethod(Method method) {
@@ -25,7 +28,14 @@ class JfmPathResolver {
             return base;
         }
 
-        String classPath = element.getAnnotation(Path.class).value();
-        return base.resolve(classPath);
+        String relativePath = element.getAnnotation(Path.class).value();
+        return base.resolve(replacePathParams(relativePath));
+    }
+
+    private String replacePathParams(String relativePath) {
+        for (Map.Entry<String, String> entry : pathParams.entrySet()) {
+            relativePath = relativePath.replace("{" + entry.getKey() + "}", entry.getValue());
+        }
+        return relativePath;
     }
 }

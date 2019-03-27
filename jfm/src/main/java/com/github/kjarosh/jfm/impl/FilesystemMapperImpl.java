@@ -2,13 +2,13 @@ package com.github.kjarosh.jfm.impl;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperTarget;
-import com.github.kjarosh.jfm.api.types.TypeHandlerProvider;
-import com.github.kjarosh.jfm.impl.types.TypeHandlerProviderImpl;
+import com.github.kjarosh.jfm.api.types.TypeHandlerService;
+import com.github.kjarosh.jfm.impl.types.TypeHandlerServiceImpl;
 
 import java.nio.file.Path;
 
 public class FilesystemMapperImpl implements FilesystemMapper {
-    private TypeHandlerProvider typeHandlerProvider = new TypeHandlerProviderImpl();
+    private TypeHandlerService typeHandlerService = new TypeHandlerServiceImpl();
 
     @Override
     public FilesystemMapperTarget getTarget(Path path) {
@@ -16,7 +16,7 @@ public class FilesystemMapperImpl implements FilesystemMapper {
     }
 
     @Override
-    public TypeHandlerProvider getTypeHandlerProvider() {
-        return typeHandlerProvider;
+    public TypeHandlerService getTypeHandlerService() {
+        return typeHandlerService;
     }
 }
