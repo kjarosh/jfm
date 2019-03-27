@@ -21,6 +21,8 @@ public class Main {
         PersonInfoResource resource = target.proxy(PersonInfoResource.class);
 
         System.out.println(resource.getFirstName());
+        System.out.println(resource.getLastName());
+        System.out.println(resource.getName());
     }
 
     private static void setupFilesystem(Path path) throws IOException {

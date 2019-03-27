@@ -1,39 +1,31 @@
 package com.github.kjarosh.jfm.impl;
 
+import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
-import com.github.kjarosh.jfm.api.handler.TypeHandler;
-import com.github.kjarosh.jfm.api.handler.TypeHandlers;
+import com.github.kjarosh.jfm.api.types.TypeHandler;
+import com.github.kjarosh.jfm.api.types.TypeHandlerProvider;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
+import java.lang.reflect.Type;
 
 class FilesystemMapperMethodInvoker {
-    private final Object proxy;
-    private final Method method;
-    private final Object[] args;
+    private final TypeHandlerProvider typeHandlerProvider = FilesystemMapper.instance().getTypeHandlerProvider();
+    private final InvokeContext invokeContext;
 
-    private final Path finalPath;
-
-    FilesystemMapperMethodInvoker(Path path, Object proxy, Method method, Object[] args) {
-        this.proxy = proxy;
-        this.method = method;
-        this.args = args;
-
-        this.finalPath = new JfmPathResolver(path).resolveMethod(method);
+    FilesystemMapperMethodInvoker(InvokeContext invokeContext) {
+        this.invokeContext = invokeContext;
     }
 
     Object invokeRead(Read readAnnotation) {
         try {
-            TypeHandler<?> returnTypeHandler = TypeHandlers.getHandlerFor(method.getReturnType());
-
-            return returnTypeHandler.handleRead(finalPath);
-            //byte[] content = Files.readAllBytes(finalPath);
+            Type type = invokeContext.getReturnType();
+            TypeHandler<?> returnTypeHandler = typeHandlerProvider.getHandlerFor(type);
+            return returnTypeHandler.handleRead(type, invokeContext.getFinalPath());
         } catch (IOException e) {
             throw new FilesystemMapperException(
-                    "IO Exception while invoking a method " + method.getName(), e);
+                    "IO Exception while invoking a method " + invokeContext.getFullName(), e);
         }
     }
 

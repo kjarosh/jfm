@@ -28,7 +28,9 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        FilesystemMapperMethodInvoker invoker = new FilesystemMapperMethodInvoker(path, proxy, method, args);
+        InvokeContext ic = new InvokeContext(path, method, args);
+
+        FilesystemMapperMethodInvoker invoker = new FilesystemMapperMethodInvoker(ic);
 
         Read read = method.getAnnotation(Read.class);
         Write write = method.getAnnotation(Write.class);

@@ -6,15 +6,15 @@ import com.github.kjarosh.jfm.api.types.TypeReference;
 import java.lang.reflect.Type;
 
 @RegisterTypeHandler
-public class ByteArrayTypeHandler extends AbstractByteArrayTypeHandler<byte[]> {
+public class ByteTypeHandler extends AbstractByteArrayTypeHandler<Byte> {
     @Override
-    public TypeReference<byte[]> getHandledType() {
-        return new TypeReference<byte[]>() {
+    public TypeReference<Byte> getHandledType() {
+        return new TypeReference<Byte>() {
         };
     }
 
     @Override
-    public byte[] handleRead(Type actualType, byte[] data) {
-        return data;
+    public Byte handleRead(Type actualType, byte[] data) {
+        return data[0];
     }
 }

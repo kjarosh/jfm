@@ -20,5 +20,9 @@
             <groupId>com.github.kjarosh.jfm</groupId>
             <artifactId>jfm-type-handlers</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
     </dependencies>
 </project>
