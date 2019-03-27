@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.handlers;
+package com.github.kjarosh.jfm.handlers.basic;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;

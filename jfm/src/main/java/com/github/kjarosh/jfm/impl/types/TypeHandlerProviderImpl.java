@@ -99,7 +99,7 @@ public class TypeHandlerProviderImpl implements TypeHandlerProvider {
         Type type = TypeReferences.getType(handler.getHandledType());
         if (handlers.containsKey(type)) {
             if (handlers.get(type).getClass() == handler.getClass()) {
-                // those are the sdame handlers
+                // those are the same handlers
                 return;
             }
 
