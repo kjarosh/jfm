@@ -75,6 +75,13 @@ class BasicTest extends JfmTestBase {
     }
 
     @Test
+    void testRemoveOptionalInt() {
+        basicResource.removeOptionalInt();
+        assertThat(basicResource.getOptionalInt())
+                .isNotPresent();
+    }
+
+    @Test
     void testOptionalIntEmpty() {
         assertThat(basicResource.getOptionalIntEmpty())
                 .isNotPresent();

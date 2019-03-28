@@ -1,6 +1,7 @@
 package com.github.kjarosh.jfm.tests.basic;
 
 import com.github.kjarosh.jfm.api.annotations.Content;
+import com.github.kjarosh.jfm.api.annotations.Delete;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.api.annotations.Read;
@@ -33,7 +34,12 @@ public interface BasicResource {
 
     @Write
     @Path("number")
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     void setOptionalInt(@Content OptionalInt value);
+
+    @Delete
+    @Path("number")
+    void removeOptionalInt();
 
     @Read
     @Path("number-that-does-not-exist")

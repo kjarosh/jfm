@@ -1,13 +1,20 @@
 package com.github.kjarosh.jfm.impl;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
+import com.github.kjarosh.jfm.api.annotations.Delete;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
+import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
+import com.github.kjarosh.jfm.api.annotations.WriteBytes;
+import com.github.kjarosh.jfm.api.annotations.WriteInteger;
+import com.github.kjarosh.jfm.api.annotations.WriteString;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
     private final Class<T> resourceClass;
@@ -29,29 +36,47 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         InvokeContext ic = new InvokeContext(path, method, args);
-
         FilesystemMapperMethodInvoker invoker = new FilesystemMapperMethodInvoker(ic);
 
         Read read = method.getAnnotation(Read.class);
         Write write = method.getAnnotation(Write.class);
+        WriteString writeString = method.getAnnotation(WriteString.class);
+        WriteBytes writeBytes = method.getAnnotation(WriteBytes.class);
+        WriteBoolean writeBoolean = method.getAnnotation(WriteBoolean.class);
+        WriteInteger writeInteger = method.getAnnotation(WriteInteger.class);
+        Delete delete = method.getAnnotation(Delete.class);
 
-        if (read != null && write != null) {
+        long annotationsCount = Stream.of(read, write, writeBoolean,
+                writeBytes, writeString, delete, writeInteger)
+                .filter(Objects::nonNull)
+                .count();
+
+        if (annotationsCount > 1) {
             throw new FilesystemMapperException(
                     "Method " + method.getName() + " is not properly annotated");
-        }
-
-        if (read != null) {
+        } else if (read != null) {
             return invoker.invokeRead(read);
-        }
-
-        if (write != null) {
+        } else if (write != null) {
             invoker.invokeWrite(write);
+            return null;
+        } else if (writeBytes != null) {
+            invoker.invokeWriteBytes(writeBytes);
+            return null;
+        } else if (writeString != null) {
+            invoker.invokeWriteString(writeString);
+            return null;
+        } else if (writeBoolean != null) {
+            invoker.invokeWriteBoolean(writeBoolean);
+            return null;
+        } else if (writeInteger != null) {
+            invoker.invokeWriteInteger(writeInteger);
+            return null;
+        } else if (delete != null) {
+            invoker.invokeDelete(delete);
             return null;
         }
 
         throw new FilesystemMapperException(
-                "Method " + method.getName() + " is not annotated with " +
-                        "@" + Read.class.getSimpleName() + " or " +
-                        "@" + Write.class.getSimpleName());
+                "Method " + method.getName() + " is not annotated with any JFM annotation");
     }
 }
