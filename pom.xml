@@ -20,7 +20,23 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- versions -->
+        <slf4j.version>1.7.26</slf4j.version>
+        <guava.version>27.1-jre</guava.version>
+        <assertj.version>3.12.2</assertj.version>
+        <junit.version>5.1.0</junit.version>
+        <reflections.version>0.9.11</reflections.version>
+        <jnr-fuse.version>0.5.3</jnr-fuse.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -50,34 +66,39 @@
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.11</version>
+                <version>${reflections.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.1.0</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.12.2</version>
+                <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>27.1-jre</version>
+                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.26</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.7.26</version>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.serceman</groupId>
+                <artifactId>jnr-fuse</artifactId>
+                <version>${jnr-fuse.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

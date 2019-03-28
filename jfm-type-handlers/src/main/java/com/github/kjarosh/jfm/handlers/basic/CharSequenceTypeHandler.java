@@ -2,17 +2,15 @@ package com.github.kjarosh.jfm.handlers.basic;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandler;
 import com.github.kjarosh.jfm.api.types.TypeHandlerService;
 import com.github.kjarosh.jfm.api.types.TypeReference;
+import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 
 @RegisterTypeHandler
-public class CharSequenceTypeHandler implements TypeHandler<CharSequence> {
+public class CharSequenceTypeHandler extends AbstractByteArrayTypeHandler<CharSequence> {
     private TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
 
     @Override
@@ -22,14 +20,12 @@ public class CharSequenceTypeHandler implements TypeHandler<CharSequence> {
     }
 
     @Override
-    public CharSequence handleRead(Type actualType, Path path) throws IOException {
-        TypeHandler<String> stringHandler = typeHandlerService.getHandlerFor(String.class);
-        return stringHandler.handleRead(actualType, path);
+    public String deserialize(Type actualType, byte[] data) {
+        return new String(data, StandardCharsets.UTF_8);
     }
 
     @Override
-    public void handleWrite(Type actualType, Path path, CharSequence content, OpenOption[] openOptions) throws IOException {
-        TypeHandler<String> stringHandler = typeHandlerService.getHandlerFor(String.class);
-        stringHandler.handleWrite(actualType, path, content.toString(), openOptions);
+    public byte[] serialize(Type actualType, CharSequence content) {
+        return content.toString().getBytes(StandardCharsets.UTF_8);
     }
 }

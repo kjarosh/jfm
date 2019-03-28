@@ -11,10 +11,10 @@ import java.util.OptionalInt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class BasicTest extends JfmTestBase {
+class BasicProxyTest extends JfmTestBase {
     private final BasicResource basicResource;
 
-    BasicTest() {
+    BasicProxyTest() {
         super(root -> {
             Files.write(root.resolve("name"), "sample name".getBytes());
             Files.write(root.resolve("number"), "1234".getBytes());

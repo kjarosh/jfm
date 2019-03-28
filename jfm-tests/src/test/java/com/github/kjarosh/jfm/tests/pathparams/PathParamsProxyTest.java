@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PathParamsTest extends JfmTestBase {
+class PathParamsProxyTest extends JfmTestBase {
     private final PathParamsResource pathParamsResource;
 
-    PathParamsTest() {
+    PathParamsProxyTest() {
         super(root -> {
             write(root.resolve("first"), "1");
             write(root.resolve("second"), "2");

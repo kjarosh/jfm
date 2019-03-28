@@ -9,17 +9,17 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeHandlersTest extends JfmTestBase {
+public class TypeHandlersProxyTest extends JfmTestBase {
     private final TypeHandlersResource typeHandlersResource;
 
-    public TypeHandlersTest() {
+    public TypeHandlersProxyTest() {
         super(root -> {
             Files.write(root.resolve("text"), "asdf".getBytes());
             Files.write(root.resolve("list"), "a,b,c".getBytes());
         });
 
         FilesystemMapper.instance().getTypeHandlerService()
-                .registerHandlersFromPackage(TypeHandlersTest.class.getPackage());
+                .registerHandlersFromPackage(TypeHandlersProxyTest.class.getPackage());
 
         this.typeHandlersResource = FilesystemMapper.instance()
                 .getTarget(super.getRoot())

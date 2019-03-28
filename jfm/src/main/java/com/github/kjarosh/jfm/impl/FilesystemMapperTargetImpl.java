@@ -1,6 +1,8 @@
 package com.github.kjarosh.jfm.impl;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperTarget;
+import com.github.kjarosh.jfm.impl.mounter.FilesystemMapperMounter;
+import com.github.kjarosh.jfm.impl.proxy.FilesystemMapperProxyHandler;
 
 import java.lang.reflect.Proxy;
 import java.nio.file.Path;
@@ -18,5 +20,10 @@ public class FilesystemMapperTargetImpl implements FilesystemMapperTarget {
         return (T) Proxy.newProxyInstance(resourceClass.getClassLoader(),
                 new Class[]{resourceClass},
                 new FilesystemMapperProxyHandler(resourceClass, path));
+    }
+
+    @Override
+    public void mount(Object resource) {
+        new FilesystemMapperMounter(path).mount(resource);
     }
 }

@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.impl;
+package com.github.kjarosh.jfm.impl.proxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Delete;
@@ -20,7 +20,7 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
     private final Class<T> resourceClass;
     private final Path path;
 
-    FilesystemMapperProxyHandler(Class<T> resourceClass, Path path) {
+    public FilesystemMapperProxyHandler(Class<T> resourceClass, Path path) {
         this.resourceClass = resourceClass;
         this.path = path;
 

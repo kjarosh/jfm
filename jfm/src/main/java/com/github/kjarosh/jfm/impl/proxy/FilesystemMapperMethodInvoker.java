@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.impl;
+package com.github.kjarosh.jfm.impl.proxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;

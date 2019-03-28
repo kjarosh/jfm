@@ -1,8 +1,10 @@
 package com.github.kjarosh.jfm.impl.types;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
+import com.github.kjarosh.jfm.api.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
 import com.github.kjarosh.jfm.api.types.TypeHandler;
+import com.github.kjarosh.jfm.api.types.TypeHandlerBase;
 import com.github.kjarosh.jfm.api.types.TypeHandlerService;
 import com.github.kjarosh.jfm.api.types.TypeReferences;
 import com.github.kjarosh.jfm.handlers.JfmHandlers;
@@ -24,6 +26,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(TypeHandlerServiceImpl.class);
 
     private final ConcurrentMap<Type, TypeHandler<?>> handlers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Type, ListingTypeHandler<?>> listingHandlers = new ConcurrentHashMap<>();
 
     private boolean initialized = false;
 
@@ -32,11 +35,12 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         initialized = true;
 
         addHandlers(JfmHandlers.getJfmHandlers());
+        addListingHandlers(JfmHandlers.getJfmListingHandlers());
     }
 
     @Override
     public void addHandler(Class<? extends TypeHandler> handlerClass) {
-        registerTypeHandler(instantiateHandler(handlerClass));
+        registerTypeHandler(instantiateHandler(handlerClass), handlers);
     }
 
     @Override
@@ -46,11 +50,45 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
                 .getSubTypesOf(TypeHandler.class)
                 .stream()
                 .filter(clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class)));
+        addListingHandlers(new Reflections(packageName)
+                .getSubTypesOf(ListingTypeHandler.class)
+                .stream()
+                .filter(clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class)));
     }
 
     public void addHandlers(Stream<Class<? extends TypeHandler>> handlerClasses) {
         handlerClasses.map(this::instantiateHandler)
-                .forEach(this::registerTypeHandler);
+                .forEach(handler -> registerTypeHandler(handler, handlers));
+    }
+
+    public void addListingHandlers(Stream<Class<? extends ListingTypeHandler>> handlerClasses) {
+        handlerClasses.map(this::instantiateHandler)
+                .forEach(handler -> registerTypeHandler(handler, listingHandlers));
+    }
+
+    private <T> T instantiateHandler(Class<T> c) {
+        try {
+            return c.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new FilesystemMapperException("Cannot instantiate a type handler", e);
+        }
+    }
+
+    private <HandlerType extends TypeHandlerBase<?>> void registerTypeHandler(
+            HandlerType handler, ConcurrentMap<Type, HandlerType> handlers) {
+        Type type = TypeReferences.getType(handler.getHandledType());
+        if (handlers.containsKey(type)) {
+            if (handlers.get(type).getClass() == handler.getClass()) {
+                logger.info("The handler " + handler.getClass() + " has already been registered");
+                return;
+            }
+
+            throw new FilesystemMapperException(
+                    "Type handler for " + type + ": " + handler.getClass() +
+                            " duplicates " + handlers.get(type).getClass());
+        }
+        handlers.put(type, handler);
+        logger.info("Registered a handler for " + type + " (" + handler.getClass() + ")");
     }
 
     @SuppressWarnings("unchecked")
@@ -64,7 +102,20 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         initialize();
         type = PrimitiveTypeMapper.mapPossiblePrimitive(type);
 
-        TypeHandler<?> handler = findHandler(type);
+        TypeHandler<?> handler = findHandler(type, handlers);
+        if (handler != null) {
+            return handler;
+        }
+
+        throw new FilesystemMapperException("No type handler found for: " + type);
+    }
+
+    @Override
+    public ListingTypeHandler<?> getListingHandlerFor(Type type) {
+        initialize();
+        type = PrimitiveTypeMapper.mapPossiblePrimitive(type);
+
+        ListingTypeHandler<?> handler = findHandler(type, listingHandlers);
         if (handler != null) {
             return handler;
         }
@@ -73,17 +124,17 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> TypeHandler<T> findHandler(Type type) {
+    private <HandlerType> HandlerType findHandler(Type type, ConcurrentMap<Type, HandlerType> handlers) {
         Objects.requireNonNull(type, "Type is null");
         if (handlers.isEmpty()) return null;
 
-        TypeHandler<T> found = (TypeHandler<T>) handlers.get(type);
+        HandlerType found = (HandlerType) handlers.get(type);
         if (found != null) {
             return found;
         }
 
         // now, there may be a handler for a type with type variables
-        Map<Integer, List<TypeHandler>> handlersBySimilarity = new HashMap<>();
+        Map<Integer, List<HandlerType>> handlersBySimilarity = new HashMap<>();
         handlers.forEach((handlerType, handler) -> {
             TypeReferences.calculateSimilarity(type, handlerType)
                     .ifPresent(integer -> handlersBySimilarity
@@ -108,29 +159,5 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         }
 
         return handlersBySimilarity.get(bestSimilarity).get(0);
-    }
-
-    private void registerTypeHandler(TypeHandler<?> handler) {
-        Type type = TypeReferences.getType(handler.getHandledType());
-        if (handlers.containsKey(type)) {
-            if (handlers.get(type).getClass() == handler.getClass()) {
-                logger.info("The handler " + handler.getClass() + " has already been registered");
-                return;
-            }
-
-            throw new FilesystemMapperException(
-                    "Type handler for " + type + ": " + handler.getClass() +
-                            " duplicates " + handlers.get(type).getClass());
-        }
-        handlers.put(type, handler);
-        logger.info("Registered a handler for " + type + " (" + handler.getClass() + ")");
-    }
-
-    private <T extends TypeHandler> T instantiateHandler(Class<T> c) {
-        try {
-            return c.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new FilesystemMapperException("Cannot instantiate a type handler", e);
-        }
     }
 }
