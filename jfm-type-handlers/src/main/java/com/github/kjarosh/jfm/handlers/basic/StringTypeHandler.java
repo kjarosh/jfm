@@ -16,7 +16,12 @@ public class StringTypeHandler extends AbstractByteArrayTypeHandler<String> {
     }
 
     @Override
-    public String handleRead(Type actualType, byte[] data) {
+    public String deserialize(Type actualType, byte[] data) {
         return new String(data, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, String content) {
+        return content.getBytes();
     }
 }

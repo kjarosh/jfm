@@ -17,7 +17,12 @@ public class YearTypeHandler extends AbstractByteArrayTypeHandler<Year> {
     }
 
     @Override
-    public Year handleRead(Type actualType, byte[] data) {
+    public Year deserialize(Type actualType, byte[] data) {
         return Year.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Year content) {
+        return content.toString().getBytes();
     }
 }

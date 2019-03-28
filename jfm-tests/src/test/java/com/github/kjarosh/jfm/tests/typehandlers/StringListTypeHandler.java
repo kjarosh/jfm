@@ -17,7 +17,12 @@ public class StringListTypeHandler extends AbstractByteArrayTypeHandler<List<Str
     }
 
     @Override
-    public List<String> handleRead(Type actualType, byte[] data) {
+    public List<String> deserialize(Type actualType, byte[] data) {
         return Arrays.asList(new String(data).split(","));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, List<String> list) {
+        return String.join(",", list).getBytes();
     }
 }

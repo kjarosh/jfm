@@ -8,6 +8,7 @@ import com.github.kjarosh.jfm.api.types.TypeReference;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 
 @RegisterTypeHandler
@@ -24,5 +25,11 @@ public class CharSequenceTypeHandler implements TypeHandler<CharSequence> {
     public CharSequence handleRead(Type actualType, Path path) throws IOException {
         TypeHandler<String> stringHandler = typeHandlerService.getHandlerFor(String.class);
         return stringHandler.handleRead(actualType, path);
+    }
+
+    @Override
+    public void handleWrite(Type actualType, Path path, CharSequence content, OpenOption[] openOptions) throws IOException {
+        TypeHandler<String> stringHandler = typeHandlerService.getHandlerFor(String.class);
+        stringHandler.handleWrite(actualType, path, content.toString(), openOptions);
     }
 }

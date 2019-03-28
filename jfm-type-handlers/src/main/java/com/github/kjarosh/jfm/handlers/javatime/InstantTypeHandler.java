@@ -17,7 +17,12 @@ public class InstantTypeHandler extends AbstractByteArrayTypeHandler<Instant> {
     }
 
     @Override
-    public Instant handleRead(Type actualType, byte[] data) {
+    public Instant deserialize(Type actualType, byte[] data) {
         return Instant.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Instant content) {
+        return content.toString().getBytes();
     }
 }

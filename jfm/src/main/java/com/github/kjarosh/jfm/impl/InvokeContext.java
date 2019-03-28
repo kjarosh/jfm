@@ -12,33 +12,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InvokeContext {
-    private final Path basePath;
     private final Path finalPath;
-
     private final Method method;
 
     private Map<String, String> pathParams = new HashMap<>();
     private Object content = null;
+    private Type contentType = null;
 
-    public InvokeContext(Path basePath, Method method, Object[] args) {
-        this.basePath = basePath;
+    InvokeContext(Path basePath, Method method, Object[] args) {
         this.method = method;
-        segregateArguments(method, args);
+        parseArguments(method, args);
 
         this.finalPath = new JfmPathResolver(basePath, pathParams).resolveMethod(method);
     }
 
-    private void segregateArguments(Method method, Object[] args) {
+    private void parseArguments(Method method, Object[] args) {
         if (args == null) return;
 
         Parameter[] parameters = method.getParameters();
         int argc = args.length;
         for (int i = 0; i < argc; ++i) {
-            segregateArgument(parameters[i], args[i]);
+            parseArgument(parameters[i], args[i]);
         }
     }
 
-    private void segregateArgument(Parameter parameter, Object value) {
+    private void parseArgument(Parameter parameter, Object value) {
         if (parameter.isAnnotationPresent(PathParam.class)) {
             String paramName = parameter.getAnnotation(PathParam.class).value();
             if (pathParams.containsKey(paramName)) {
@@ -55,6 +53,7 @@ public class InvokeContext {
 
             }
             content = value;
+            contentType = parameter.getParameterizedType();
         }
     }
 
@@ -68,5 +67,13 @@ public class InvokeContext {
 
     public String getFullName() {
         return method.getDeclaringClass().getName() + "." + method.getName();
+    }
+
+    public Type getContentType() {
+        return contentType;
+    }
+
+    public Object getContent() {
+        return content;
     }
 }

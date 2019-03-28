@@ -15,7 +15,12 @@ public class ByteTypeHandler extends AbstractByteArrayTypeHandler<Byte> {
     }
 
     @Override
-    public Byte handleRead(Type actualType, byte[] data) {
+    public Byte deserialize(Type actualType, byte[] data) {
         return data[0];
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Byte content) {
+        return new byte[]{content};
     }
 }

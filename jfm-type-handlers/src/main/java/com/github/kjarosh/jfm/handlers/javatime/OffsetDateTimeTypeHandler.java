@@ -17,7 +17,12 @@ public class OffsetDateTimeTypeHandler extends AbstractByteArrayTypeHandler<Offs
     }
 
     @Override
-    public OffsetDateTime handleRead(Type actualType, byte[] data) {
+    public OffsetDateTime deserialize(Type actualType, byte[] data) {
         return OffsetDateTime.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, OffsetDateTime content) {
+        return content.toString().getBytes();
     }
 }

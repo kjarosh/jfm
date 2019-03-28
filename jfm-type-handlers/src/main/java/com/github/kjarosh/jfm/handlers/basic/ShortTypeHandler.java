@@ -16,11 +16,16 @@ public class ShortTypeHandler extends AbstractByteArrayTypeHandler<Short> {
     }
 
     @Override
-    public Short handleRead(Type actualType, byte[] data) {
+    public Short deserialize(Type actualType, byte[] data) {
         try {
             return Short.parseShort(new String(data));
         } catch (NumberFormatException e) {
             throw new TypeHandlingException("Wrong number format", e);
         }
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Short content) {
+        return content.toString().getBytes();
     }
 }

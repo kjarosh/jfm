@@ -1,8 +1,10 @@
 package com.github.kjarosh.jfm.tests.basic;
 
+import com.github.kjarosh.jfm.api.annotations.Content;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.api.annotations.Read;
+import com.github.kjarosh.jfm.api.annotations.Write;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -29,6 +31,10 @@ public interface BasicResource {
     @Path("number")
     OptionalInt getOptionalInt();
 
+    @Write
+    @Path("number")
+    void setOptionalInt(@Content OptionalInt value);
+
     @Read
     @Path("number-that-does-not-exist")
     OptionalInt getOptionalIntEmpty();
@@ -45,15 +51,31 @@ public interface BasicResource {
     @Path("byte")
     byte getByte();
 
+    @Write
+    @Path("byte")
+    void setByte(@Content byte value);
+
     @Read
     @Path("char")
     char getChar();
+
+    @Write
+    @Path("char")
+    void setChar(@Content char value);
 
     @Read
     @Path("float")
     float getFloat();
 
+    @Write
+    @Path("float")
+    void setFloat(@Content float value);
+
     @Read
     @Path("double")
     double getDouble();
+
+    @Write
+    @Path("double")
+    void setDouble(@Content double value);
 }

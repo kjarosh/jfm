@@ -16,11 +16,16 @@ public class IntegerTypeHandler extends AbstractByteArrayTypeHandler<Integer> {
     }
 
     @Override
-    public Integer handleRead(Type actualType, byte[] data) {
+    public Integer deserialize(Type actualType, byte[] data) {
         try {
             return Integer.parseInt(new String(data));
         } catch (NumberFormatException e) {
             throw new TypeHandlingException("Wrong number format", e);
         }
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Integer content) {
+        return content.toString().getBytes();
     }
 }

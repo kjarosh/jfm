@@ -10,6 +10,7 @@ import com.github.kjarosh.jfm.api.types.TypeReferences;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -29,12 +30,30 @@ public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
             return Optional.empty();
         }
 
-        Type innerType = TypeReferences.getTypeFromVariable(getHandledType(), actualType, "T")
-                .orElseThrow(AssertionError::new);
+        Type innerType = getInnerType(actualType);
 
         @SuppressWarnings("unchecked")
         TypeHandler<T> innerHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(innerType);
 
         return Optional.of(innerHandler.handleRead(innerType, path));
+    }
+
+    @Override
+    public void handleWrite(Type actualType, Path path, Optional<T> content, OpenOption[] openOptions) throws IOException {
+        Type innerType = getInnerType(actualType);
+
+        @SuppressWarnings("unchecked")
+        TypeHandler<T> innerHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(innerType);
+
+        if (!content.isPresent()) {
+            Files.deleteIfExists(path);
+        } else {
+            innerHandler.handleWrite(actualType, path, content.get(), openOptions);
+        }
+    }
+
+    private Type getInnerType(Type actualType) {
+        return TypeReferences.getTypeFromVariable(getHandledType(), actualType, "T")
+                .orElseThrow(AssertionError::new);
     }
 }

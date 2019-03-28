@@ -7,6 +7,7 @@ import com.github.kjarosh.jfm.api.types.TypeReference;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Properties;
 
@@ -23,5 +24,10 @@ public class PropertiesTypeHandler implements TypeHandler<Properties> {
         Properties ret = new Properties();
         ret.load(Files.newInputStream(path));
         return ret;
+    }
+
+    @Override
+    public void handleWrite(Type actualType, Path path, Properties props, OpenOption[] openOptions) throws IOException {
+        props.store(Files.newOutputStream(path, openOptions), null);
     }
 }

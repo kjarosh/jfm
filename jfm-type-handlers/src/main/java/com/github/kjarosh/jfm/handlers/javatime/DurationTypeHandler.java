@@ -17,7 +17,12 @@ public class DurationTypeHandler extends AbstractByteArrayTypeHandler<Duration> 
     }
 
     @Override
-    public Duration handleRead(Type actualType, byte[] data) {
+    public Duration deserialize(Type actualType, byte[] data) {
         return Duration.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Duration content) {
+        return content.toString().getBytes();
     }
 }

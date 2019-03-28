@@ -39,4 +39,9 @@ public class JfmTestBase {
     protected Path getRoot() {
         return testDirPath;
     }
+
+    public static void write(Path file, String content) throws IOException {
+        Files.createDirectories(file.getParent());
+        Files.write(file, content.getBytes());
+    }
 }

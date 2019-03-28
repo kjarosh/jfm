@@ -17,7 +17,12 @@ public class LocalDateTypeHandler extends AbstractByteArrayTypeHandler<LocalDate
     }
 
     @Override
-    public LocalDate handleRead(Type actualType, byte[] data) {
+    public LocalDate deserialize(Type actualType, byte[] data) {
         return LocalDate.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, LocalDate content) {
+        return content.toString().getBytes();
     }
 }

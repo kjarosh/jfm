@@ -15,7 +15,12 @@ public class TextTypeHandler extends AbstractByteArrayTypeHandler<Text> {
     }
 
     @Override
-    public Text handleRead(Type actualType, byte[] data) {
+    public Text deserialize(Type actualType, byte[] data) {
         return new Text(new String(data));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Text content) {
+        return content.getData().getBytes();
     }
 }

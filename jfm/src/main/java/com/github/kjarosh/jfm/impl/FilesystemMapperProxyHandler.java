@@ -45,7 +45,8 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
         }
 
         if (write != null) {
-            return invoker.invokeWrite(write);
+            invoker.invokeWrite(write);
+            return null;
         }
 
         throw new FilesystemMapperException(

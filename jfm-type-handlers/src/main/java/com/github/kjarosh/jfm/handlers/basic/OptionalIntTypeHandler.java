@@ -9,6 +9,7 @@ import com.github.kjarosh.jfm.api.types.TypeReference;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.OptionalInt;
 
@@ -30,5 +31,15 @@ public class OptionalIntTypeHandler<T> implements TypeHandler<OptionalInt> {
 
         TypeHandler<Integer> originalHandler = typeHandlerService.getHandlerFor(int.class);
         return OptionalInt.of(originalHandler.handleRead(actualType, path));
+    }
+
+    @Override
+    public void handleWrite(Type actualType, Path path, OptionalInt content, OpenOption[] openOptions) throws IOException {
+        TypeHandler<Integer> originalHandler = typeHandlerService.getHandlerFor(int.class);
+        if (!content.isPresent()) {
+            Files.deleteIfExists(path);
+        } else {
+            originalHandler.handleWrite(actualType, path, content.getAsInt(), openOptions);
+        }
     }
 }

@@ -17,7 +17,12 @@ public class LocalTimeTypeHandler extends AbstractByteArrayTypeHandler<LocalTime
     }
 
     @Override
-    public LocalTime handleRead(Type actualType, byte[] data) {
+    public LocalTime deserialize(Type actualType, byte[] data) {
         return LocalTime.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, LocalTime content) {
+        return content.toString().getBytes();
     }
 }

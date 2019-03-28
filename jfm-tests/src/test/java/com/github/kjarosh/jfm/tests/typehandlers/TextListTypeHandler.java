@@ -18,9 +18,17 @@ public class TextListTypeHandler extends AbstractByteArrayTypeHandler<List<Text>
     }
 
     @Override
-    public List<Text> handleRead(Type actualType, byte[] data) {
+    public List<Text> deserialize(Type actualType, byte[] data) {
         return Arrays.stream(new String(data).split(","))
                 .map(Text::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, List<Text> list) {
+        return list.stream()
+                .map(Text::getData)
+                .collect(Collectors.joining(","))
+                .getBytes();
     }
 }

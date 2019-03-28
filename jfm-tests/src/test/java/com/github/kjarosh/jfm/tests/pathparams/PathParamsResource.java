@@ -10,4 +10,8 @@ public interface PathParamsResource {
     @Read
     @Path("{name}")
     int getInteger(@PathParam("name") String name);
+
+    @Read
+    @Path("{name}/int")
+    int getInnerInteger(@PathParam("name") String name);
 }

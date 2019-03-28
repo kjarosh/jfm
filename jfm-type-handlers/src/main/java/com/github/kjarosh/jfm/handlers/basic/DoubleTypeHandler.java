@@ -16,11 +16,16 @@ public class DoubleTypeHandler extends AbstractByteArrayTypeHandler<Double> {
     }
 
     @Override
-    public Double handleRead(Type actualType, byte[] data) {
+    public Double deserialize(Type actualType, byte[] data) {
         try {
             return Double.parseDouble(new String(data));
         } catch (NumberFormatException e) {
             throw new TypeHandlingException("Wrong number format", e);
         }
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, Double content) {
+        return content.toString().getBytes();
     }
 }

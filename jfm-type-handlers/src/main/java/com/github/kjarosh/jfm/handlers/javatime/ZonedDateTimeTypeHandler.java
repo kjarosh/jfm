@@ -17,7 +17,12 @@ public class ZonedDateTimeTypeHandler extends AbstractByteArrayTypeHandler<Zoned
     }
 
     @Override
-    public ZonedDateTime handleRead(Type actualType, byte[] data) {
+    public ZonedDateTime deserialize(Type actualType, byte[] data) {
         return ZonedDateTime.parse(new String(data, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public byte[] serialize(Type actualType, ZonedDateTime content) {
+        return content.toString().getBytes();
     }
 }

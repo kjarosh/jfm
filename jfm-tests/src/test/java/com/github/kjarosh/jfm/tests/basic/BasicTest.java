@@ -6,6 +6,7 @@ import com.github.kjarosh.jfm.tests.JfmTestBase;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
+import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,6 +63,18 @@ class BasicTest extends JfmTestBase {
     }
 
     @Test
+    void testSetOptionalInt() {
+        basicResource.setOptionalInt(OptionalInt.empty());
+        assertThat(basicResource.getOptionalInt())
+                .isNotPresent();
+
+        basicResource.setOptionalInt(OptionalInt.of(4321));
+        assertThat(basicResource.getOptionalInt())
+                .isPresent()
+                .hasValue(4321);
+    }
+
+    @Test
     void testOptionalIntEmpty() {
         assertThat(basicResource.getOptionalIntEmpty())
                 .isNotPresent();
@@ -87,9 +100,23 @@ class BasicTest extends JfmTestBase {
     }
 
     @Test
+    void testSetByte() {
+        basicResource.setByte((byte) -7);
+        assertThat(basicResource.getByte())
+                .isEqualTo((byte) -7);
+    }
+
+    @Test
     void testChar() {
         assertThat(basicResource.getChar())
                 .isEqualTo('\u0105');
+    }
+
+    @Test
+    void testSetChar() {
+        basicResource.setChar('\u0106');
+        assertThat(basicResource.getChar())
+                .isEqualTo('\u0106');
     }
 
     @Test
@@ -99,8 +126,22 @@ class BasicTest extends JfmTestBase {
     }
 
     @Test
+    void testSetFloat() {
+        basicResource.setFloat(43.21f);
+        assertThat(basicResource.getFloat())
+                .isEqualTo(43.21f);
+    }
+
+    @Test
     void testDouble() {
         assertThat(basicResource.getDouble())
                 .isEqualTo(12.34d);
+    }
+
+    @Test
+    void testSetDouble() {
+        basicResource.setDouble(43.21d);
+        assertThat(basicResource.getDouble())
+                .isEqualTo(43.21d);
     }
 }
