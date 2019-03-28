@@ -4,6 +4,7 @@ import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Content;
 import com.github.kjarosh.jfm.api.annotations.PathParam;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -38,12 +39,20 @@ public class InvokeContext {
 
     private void parseArgument(Parameter parameter, Object value) {
         if (parameter.isAnnotationPresent(PathParam.class)) {
-            String paramName = parameter.getAnnotation(PathParam.class).value();
+            PathParam pathParam = parameter.getAnnotation(PathParam.class);
+            String paramName = pathParam.value();
             if (pathParams.containsKey(paramName)) {
                 throw new FilesystemMapperException(
                         "Duplicate path param: " + paramName + " on " + getFullName());
             }
-            pathParams.put(paramName, String.valueOf(value));
+
+            String paramValue = String.valueOf(value);
+            if (!pathParam.allowSeparators() &&
+                    (paramValue.contains("/") || paramValue.contains(File.separator))) {
+                throw new FilesystemMapperException(
+                        "Parameter value contains separators: " + paramValue);
+            }
+            pathParams.put(paramName, paramValue);
         }
 
         if (parameter.isAnnotationPresent(Content.class)) {
