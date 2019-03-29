@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class LocalTimeTypeHandler extends AbstractByteArrayTypeHandler<LocalTime> {
     @Override

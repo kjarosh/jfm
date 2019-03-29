@@ -7,6 +7,9 @@ import com.github.kjarosh.jfm.spi.types.TypeReference;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class CharTypeHandler extends AbstractByteArrayTypeHandler<Character> {
     @Override

@@ -7,6 +7,9 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Optional;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class TypeReferences {
     public static <T> Type getType(TypeReference<T> ref) {
         Type[] genericInterfaces = ((TypeReference<?>) ref).getClass().getGenericInterfaces();

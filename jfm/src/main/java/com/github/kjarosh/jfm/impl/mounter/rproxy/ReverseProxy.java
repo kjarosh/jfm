@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class ReverseProxy {
     private Map<String, File> files = new HashMap<>();
     private List<String> directories = new ArrayList<>();

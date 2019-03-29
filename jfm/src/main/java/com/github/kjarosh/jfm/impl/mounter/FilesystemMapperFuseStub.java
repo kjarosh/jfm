@@ -10,6 +10,9 @@ import ru.serce.jnrfuse.FuseStubFS;
 import ru.serce.jnrfuse.struct.FileStat;
 import ru.serce.jnrfuse.struct.FuseFileInfo;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class FilesystemMapperFuseStub extends FuseStubFS {
     private ReverseProxy reverseProxy;
 

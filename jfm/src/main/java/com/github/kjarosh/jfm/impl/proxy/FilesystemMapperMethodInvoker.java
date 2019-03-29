@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 
+/**
+ * @author Kamil Jarosz
+ */
 class FilesystemMapperMethodInvoker {
     private final TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
     private final InvokeContext invokeContext;

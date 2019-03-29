@@ -7,6 +7,9 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * @author Kamil Jarosz
+ */
 public abstract class AbstractByteArrayTypeHandler<T> implements TypeHandler<T> {
     @Override
     public T read(Type actualType, Path path) throws IOException {

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 
+/**
+ * @author Kamil Jarosz
+ */
 public interface TypeHandler<T> extends TypeHandlerBase<T> {
     T read(Type actualType, Path path) throws IOException;
 

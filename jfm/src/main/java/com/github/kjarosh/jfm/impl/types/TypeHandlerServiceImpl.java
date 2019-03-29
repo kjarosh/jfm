@@ -22,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Stream;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class TypeHandlerServiceImpl implements TypeHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(TypeHandlerServiceImpl.class);
 

@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class InvokeContext {
     private final Path finalPath;
     private final Method method;

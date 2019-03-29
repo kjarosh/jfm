@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class FilesystemResourceStreamListingTypeHandler<T> implements ListingTypeHandler<Stream<T>> {
     @Override

@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class PropertiesTypeHandler implements TypeHandler<Properties> {
     @Override

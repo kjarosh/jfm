@@ -17,6 +17,9 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
     private final Class<T> resourceClass;
     private final Path path;

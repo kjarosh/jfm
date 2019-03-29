@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class OffsetDateTimeTypeHandler extends AbstractByteArrayTypeHandler<OffsetDateTime> {
     @Override

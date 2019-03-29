@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class ZonedDateTimeTypeHandler extends AbstractByteArrayTypeHandler<ZonedDateTime> {
     @Override

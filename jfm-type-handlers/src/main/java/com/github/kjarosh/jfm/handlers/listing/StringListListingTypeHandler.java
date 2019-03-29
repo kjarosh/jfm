@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class StringListListingTypeHandler implements ListingTypeHandler<List<String>> {
     @Override

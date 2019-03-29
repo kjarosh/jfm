@@ -6,6 +6,9 @@ import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class ByteTypeHandler extends AbstractByteArrayTypeHandler<Byte> {
     @Override

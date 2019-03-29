@@ -7,6 +7,9 @@ import org.reflections.Reflections;
 
 import java.util.stream.Stream;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class JfmHandlers {
     public static Stream<Class<? extends TypeHandler>> getJfmHandlers() {
         return new Reflections(JfmHandlers.class.getPackage().getName())

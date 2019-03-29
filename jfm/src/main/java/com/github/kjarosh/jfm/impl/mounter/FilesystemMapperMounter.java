@@ -7,6 +7,9 @@ import ru.serce.jnrfuse.FuseFS;
 
 import java.nio.file.Path;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class FilesystemMapperMounter {
     private Path path;
 

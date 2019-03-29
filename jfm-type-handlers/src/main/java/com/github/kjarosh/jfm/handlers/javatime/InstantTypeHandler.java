@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class InstantTypeHandler extends AbstractByteArrayTypeHandler<Instant> {
     @Override

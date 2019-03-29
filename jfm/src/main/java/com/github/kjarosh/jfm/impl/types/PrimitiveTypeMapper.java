@@ -4,6 +4,9 @@ import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class PrimitiveTypeMapper {
     private static final ConcurrentMap<Type, Type> PRIMITIVE_MAP = new ConcurrentHashMap<>();
 

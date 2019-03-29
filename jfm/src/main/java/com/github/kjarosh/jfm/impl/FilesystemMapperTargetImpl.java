@@ -7,6 +7,9 @@ import com.github.kjarosh.jfm.impl.proxy.FilesystemMapperProxyHandler;
 import java.lang.reflect.Proxy;
 import java.nio.file.Path;
 
+/**
+ * @author Kamil Jarosz
+ */
 public class FilesystemMapperTargetImpl implements FilesystemMapperTarget {
     private Path path;
 

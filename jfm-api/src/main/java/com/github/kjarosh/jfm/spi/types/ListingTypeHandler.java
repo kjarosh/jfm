@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 
+/**
+ * @author Kamil Jarosz
+ */
 public interface ListingTypeHandler<T> extends TypeHandlerBase<T> {
     default boolean isAppropriate(Type actualType) {
         return true;

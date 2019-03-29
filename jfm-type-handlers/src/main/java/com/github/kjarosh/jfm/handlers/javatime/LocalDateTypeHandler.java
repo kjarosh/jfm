@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class LocalDateTypeHandler extends AbstractByteArrayTypeHandler<LocalDate> {
     @Override

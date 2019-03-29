@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class DurationTypeHandler extends AbstractByteArrayTypeHandler<Duration> {
     @Override

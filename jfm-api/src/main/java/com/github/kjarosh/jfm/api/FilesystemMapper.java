@@ -4,6 +4,9 @@ import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
 import java.nio.file.Path;
 
+/**
+ * @author Kamil Jarosz
+ */
 public interface FilesystemMapper {
     FilesystemMapperTarget getTarget(Path path);
 

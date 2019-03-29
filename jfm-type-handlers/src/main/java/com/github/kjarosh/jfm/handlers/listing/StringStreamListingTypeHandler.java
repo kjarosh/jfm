@@ -10,6 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class StringStreamListingTypeHandler implements ListingTypeHandler<Stream<String>> {
     @Override

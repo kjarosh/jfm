@@ -2,6 +2,9 @@ package com.github.kjarosh.jfm.spi.types;
 
 import java.lang.reflect.Type;
 
+/**
+ * @author Kamil Jarosz
+ */
 public interface TypeHandlerService {
     <T> TypeHandler<T> getHandlerFor(Class<T> clazz);
 

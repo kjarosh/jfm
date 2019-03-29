@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
     private TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();

@@ -4,6 +4,9 @@ import org.reflections.Reflections;
 
 import java.util.Set;
 
+/**
+ * @author Kamil Jarosz
+ */
 class FilesystemMapperProvider {
     private static final Object instanceLock = new Object();
     private static final Reflections jfmReflections = new Reflections("com.github.kjarosh.jfm");

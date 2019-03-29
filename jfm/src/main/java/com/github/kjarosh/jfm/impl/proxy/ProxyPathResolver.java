@@ -6,6 +6,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+/**
+ * @author Kamil Jarosz
+ */
 class ProxyPathResolver {
     private java.nio.file.Path root;
     private Map<String, String> pathParams;

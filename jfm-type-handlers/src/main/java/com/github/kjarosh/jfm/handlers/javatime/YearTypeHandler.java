@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
 
+/**
+ * @author Kamil Jarosz
+ */
 @RegisterTypeHandler
 public class YearTypeHandler extends AbstractByteArrayTypeHandler<Year> {
     @Override
