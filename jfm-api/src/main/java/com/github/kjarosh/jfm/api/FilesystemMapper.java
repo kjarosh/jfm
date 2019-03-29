@@ -1,6 +1,6 @@
 package com.github.kjarosh.jfm.api;
 
-import com.github.kjarosh.jfm.api.types.TypeHandlerService;
+import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
 import java.nio.file.Path;
 

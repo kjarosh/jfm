@@ -24,7 +24,7 @@ public class InvokeContext {
         this.method = method;
         parseArguments(method, args);
 
-        this.finalPath = new JfmPathResolver(basePath, pathParams).resolveMethod(method);
+        this.finalPath = new ProxyPathResolver(basePath, pathParams).resolveMethod(method);
     }
 
     private void parseArguments(Method method, Object[] args) {

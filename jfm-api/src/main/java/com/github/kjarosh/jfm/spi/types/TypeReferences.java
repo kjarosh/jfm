@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.api.types;
+package com.github.kjarosh.jfm.spi.types;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;

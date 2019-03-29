@@ -1,8 +1,8 @@
 package com.github.kjarosh.jfm.handlers;
 
-import com.github.kjarosh.jfm.api.types.ListingTypeHandler;
-import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandler;
+import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
+import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import org.reflections.Reflections;
 
 import java.util.stream.Stream;

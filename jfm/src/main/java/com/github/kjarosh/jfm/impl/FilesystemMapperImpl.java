@@ -2,8 +2,8 @@ package com.github.kjarosh.jfm.impl;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperTarget;
-import com.github.kjarosh.jfm.api.types.TypeHandlerService;
 import com.github.kjarosh.jfm.impl.types.TypeHandlerServiceImpl;
+import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
 import java.nio.file.Path;
 

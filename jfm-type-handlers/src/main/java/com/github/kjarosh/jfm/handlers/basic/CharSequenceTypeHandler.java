@@ -1,10 +1,10 @@
 package com.github.kjarosh.jfm.handlers.basic;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
-import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandlerService;
-import com.github.kjarosh.jfm.api.types.TypeReference;
 import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
+import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
+import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;

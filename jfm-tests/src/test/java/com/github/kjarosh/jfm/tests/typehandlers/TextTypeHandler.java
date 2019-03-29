@@ -1,8 +1,8 @@
 package com.github.kjarosh.jfm.tests.typehandlers;
 
-import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeReference;
 import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
+import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
 

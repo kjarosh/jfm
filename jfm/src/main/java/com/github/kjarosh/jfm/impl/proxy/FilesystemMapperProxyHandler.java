@@ -3,6 +3,7 @@ package com.github.kjarosh.jfm.impl.proxy;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Delete;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
+import com.github.kjarosh.jfm.api.annotations.Listing;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
 import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
@@ -45,9 +46,10 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
         WriteBoolean writeBoolean = method.getAnnotation(WriteBoolean.class);
         WriteInteger writeInteger = method.getAnnotation(WriteInteger.class);
         Delete delete = method.getAnnotation(Delete.class);
+        Listing listing = method.getAnnotation(Listing.class);
 
         long annotationsCount = Stream.of(read, write, writeBoolean,
-                writeBytes, writeString, delete, writeInteger)
+                writeBytes, writeString, delete, writeInteger, listing)
                 .filter(Objects::nonNull)
                 .count();
 
@@ -74,6 +76,8 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
         } else if (delete != null) {
             invoker.invokeDelete(delete);
             return null;
+        } else if (listing != null) {
+            return invoker.invokeListing(listing);
         }
 
         throw new FilesystemMapperException(

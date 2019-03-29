@@ -1,13 +1,13 @@
 package com.github.kjarosh.jfm.impl.types;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
-import com.github.kjarosh.jfm.api.types.ListingTypeHandler;
-import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandlerBase;
-import com.github.kjarosh.jfm.api.types.TypeHandlerService;
-import com.github.kjarosh.jfm.api.types.TypeReferences;
 import com.github.kjarosh.jfm.handlers.JfmHandlers;
+import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
+import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandlerBase;
+import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
+import com.github.kjarosh.jfm.spi.types.TypeReferences;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,12 +123,11 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         throw new FilesystemMapperException("No type handler found for: " + type);
     }
 
-    @SuppressWarnings("unchecked")
     private <HandlerType> HandlerType findHandler(Type type, ConcurrentMap<Type, HandlerType> handlers) {
         Objects.requireNonNull(type, "Type is null");
         if (handlers.isEmpty()) return null;
 
-        HandlerType found = (HandlerType) handlers.get(type);
+        HandlerType found = handlers.get(type);
         if (found != null) {
             return found;
         }

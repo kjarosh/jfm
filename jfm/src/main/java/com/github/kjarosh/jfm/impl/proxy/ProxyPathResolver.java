@@ -6,11 +6,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class JfmPathResolver {
+class ProxyPathResolver {
     private java.nio.file.Path root;
     private Map<String, String> pathParams;
 
-    JfmPathResolver(java.nio.file.Path root, Map<String, String> pathParams) {
+    ProxyPathResolver(java.nio.file.Path root, Map<String, String> pathParams) {
         this.root = root;
         this.pathParams = pathParams;
     }
@@ -19,7 +19,7 @@ class JfmPathResolver {
         return resolve(resolveClass(method.getDeclaringClass()), method);
     }
 
-    java.nio.file.Path resolveClass(Class<?> clazz) {
+    private java.nio.file.Path resolveClass(Class<?> clazz) {
         return resolve(root, clazz);
     }
 

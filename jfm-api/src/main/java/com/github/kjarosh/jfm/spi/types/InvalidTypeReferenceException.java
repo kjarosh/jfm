@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.api.types;
+package com.github.kjarosh.jfm.spi.types;
 
 public class InvalidTypeReferenceException extends RuntimeException {
 }

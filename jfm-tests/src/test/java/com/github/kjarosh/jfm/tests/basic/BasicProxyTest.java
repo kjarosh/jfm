@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.tests.basic;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
-import com.github.kjarosh.jfm.api.types.TypeHandlingException;
+import com.github.kjarosh.jfm.spi.types.TypeHandlingException;
 import com.github.kjarosh.jfm.tests.JfmTestBase;
 import org.junit.jupiter.api.Test;
 

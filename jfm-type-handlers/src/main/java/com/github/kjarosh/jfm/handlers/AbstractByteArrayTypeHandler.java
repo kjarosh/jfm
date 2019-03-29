@@ -1,6 +1,6 @@
 package com.github.kjarosh.jfm.handlers;
 
-import com.github.kjarosh.jfm.api.types.TypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

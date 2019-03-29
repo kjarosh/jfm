@@ -1,8 +1,8 @@
 package com.github.kjarosh.jfm.handlers.complex;
 
-import com.github.kjarosh.jfm.api.types.RegisterTypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeHandler;
-import com.github.kjarosh.jfm.api.types.TypeReference;
+import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
