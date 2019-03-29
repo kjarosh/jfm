@@ -1,5 +1,7 @@
 # Java Filesystem Mapper
 
+[![Build Status](https://travis-ci.com/kjarosh/jfm.svg?branch=master)](https://travis-ci.com/kjarosh/jfm)
+
 ## What is it?
 
 This is a library used to map filesystem resources to Java objects.
