@@ -6,7 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation is equivalent to {@link Write} with the content
+ * equal to the {@link #value()}.
+ *
  * @author Kamil Jarosz
+ * @see WriteBoolean
+ * @see Write
+ * @see WriteInteger
+ * @see WriteString
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
