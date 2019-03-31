@@ -99,7 +99,7 @@ class FilesystemMapperMethodInvoker {
 
     void invokeDelete(Delete delete) {
         try {
-            if (delete.failOnExists()) {
+            if (delete.failIfNotExists()) {
                 Files.delete(invokeContext.getFinalPath());
             } else {
                 Files.deleteIfExists(invokeContext.getFinalPath());

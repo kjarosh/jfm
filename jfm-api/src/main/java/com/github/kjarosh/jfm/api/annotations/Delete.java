@@ -11,5 +11,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Delete {
-    boolean failOnExists() default false;
+    /**
+     * @return {@code true} when the annotated method should fail when the file
+     * does not exist, {@code false} otherwise
+     */
+    boolean failIfNotExists() default false;
 }

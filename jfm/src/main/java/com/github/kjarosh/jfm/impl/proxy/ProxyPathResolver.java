@@ -36,9 +36,10 @@ class ProxyPathResolver {
     }
 
     private String replacePathParams(String relativePath) {
+        String finalPath = relativePath;
         for (Map.Entry<String, String> entry : pathParams.entrySet()) {
-            relativePath = relativePath.replace("{" + entry.getKey() + "}", entry.getValue());
+            finalPath = finalPath.replace("{" + entry.getKey() + "}", entry.getValue());
         }
-        return relativePath;
+        return finalPath;
     }
 }

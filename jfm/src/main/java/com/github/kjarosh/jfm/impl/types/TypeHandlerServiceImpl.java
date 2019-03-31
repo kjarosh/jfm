@@ -59,12 +59,12 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
                 .filter(clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class)));
     }
 
-    public void addHandlers(Stream<Class<? extends TypeHandler>> handlerClasses) {
+    private void addHandlers(Stream<Class<? extends TypeHandler>> handlerClasses) {
         handlerClasses.map(this::instantiateHandler)
                 .forEach(handler -> registerTypeHandler(handler, handlers));
     }
 
-    public void addListingHandlers(Stream<Class<? extends ListingTypeHandler>> handlerClasses) {
+    private void addListingHandlers(Stream<Class<? extends ListingTypeHandler>> handlerClasses) {
         handlerClasses.map(this::instantiateHandler)
                 .forEach(handler -> registerTypeHandler(handler, listingHandlers));
     }
@@ -103,27 +103,27 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
     @Override
     public TypeHandler<?> getHandlerFor(Type type) {
         initialize();
-        type = PrimitiveTypeMapper.mapPossiblePrimitive(type);
+        Type mappedType = PrimitiveTypeMapper.mapPossiblePrimitive(type);
 
-        TypeHandler<?> handler = findHandler(type, handlers);
+        TypeHandler<?> handler = findHandler(mappedType, handlers);
         if (handler != null) {
             return handler;
         }
 
-        throw new FilesystemMapperException("No type handler found for: " + type);
+        throw new FilesystemMapperException("No type handler found for: " + mappedType);
     }
 
     @Override
     public ListingTypeHandler<?> getListingHandlerFor(Type type) {
         initialize();
-        type = PrimitiveTypeMapper.mapPossiblePrimitive(type);
+        Type mappedType = PrimitiveTypeMapper.mapPossiblePrimitive(type);
 
-        ListingTypeHandler<?> handler = findHandler(type, listingHandlers);
+        ListingTypeHandler<?> handler = findHandler(mappedType, listingHandlers);
         if (handler != null) {
             return handler;
         }
 
-        throw new FilesystemMapperException("No type handler found for: " + type);
+        throw new FilesystemMapperException("No type handler found for: " + mappedType);
     }
 
     private <HandlerType> HandlerType findHandler(Type type, ConcurrentMap<Type, HandlerType> handlers) {
