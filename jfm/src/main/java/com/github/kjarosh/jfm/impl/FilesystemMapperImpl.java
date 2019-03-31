@@ -6,6 +6,8 @@ import com.github.kjarosh.jfm.impl.types.TypeHandlerServiceImpl;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Kamil Jarosz
@@ -13,9 +15,18 @@ import java.nio.file.Path;
 public class FilesystemMapperImpl implements FilesystemMapper {
     private TypeHandlerService typeHandlerService = new TypeHandlerServiceImpl();
 
+    private Map<Path, FilesystemMapperTargetImpl> targets = new HashMap<>();
+
     @Override
     public FilesystemMapperTarget getTarget(Path path) {
-        return new FilesystemMapperTargetImpl(path);
+        Path absolutePath = path.normalize().toAbsolutePath();
+        if (targets.containsKey(absolutePath)) {
+            return targets.get(absolutePath);
+        }
+
+        FilesystemMapperTargetImpl target = new FilesystemMapperTargetImpl(absolutePath);
+        targets.put(absolutePath, target);
+        return target;
     }
 
     @Override

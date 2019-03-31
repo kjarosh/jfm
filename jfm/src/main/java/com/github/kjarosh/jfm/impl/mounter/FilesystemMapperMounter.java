@@ -11,7 +11,9 @@ import java.nio.file.Path;
  * @author Kamil Jarosz
  */
 public class FilesystemMapperMounter {
-    private Path path;
+    private final Path path;
+    private Thread shutdownHook;
+    private FuseFS fuseFs;
 
     public FilesystemMapperMounter(Path path) {
         this.path = path;
@@ -25,10 +27,17 @@ public class FilesystemMapperMounter {
         }
 
         ReverseProxy rp = new ReverseProxy(resourceClass);
-        FuseFS stub = new FilesystemMapperFuseStub(rp);
 
-        stub.mount(path, true, true);
-        Runtime.getRuntime().addShutdownHook(new Thread(stub::umount));
+        this.fuseFs = new FilesystemMapperFuseStub(rp);
+        this.fuseFs.mount(path, true, true);
+        this.shutdownHook = new Thread(fuseFs::umount);
+
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+    }
+
+    public void umount() {
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        fuseFs.umount();
     }
 
     private Class<?> getResourceClass(Class<?> clazz) {
