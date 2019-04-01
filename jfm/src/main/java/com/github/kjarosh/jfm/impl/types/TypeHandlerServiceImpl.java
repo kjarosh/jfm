@@ -12,6 +12,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -49,14 +51,14 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
     @Override
     public void registerHandlersFromPackage(String packageName) {
         initialize();
-        addHandlers(new Reflections(packageName)
+        Reflections reflections = new Reflections(packageName);
+        Predicate<AnnotatedElement> filter = clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class);
+        addHandlers(reflections
                 .getSubTypesOf(TypeHandler.class)
-                .stream()
-                .filter(clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class)));
-        addListingHandlers(new Reflections(packageName)
+                .stream().filter(filter));
+        addListingHandlers(reflections
                 .getSubTypesOf(ListingTypeHandler.class)
-                .stream()
-                .filter(clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class)));
+                .stream().filter(filter));
     }
 
     private void addHandlers(Stream<Class<? extends TypeHandler>> handlerClasses) {

@@ -1,12 +1,12 @@
 package com.github.kjarosh.jfm.tests.pathparams;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
-import com.github.kjarosh.jfm.tests.JfmTestBase;
+import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PathParamsProxyTest extends JfmTestBase {
+class PathParamsProxyTest extends JfmProxyTestBase {
     private final PathParamsResource pathParamsResource;
 
     PathParamsProxyTest() {

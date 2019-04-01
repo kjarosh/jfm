@@ -1,60 +1,76 @@
 package com.github.kjarosh.jfm.impl.mounter.rproxy;
 
+import com.github.kjarosh.jfm.impl.util.PathUtils;
+
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Kamil Jarosz
  */
 public class ReverseProxy {
-    private Map<String, File> files = new HashMap<>();
-    private List<String> directories = new ArrayList<>();
-    private Map<Pattern, File> patternedFiles = new HashMap<>();
+    private Map<String, ReverseProxyFileHandler> fileHandlers = new HashMap<>();
+    private Object resource;
 
-    public ReverseProxy(Class<?> resourceClass) {
-        prepare(resourceClass);
+    public ReverseProxy(Class<?> resourceClass, Object resource) {
+        this.resource = resource;
+        prepareHandlers(resourceClass);
     }
 
-    private void prepare(Class<?> resourceClass) {
+    private void prepareHandlers(Class<?> resourceClass) {
         for (Method method : resourceClass.getDeclaredMethods()) {
-            reverseProxyMethod(method);
+            String path = new ReverseProxyPathResolver(method).resolve();
+            ReverseProxyFileHandler handler = assertCreated(path);
+            handler.addHandlingMethod(method);
         }
     }
 
-    private void reverseProxyMethod(Method method) {
+    private ReverseProxyFileHandler assertCreated(String path) {
+        if (!fileHandlers.containsKey(path)) {
+            fileHandlers.put(path, new ReverseProxyFileHandler(path, getResource()));
+        }
 
+        return getFileHandler(path);
     }
 
-    private String toDirPath(String path) {
-        return path.endsWith("/") ? path : path + '/';
+    private ReverseProxyFileHandler getFileHandler(String path) {
+        return fileHandlers.get(path);
     }
 
     public List<String> list(String path) {
-        String dirPath = toDirPath(path);
+        String dirPath = PathUtils.toDirPath(path);
 
-        return files.keySet()
+        return fileHandlers.keySet()
                 .stream()
                 .filter(p -> p.startsWith(dirPath))
                 .map(p -> p.substring(dirPath.length()))
-                .map(p -> p.substring(0, p.indexOf('/')))
+                .map(PathUtils::getFirstName)
                 .collect(Collectors.toList());
     }
 
     public boolean isDirectory(String path) {
-        String dirPath = toDirPath(path);
-        return directories.contains(dirPath);
+        String dirPath = PathUtils.toDirPath(path);
+        return fileHandlers.keySet()
+                .stream()
+                .anyMatch(f -> f.startsWith(dirPath));
     }
 
     public boolean exists(String path) {
-        return false;
+        return fileHandlers.containsKey(path);
     }
 
-    public byte[] readFile(String path, long size, long offset) {
-        return new byte[0];
+    public byte[] readFile(String path) {
+        return getFileHandler(path).read();
+    }
+
+    public void writeFile(String path, byte[] data) {
+        getFileHandler(path).write(data);
+    }
+
+    public Object getResource() {
+        return resource;
     }
 }

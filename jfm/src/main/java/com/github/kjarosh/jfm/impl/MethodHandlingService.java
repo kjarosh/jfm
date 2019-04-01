@@ -1,8 +1,7 @@
-package com.github.kjarosh.jfm.impl.proxy;
+package com.github.kjarosh.jfm.impl;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Delete;
-import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Listing;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
@@ -11,37 +10,15 @@ import com.github.kjarosh.jfm.api.annotations.WriteBytes;
 import com.github.kjarosh.jfm.api.annotations.WriteInteger;
 import com.github.kjarosh.jfm.api.annotations.WriteString;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.nio.file.Path;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
  * @author Kamil Jarosz
  */
-public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
-    private final Class<T> resourceClass;
-    private final Path path;
-
-    public FilesystemMapperProxyHandler(Class<T> resourceClass, Path path) {
-        this.resourceClass = resourceClass;
-        this.path = path;
-
-        FilesystemResource resourceAnnotation = resourceClass
-                .getAnnotation(FilesystemResource.class);
-
-        if (resourceAnnotation == null) {
-            throw new FilesystemMapperException("Resource class is not annotated with " +
-                    "@" + FilesystemResource.class.getSimpleName());
-        }
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
-        InvokeContext ic = new InvokeContext(path, method, args);
-        FilesystemMapperMethodInvoker invoker = new FilesystemMapperMethodInvoker(ic);
-
+public class MethodHandlingService {
+    public <R> R handle(Method method, MethodHandler<R> invoker){
         Read read = method.getAnnotation(Read.class);
         Write write = method.getAnnotation(Write.class);
         WriteString writeString = method.getAnnotation(WriteString.class);
@@ -60,27 +37,21 @@ public class FilesystemMapperProxyHandler<T> implements InvocationHandler {
             throw new FilesystemMapperException(
                     "Method " + method.getName() + " is not properly annotated");
         } else if (read != null) {
-            return invoker.invokeRead(read);
+            return invoker.handleRead(read);
         } else if (write != null) {
-            invoker.invokeWrite(write);
-            return null;
+            return invoker.handleWrite(write);
         } else if (writeBytes != null) {
-            invoker.invokeWriteBytes(writeBytes);
-            return null;
+            return invoker.handleWriteBytes(writeBytes);
         } else if (writeString != null) {
-            invoker.invokeWriteString(writeString);
-            return null;
+            return invoker.handleWriteString(writeString);
         } else if (writeBoolean != null) {
-            invoker.invokeWriteBoolean(writeBoolean);
-            return null;
+            return invoker.handleWriteBoolean(writeBoolean);
         } else if (writeInteger != null) {
-            invoker.invokeWriteInteger(writeInteger);
-            return null;
+            return invoker.handleWriteInteger(writeInteger);
         } else if (delete != null) {
-            invoker.invokeDelete(delete);
-            return null;
+            return invoker.handleDelete(delete);
         } else if (listing != null) {
-            return invoker.invokeListing(listing);
+            return invoker.handleListing(listing);
         }
 
         throw new FilesystemMapperException(

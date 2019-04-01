@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.tests.typehandlers;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
-import com.github.kjarosh.jfm.tests.JfmTestBase;
+import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeHandlersProxyTest extends JfmTestBase {
+public class TypeHandlersProxyTest extends JfmProxyTestBase {
     private final TypeHandlersResource typeHandlersResource;
 
     public TypeHandlersProxyTest() {

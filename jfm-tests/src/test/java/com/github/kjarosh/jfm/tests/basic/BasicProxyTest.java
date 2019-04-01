@@ -2,7 +2,7 @@ package com.github.kjarosh.jfm.tests.basic;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.spi.types.TypeHandlingException;
-import com.github.kjarosh.jfm.tests.JfmTestBase;
+import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -11,7 +11,7 @@ import java.util.OptionalInt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class BasicProxyTest extends JfmTestBase {
+class BasicProxyTest extends JfmProxyTestBase {
     private final BasicResource basicResource;
 
     BasicProxyTest() {

@@ -2,20 +2,28 @@ package com.github.kjarosh.jfm.impl.mounter;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
+import com.github.kjarosh.jfm.impl.FilesystemMapperProperties;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.ReverseProxy;
 import ru.serce.jnrfuse.FuseFS;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
  * @author Kamil Jarosz
  */
 public class FilesystemMapperMounter {
+    public static final String[] MOUNT_OPTS = {"-odirect_io"};
+
     private final Path path;
     private Thread shutdownHook;
     private FuseFS fuseFs;
 
     public FilesystemMapperMounter(Path path) {
+        if (!Files.exists(path)) {
+            throw new IllegalStateException("The path " + path + " doesn't exist");
+        }
+
         this.path = path;
     }
 
@@ -26,10 +34,10 @@ public class FilesystemMapperMounter {
                     " does not represent a filesystem resource");
         }
 
-        ReverseProxy rp = new ReverseProxy(resourceClass);
+        ReverseProxy rp = new ReverseProxy(resourceClass, resource);
 
         this.fuseFs = new FilesystemMapperFuseStub(rp);
-        this.fuseFs.mount(path, true, true);
+        this.fuseFs.mount(path, false, FilesystemMapperProperties.mountInDebugMode(), MOUNT_OPTS);
         this.shutdownHook = new Thread(fuseFs::umount);
 
         Runtime.getRuntime().addShutdownHook(shutdownHook);

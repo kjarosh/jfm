@@ -10,6 +10,7 @@ import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
 import com.github.kjarosh.jfm.api.annotations.WriteBytes;
 import com.github.kjarosh.jfm.api.annotations.WriteInteger;
 import com.github.kjarosh.jfm.api.annotations.WriteString;
+import com.github.kjarosh.jfm.impl.MethodHandler;
 import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
@@ -21,11 +22,11 @@ import java.nio.file.Files;
 /**
  * @author Kamil Jarosz
  */
-class FilesystemMapperMethodInvoker {
+class ResourceMethodProxy implements MethodHandler<Object> {
     private final TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
     private final InvokeContext invokeContext;
 
-    FilesystemMapperMethodInvoker(InvokeContext invokeContext) {
+    ResourceMethodProxy(InvokeContext invokeContext) {
         this.invokeContext = invokeContext;
     }
 
@@ -34,7 +35,7 @@ class FilesystemMapperMethodInvoker {
                 "IO Exception while invoking a method " + invokeContext.getFullName(), e);
     }
 
-    Object invokeRead(Read readAnnotation) {
+    public Object handleRead(Read readAnnotation) {
         try {
             Type type = invokeContext.getReturnType();
             TypeHandler<?> returnTypeHandler = typeHandlerService.getHandlerFor(type);
@@ -44,8 +45,14 @@ class FilesystemMapperMethodInvoker {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    <T> void invokeWrite(Write writeAnnotation) {
+    public Object handleWrite(Write writeAnnotation) {
+        return handleWrite0(writeAnnotation);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> Object handleWrite0(Write writeAnnotation) {
         try {
             Object content = invokeContext.getContent();
             Type type = invokeContext.getContentType();
@@ -55,61 +62,71 @@ class FilesystemMapperMethodInvoker {
 
             TypeHandler<T> returnTypeHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(type);
             returnTypeHandler.write(type, invokeContext.getFinalPath(), (T) content);
+            return null;
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
-    private <T> void writeConstantValue(Class<T> type, T value) throws IOException {
+    private <T> Object writeConstantValue(Class<T> type, T value) throws IOException {
         TypeHandler<T> returnTypeHandler = typeHandlerService.getHandlerFor(type);
         returnTypeHandler.write(type, invokeContext.getFinalPath(), value);
+        return null;
     }
 
-    void invokeWriteBytes(WriteBytes writeBytes) {
+    @Override
+    public Object handleWriteBytes(WriteBytes writeBytes) {
         try {
-            writeConstantValue(byte[].class, writeBytes.value());
+            return writeConstantValue(byte[].class, writeBytes.value());
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
-    void invokeWriteString(WriteString writeString) {
+    @Override
+    public Object handleWriteString(WriteString writeString) {
         try {
-            writeConstantValue(String.class, writeString.value());
+            return writeConstantValue(String.class, writeString.value());
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
-    void invokeWriteBoolean(WriteBoolean writeBoolean) {
+    @Override
+    public Object handleWriteBoolean(WriteBoolean writeBoolean) {
         try {
-            writeConstantValue(boolean.class, writeBoolean.value());
+            return writeConstantValue(boolean.class, writeBoolean.value());
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
-    void invokeWriteInteger(WriteInteger writeInteger) {
+    @Override
+    public Object handleWriteInteger(WriteInteger writeInteger) {
         try {
-            writeConstantValue(int.class, writeInteger.value());
+            return writeConstantValue(int.class, writeInteger.value());
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
-    void invokeDelete(Delete delete) {
+    @Override
+    public Object handleDelete(Delete delete) {
         try {
             if (delete.failIfNotExists()) {
                 Files.delete(invokeContext.getFinalPath());
             } else {
                 Files.deleteIfExists(invokeContext.getFinalPath());
             }
+
+            return null;
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
-    Object invokeListing(Listing listing) {
+    @Override
+    public Object handleListing(Listing listing) {
         try {
             Type type = invokeContext.getReturnType();
             ListingTypeHandler<?> typeHandler = typeHandlerService.getListingHandlerFor(type);

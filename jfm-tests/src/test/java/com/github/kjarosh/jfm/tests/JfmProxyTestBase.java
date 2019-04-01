@@ -9,16 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class JfmTestBase {
+public class JfmProxyTestBase {
     public static final Path TEST_DIR = Paths.get("./jfm-tests");
 
     private final Path testDirPath;
     private final ThrowingConsumer<Path> setup;
 
-    public JfmTestBase(ThrowingConsumer<Path> setup) {
+    public JfmProxyTestBase(ThrowingConsumer<Path> setup) {
         try {
             Files.createDirectories(TEST_DIR);
-            this.testDirPath = Files.createTempDirectory(TEST_DIR, "jfm-test-");
+            this.testDirPath = Files.createTempDirectory(TEST_DIR, "jfm-proxy-test-");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +40,7 @@ public class JfmTestBase {
         return testDirPath;
     }
 
-    public static void write(Path file, String content) throws IOException {
+    protected static void write(Path file, String content) throws IOException {
         Files.createDirectories(file.getParent());
         Files.write(file, content.getBytes());
     }

@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author Kamil Jarosz
  */
-public class InvokeContext {
+class InvokeContext {
     private final Path finalPath;
     private final Method method;
 
@@ -62,8 +62,8 @@ public class InvokeContext {
             if (content != null) {
                 throw new FilesystemMapperException(
                         "Duplicate content param on " + getFullName());
-
             }
+
             content = value;
             contentType = parameter.getParameterizedType();
         }
