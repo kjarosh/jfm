@@ -48,7 +48,9 @@ public class ResourceMethodInvoker {
 
     public Object invoke() {
         Object[] args = new Object[method.getParameterCount()];
-        args[contentPosition] = content;
+        if (content != null) {
+            args[contentPosition] = content;
+        }
 
         try {
             return method.invoke(resource, args);

@@ -19,12 +19,12 @@ import java.util.Objects;
 /**
  * @author Kamil Jarosz
  */
-public class FilesystemMapperFuseStub extends FuseStubFS {
+public class FilesystemMapperFS extends FuseStubFS {
     private ReverseProxy reverseProxy;
 
     private Map<String, byte[]> openFiles = new HashMap<>();
 
-    FilesystemMapperFuseStub(ReverseProxy reverseProxy) {
+    FilesystemMapperFS(ReverseProxy reverseProxy) {
         this.reverseProxy = reverseProxy;
     }
 
@@ -100,7 +100,11 @@ public class FilesystemMapperFuseStub extends FuseStubFS {
 
     @Override
     public int read(String path, Pointer buf, @size_t long size, @off_t long offset, FuseFileInfo fi) {
-        if (isNotOpen(path)) return -ErrorCodes.EBADFD();
+        boolean opened = false;
+        if (isNotOpen(path)) {
+            opened = true;
+            open(path, fi);
+        }
 
         byte[] bytes = openFiles.get(path);
         int length = bytes.length;
@@ -113,6 +117,9 @@ public class FilesystemMapperFuseStub extends FuseStubFS {
             size = 0;
         }
 
+        if (opened) {
+            release(path, fi);
+        }
         return (int) size;
     }
 

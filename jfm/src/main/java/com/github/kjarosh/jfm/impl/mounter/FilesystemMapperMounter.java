@@ -36,7 +36,7 @@ public class FilesystemMapperMounter {
 
         ReverseProxy rp = new ReverseProxy(resourceClass, resource);
 
-        this.fuseFs = new FilesystemMapperFuseStub(rp);
+        this.fuseFs = new ErrorHandlingFS(new FilesystemMapperFS(rp));
         this.fuseFs.mount(path, false, FilesystemMapperProperties.mountInDebugMode(), MOUNT_OPTS);
         this.shutdownHook = new Thread(fuseFs::umount);
 
