@@ -33,14 +33,34 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
     private final ConcurrentMap<Type, TypeHandler<?>> handlers = new ConcurrentHashMap<>();
     private final ConcurrentMap<Type, ListingTypeHandler<?>> listingHandlers = new ConcurrentHashMap<>();
 
-    private boolean initialized = false;
+    private volatile boolean initialized = false;
+    private volatile boolean initializing = false;
+    private volatile boolean initializeFailed = false;
 
-    private void initialize() {
+    private void initialize(boolean allowConcurrent) {
         if (initialized) return;
-        initialized = true;
+        if (initializeFailed) throw new IllegalStateException("Initialize failed");
 
-        addHandlers(JfmHandlers.getJfmHandlers());
-        addListingHandlers(JfmHandlers.getJfmListingHandlers());
+        if (initializing) {
+            if (!allowConcurrent) {
+                throw new IllegalStateException("Already initializing");
+            } else {
+                return;
+            }
+        }
+
+        initializing = true;
+
+        try {
+            registerHandlersFromPackage(JfmHandlers.getPackageName());
+        } catch (Exception e) {
+            logger.error("Exception while initializing", e);
+            initializeFailed = true;
+        } finally {
+            initializing = false;
+        }
+
+        initialized = true;
     }
 
     @Override
@@ -50,7 +70,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
 
     @Override
     public void registerHandlersFromPackage(String packageName) {
-        initialize();
+        initialize(true);
         Reflections reflections = new Reflections(packageName);
         Predicate<AnnotatedElement> filter = clazz -> clazz.isAnnotationPresent(RegisterTypeHandler.class);
         addHandlers(reflections
@@ -104,7 +124,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
 
     @Override
     public TypeHandler<?> getHandlerFor(Type type) {
-        initialize();
+        initialize(false);
         Type mappedType = PrimitiveTypeMapper.mapPossiblePrimitive(type);
 
         TypeHandler<?> handler = findHandler(mappedType, handlers);
@@ -117,7 +137,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
 
     @Override
     public ListingTypeHandler<?> getListingHandlerFor(Type type) {
-        initialize();
+        initialize(false);
         Type mappedType = PrimitiveTypeMapper.mapPossiblePrimitive(type);
 
         ListingTypeHandler<?> handler = findHandler(mappedType, listingHandlers);

@@ -4,7 +4,9 @@ import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.impl.MethodHandlingService;
 
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +33,15 @@ public class ReverseProxyFileHandler {
                 if (read != null) return read;
             } catch (FilesystemMapperException e) {
                 suppressed.add(e);
+            }
+        }
+
+        Date deadline = Date.from(Instant.now().plusSeconds(120));
+        while (new Date().before(deadline)) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
 
