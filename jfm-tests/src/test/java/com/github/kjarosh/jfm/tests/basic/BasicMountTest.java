@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -58,7 +58,8 @@ public class BasicMountTest extends JfmMountTestBase {
         when(basicResource.getOptionalName()).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> read(root.resolve("name")))
-                .hasCauseInstanceOf(FileNotFoundException.class);
+                .hasCauseInstanceOf(IOException.class)
+                .hasMessageContaining("No such file or directory");
     }
 
     /*@Test

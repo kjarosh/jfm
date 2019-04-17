@@ -23,7 +23,7 @@ public class ReverseProxyFileHandler {
         this.resource = resource;
     }
 
-    public byte[] read() {
+    public byte[] read() throws NoHandlerMethodException {
         List<Throwable> suppressed = new ArrayList<>();
         for (Method method : methods) {
             try {
@@ -45,13 +45,13 @@ public class ReverseProxyFileHandler {
             }
         }
 
-        FilesystemMapperException toThrow =
-                new FilesystemMapperException("No method to handle read: " + path);
+        NoHandlerMethodException toThrow =
+                new NoHandlerMethodException("No method to handle read: " + path);
         suppressed.forEach(toThrow::addSuppressed);
         throw toThrow;
     }
 
-    public void write(byte[] data) {
+    public void write(byte[] data) throws NoHandlerMethodException {
         List<Throwable> suppressed = new ArrayList<>();
         for (Method method : methods) {
             try {
@@ -64,8 +64,8 @@ public class ReverseProxyFileHandler {
             }
         }
 
-        FilesystemMapperException toThrow =
-                new FilesystemMapperException("No method to handle write: " + path);
+        NoHandlerMethodException toThrow =
+                new NoHandlerMethodException("No method to handle write: " + path);
         suppressed.forEach(toThrow::addSuppressed);
         throw toThrow;
     }

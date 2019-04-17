@@ -8,22 +8,25 @@ import ru.serce.jnrfuse.FuseFS;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Kamil Jarosz
  */
 public class FilesystemMapperMounter {
-    public static final String[] MOUNT_OPTS = {"-odirect_io"};
+    private static final String[] MOUNT_OPTS = {"-odirect_io"};
 
+    private final ExecutorService executorService;
     private final Path path;
     private Thread shutdownHook;
     private FuseFS fuseFs;
 
-    public FilesystemMapperMounter(Path path) {
+    FilesystemMapperMounter(ExecutorService executorService, Path path) {
         if (!Files.exists(path)) {
             throw new IllegalStateException("The path " + path + " doesn't exist");
         }
 
+        this.executorService = executorService;
         this.path = path;
     }
 
@@ -36,7 +39,7 @@ public class FilesystemMapperMounter {
 
         ReverseProxy rp = new ReverseProxy(resourceClass, resource);
 
-        this.fuseFs = new ErrorHandlingFS(new FilesystemMapperFS(rp));
+        this.fuseFs = new ThreadDelegatingFS(executorService, new FilesystemMapperFS(rp));
         this.fuseFs.mount(path, false, FilesystemMapperProperties.mountInDebugMode(), MOUNT_OPTS);
         this.shutdownHook = new Thread(fuseFs::umount);
 

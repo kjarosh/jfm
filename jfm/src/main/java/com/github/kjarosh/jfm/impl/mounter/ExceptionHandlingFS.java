@@ -20,14 +20,15 @@ import ru.serce.jnrfuse.struct.Timespec;
 /**
  * @author Kamil Jarosz
  */
-public class ErrorHandlingFS extends AbstractFuseFS {
-    private static final Logger logger = LoggerFactory.getLogger(ErrorHandlingFS.class);
+@Deprecated
+public class ExceptionHandlingFS extends AbstractFuseFS {
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingFS.class);
     private static final int ERROR = -ErrorCodes.EBADFD();
 
     private final ThreadLocal<FilesystemSupervisor> supervisor = new ThreadLocal<>();
     private final FuseFS inner;
 
-    ErrorHandlingFS(FuseFS inner) {
+    ExceptionHandlingFS(FuseFS inner) {
         this.inner = inner;
     }
 

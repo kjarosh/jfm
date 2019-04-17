@@ -3,6 +3,7 @@ package com.github.kjarosh.jfm.impl;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.FilesystemMapperTarget;
 import com.github.kjarosh.jfm.impl.mounter.FilesystemMapperMounter;
+import com.github.kjarosh.jfm.impl.mounter.FilesystemMapperMounterFactory;
 import com.github.kjarosh.jfm.impl.proxy.ResourceMethodInvocationHandler;
 
 import java.lang.reflect.Proxy;
@@ -17,9 +18,11 @@ import java.util.Set;
  */
 public class FilesystemMapperTargetImpl implements FilesystemMapperTarget {
     private final Map<Object, FilesystemMapperMounter> mounters = new HashMap<>(1);
+    private FilesystemMapperMounterFactory mounterFactory;
     private final Path path;
 
-    FilesystemMapperTargetImpl(Path path) {
+    FilesystemMapperTargetImpl(FilesystemMapperMounterFactory mounterFactory, Path path) {
+        this.mounterFactory = mounterFactory;
         this.path = path;
     }
 
@@ -38,7 +41,7 @@ public class FilesystemMapperTargetImpl implements FilesystemMapperTarget {
                     "The resource " + resource + " has already been mounted here");
         }
 
-        FilesystemMapperMounter mounter = new FilesystemMapperMounter(path);
+        FilesystemMapperMounter mounter = mounterFactory.newMounter(path);
         mounters.put(resource, mounter);
         mounter.mount(resource);
     }

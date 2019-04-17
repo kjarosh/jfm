@@ -1,5 +1,6 @@
 package com.github.kjarosh.jfm.impl.mounter;
 
+import com.github.kjarosh.jfm.impl.mounter.rproxy.NoHandlerMethodException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.ReverseProxy;
 import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
@@ -84,7 +85,12 @@ public class FilesystemMapperFS extends FuseStubFS {
             return -ErrorCodes.EBADFD();
         }
 
-        reverseProxy.writeFile(path, openFiles.get(path));
+        try {
+            reverseProxy.writeFile(path, openFiles.get(path));
+        } catch (NoHandlerMethodException e) {
+            return -ErrorCodes.ENOENT();
+        }
+
         return 0;
     }
 

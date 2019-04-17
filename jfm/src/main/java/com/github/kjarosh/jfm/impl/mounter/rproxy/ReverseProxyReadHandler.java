@@ -36,6 +36,10 @@ public class ReverseProxyReadHandler implements MethodHandler<byte[]> {
     @SuppressWarnings("unchecked")
     private <T> byte[] handleRead0(Read read) {
         Object readObject = invoker.invoke();
+        if (readObject == null) {
+            return new byte[0];
+        }
+
         Type type = invoker.getReturnType();
         TypeHandler<T> returnTypeHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(type);
         return returnTypeHandler.serialize(type, (T) readObject);

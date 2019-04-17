@@ -2,6 +2,7 @@ package com.github.kjarosh.jfm.impl;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperTarget;
+import com.github.kjarosh.jfm.impl.mounter.FilesystemMapperMounterFactory;
 import com.github.kjarosh.jfm.impl.types.TypeHandlerServiceImpl;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
@@ -14,6 +15,7 @@ import java.util.Map;
  */
 public class FilesystemMapperImpl implements FilesystemMapper {
     private TypeHandlerService typeHandlerService = new TypeHandlerServiceImpl();
+    private FilesystemMapperMounterFactory mounterFactory = FilesystemMapperMounterFactory.create();
 
     private Map<Path, FilesystemMapperTargetImpl> targets = new HashMap<>();
 
@@ -24,7 +26,7 @@ public class FilesystemMapperImpl implements FilesystemMapper {
             return targets.get(absolutePath);
         }
 
-        FilesystemMapperTargetImpl target = new FilesystemMapperTargetImpl(absolutePath);
+        FilesystemMapperTargetImpl target = new FilesystemMapperTargetImpl(mounterFactory, absolutePath);
         targets.put(absolutePath, target);
         return target;
     }
