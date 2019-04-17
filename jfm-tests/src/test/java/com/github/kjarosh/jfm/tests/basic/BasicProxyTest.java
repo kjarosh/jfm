@@ -17,6 +17,7 @@ class BasicProxyTest extends JfmProxyTestBase {
     BasicProxyTest() {
         super(root -> {
             Files.write(root.resolve("name"), "sample name".getBytes());
+            Files.write(root.resolve("optional-name"), "sample name".getBytes());
             Files.write(root.resolve("number"), "1234".getBytes());
             Files.write(root.resolve("invalid-number"), "asdf".getBytes());
             Files.write(root.resolve("byte"), "a".getBytes());

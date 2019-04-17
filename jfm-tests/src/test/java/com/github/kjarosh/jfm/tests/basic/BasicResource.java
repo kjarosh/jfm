@@ -17,7 +17,7 @@ public interface BasicResource {
     String getName();
 
     @Read
-    @Path("name")
+    @Path("optional-name")
     Optional<String> getOptionalName();
 
     @Read

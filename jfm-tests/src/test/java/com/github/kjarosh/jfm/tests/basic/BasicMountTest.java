@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -49,7 +49,7 @@ public class BasicMountTest extends JfmMountTestBase {
     void testOptionalName() {
         when(basicResource.getOptionalName()).thenReturn(Optional.of("sample name"));
 
-        assertThat(read(root.resolve("name")))
+        assertThat(read(root.resolve("optional-name")))
                 .isEqualTo("sample name");
     }
 
@@ -57,9 +57,8 @@ public class BasicMountTest extends JfmMountTestBase {
     void testOptionalEmpty() {
         when(basicResource.getOptionalName()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> read(root.resolve("name")))
-                .hasCauseInstanceOf(IOException.class)
-                .hasMessageContaining("No such file or directory");
+        assertThatThrownBy(() -> read(root.resolve("optional-name")))
+                .hasCauseInstanceOf(NoSuchFileException.class);
     }
 
     /*@Test

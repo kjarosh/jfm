@@ -52,7 +52,8 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         initializing = true;
 
         try {
-            registerHandlersFromPackage(JfmHandlers.getPackageName());
+            addHandlers(JfmHandlers.getAllTypeHandlers());
+            addListingHandlers(JfmHandlers.getAllListingTypeHandlers());
         } catch (Exception e) {
             logger.error("Exception while initializing", e);
             initializeFailed = true;
@@ -145,7 +146,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
             return handler;
         }
 
-        throw new FilesystemMapperException("No type handler found for: " + mappedType);
+        throw new FilesystemMapperException("No listing type handler found for: " + mappedType);
     }
 
     private <HandlerType> HandlerType findHandler(Type type, ConcurrentMap<Type, HandlerType> handlers) {

@@ -33,6 +33,14 @@ public class FilesystemMapperFS extends FuseStubFS {
         return !openFiles.containsKey(path);
     }
 
+    private void handleErrorCodes(Runnable code) throws ErrorCodeException {
+        try {
+            code.run();
+        } catch (NoHandlerMethodException e) {
+            throw new ErrorCodeException(-ErrorCodes.ENOENT());
+        }
+    }
+
     @Override
     public int getattr(String path, FileStat stat) {
         int res = 0;
@@ -71,7 +79,11 @@ public class FilesystemMapperFS extends FuseStubFS {
             return -ErrorCodes.EISDIR();
         }
 
-        openFiles.put(path, reverseProxy.readFile(path));
+        try {
+            handleErrorCodes(() -> openFiles.put(path, reverseProxy.readFile(path)));
+        } catch (ErrorCodeException e) {
+            return e.getErrorCode();
+        }
 
         byte oldByte = Struct.getMemory(fi).getByte(4 * 4);
         Struct.getMemory(fi).setMemory(4 * 4, 1, (byte) (0b10000000 | oldByte));
@@ -86,9 +98,9 @@ public class FilesystemMapperFS extends FuseStubFS {
         }
 
         try {
-            reverseProxy.writeFile(path, openFiles.get(path));
-        } catch (NoHandlerMethodException e) {
-            return -ErrorCodes.ENOENT();
+            handleErrorCodes(() -> reverseProxy.writeFile(path, openFiles.get(path)));
+        } catch (ErrorCodeException e) {
+            return e.getErrorCode();
         }
 
         return 0;

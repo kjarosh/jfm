@@ -1,12 +1,10 @@
 package com.github.kjarosh.jfm.impl.mounter.rproxy;
 
-import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.impl.MethodHandlingService;
+import com.github.kjarosh.jfm.impl.UnsupportedMethodException;
 
 import java.lang.reflect.Method;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,51 +21,32 @@ public class ReverseProxyFileHandler {
         this.resource = resource;
     }
 
-    public byte[] read() throws NoHandlerMethodException {
-        List<Throwable> suppressed = new ArrayList<>();
+    public byte[] read() {
         for (Method method : methods) {
             try {
                 byte[] read = methodHandlingService.handle(method,
                         new ReverseProxyReadHandler(method, resource));
 
                 if (read != null) return read;
-            } catch (FilesystemMapperException e) {
-                suppressed.add(e);
+            } catch (UnsupportedMethodException e) {
+                continue;
             }
         }
 
-        Date deadline = Date.from(Instant.now().plusSeconds(120));
-        while (new Date().before(deadline)) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        NoHandlerMethodException toThrow =
-                new NoHandlerMethodException("No method to handle read: " + path);
-        suppressed.forEach(toThrow::addSuppressed);
-        throw toThrow;
+        throw new NoHandlerMethodException("No method to handle read: " + path);
     }
 
-    public void write(byte[] data) throws NoHandlerMethodException {
-        List<Throwable> suppressed = new ArrayList<>();
+    public void write(byte[] data) {
         for (Method method : methods) {
             try {
-                boolean success = methodHandlingService.handle(method,
+                methodHandlingService.handle(method,
                         new ReverseProxyWriteHandler(method, resource, data));
-
-                if (success) return;
-            } catch (FilesystemMapperException e) {
-                suppressed.add(e);
+            } catch (UnsupportedMethodException e) {
+                continue;
             }
         }
 
-        NoHandlerMethodException toThrow =
-                new NoHandlerMethodException("No method to handle write: " + path);
-        suppressed.forEach(toThrow::addSuppressed);
-        throw toThrow;
+        throw new NoHandlerMethodException("No method to handle write: " + path);
     }
 
     public void addHandlingMethod(Method method) {
