@@ -2,6 +2,7 @@ package com.github.kjarosh.jfm.impl.mounter;
 
 import com.github.kjarosh.jfm.impl.mounter.rproxy.NoHandlerMethodException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.ReverseProxy;
+import jnr.constants.platform.OpenFlags;
 import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
 import jnr.ffi.types.off_t;
@@ -12,7 +13,11 @@ import ru.serce.jnrfuse.FuseStubFS;
 import ru.serce.jnrfuse.struct.FileStat;
 import ru.serce.jnrfuse.struct.FuseFileInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +29,7 @@ public class FilesystemMapperFS extends FuseStubFS {
     private ReverseProxy reverseProxy;
 
     private Map<String, byte[]> openFiles = new HashMap<>();
+    private Map<String, EnumSet<OpenFlags>> openFileFlags = new HashMap<>();
 
     FilesystemMapperFS(ReverseProxy reverseProxy) {
         this.reverseProxy = reverseProxy;
@@ -33,12 +39,28 @@ public class FilesystemMapperFS extends FuseStubFS {
         return !openFiles.containsKey(path);
     }
 
+    private boolean flushNeeded(String path) {
+        return !Collections.disjoint(openFileFlags.get(path),
+                Arrays.asList(OpenFlags.O_RDWR, OpenFlags.O_WRONLY));
+    }
+
     private void handleErrorCodes(Runnable code) throws ErrorCodeException {
         try {
             code.run();
         } catch (NoHandlerMethodException e) {
             throw new ErrorCodeException(-ErrorCodes.ENOENT());
         }
+    }
+
+    private EnumSet<OpenFlags> mapOpenFlags(Struct.Signed32 flags) {
+        Collection<OpenFlags> mappedFlags = new ArrayList<>();
+        for (OpenFlags of : OpenFlags.values()) {
+            if ((flags.get() & of.intValue()) != 0) {
+                mappedFlags.add(of);
+            }
+        }
+
+        return EnumSet.copyOf(mappedFlags);
     }
 
     @Override
@@ -81,12 +103,10 @@ public class FilesystemMapperFS extends FuseStubFS {
 
         try {
             handleErrorCodes(() -> openFiles.put(path, reverseProxy.readFile(path)));
+            handleErrorCodes(() -> openFileFlags.put(path, mapOpenFlags(fi.flags)));
         } catch (ErrorCodeException e) {
             return e.getErrorCode();
         }
-
-        byte oldByte = Struct.getMemory(fi).getByte(4 * 4);
-        Struct.getMemory(fi).setMemory(4 * 4, 1, (byte) (0b10000000 | oldByte));
 
         return 0;
     }
@@ -95,6 +115,10 @@ public class FilesystemMapperFS extends FuseStubFS {
     public int flush(String path, FuseFileInfo fi) {
         if (isNotOpen(path)) {
             return -ErrorCodes.EBADFD();
+        }
+
+        if (!flushNeeded(path)) {
+            return 0;
         }
 
         try {
