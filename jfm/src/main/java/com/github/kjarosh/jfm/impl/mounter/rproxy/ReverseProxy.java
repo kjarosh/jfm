@@ -70,6 +70,10 @@ public class ReverseProxy {
         getFileHandler(path).write(data);
     }
 
+    public void deleteFile(String path) {
+        getFileHandler(path).delete();
+    }
+
     public Object getResource() {
         return resource;
     }

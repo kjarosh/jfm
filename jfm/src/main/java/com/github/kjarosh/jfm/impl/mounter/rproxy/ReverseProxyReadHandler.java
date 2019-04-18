@@ -17,7 +17,7 @@ public class ReverseProxyReadHandler implements MethodHandler<byte[]> {
             .getTypeHandlerService();
     private final ResourceMethodInvoker invoker;
 
-    public ReverseProxyReadHandler(Method method, Object resource) {
+    ReverseProxyReadHandler(Method method, Object resource) {
         this.invoker = new ResourceMethodInvoker(method, resource);
     }
 

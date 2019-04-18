@@ -48,7 +48,7 @@ public class ThreadDelegatingFS extends AbstractFuseFS {
     private <T> Optional<T> delegate(Callable<T> task) {
         Future<T> future = executorService.submit(task);
         try {
-            return Optional.of(future.get(10, TimeUnit.SECONDS));
+            return Optional.ofNullable(future.get(10, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             logger.error("FUSE thread has been interrupted", e);
             // we cannot interrupt FUSE thread, we have to ignore this

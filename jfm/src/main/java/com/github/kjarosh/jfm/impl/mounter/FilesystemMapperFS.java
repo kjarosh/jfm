@@ -145,7 +145,8 @@ public class FilesystemMapperFS extends FuseStubFS {
         boolean opened = false;
         if (isNotOpen(path)) {
             opened = true;
-            open(path, fi);
+            int r = open(path, fi);
+            if (r != 0) return r;
         }
 
         byte[] bytes = openFiles.get(path);
@@ -188,6 +189,23 @@ public class FilesystemMapperFS extends FuseStubFS {
 
         byte[] oldBytes = openFiles.get(path);
         openFiles.put(path, Arrays.copyOf(oldBytes, (int) size));
+        return 0;
+    }
+
+    @Override
+    public int link(String oldpath, String newpath) {
+        // links not supported
+        return -ErrorCodes.EPERM();
+    }
+
+    @Override
+    public int unlink(String path) {
+        try {
+            handleErrorCodes(() -> reverseProxy.deleteFile(path));
+        } catch (ErrorCodeException e) {
+            return e.getErrorCode();
+        }
+
         return 0;
     }
 }
