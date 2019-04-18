@@ -28,7 +28,24 @@ public class JfmMountTestBase {
 
     protected static String read(Path file) {
         try {
-            return new String(Files.readAllBytes(file));
+            byte[] readBytes = Files.readAllBytes(file);
+            return new String(readBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected static void write(Path file, String value) {
+        try {
+            Files.write(file, value.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected static void remove(Path file) {
+        try {
+            Files.delete(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

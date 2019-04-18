@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeHandlersProxyTest extends JfmProxyTestBase {
+class TypeHandlersProxyTest extends JfmProxyTestBase {
     private final TypeHandlersResource typeHandlersResource;
 
-    public TypeHandlersProxyTest() {
+    TypeHandlersProxyTest() {
         super(root -> {
             Files.write(root.resolve("text"), "asdf".getBytes());
             Files.write(root.resolve("list"), "a,b,c".getBytes());

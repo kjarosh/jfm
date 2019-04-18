@@ -5,15 +5,21 @@ import com.github.kjarosh.jfm.tests.JfmMountTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalMatchers;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -61,38 +67,42 @@ public class BasicMountTest extends JfmMountTestBase {
                 .hasCauseInstanceOf(NoSuchFileException.class);
     }
 
-    /*@Test
+    @Test
     void testInt() {
-        assertThat(basicResource.getInt())
-                .isEqualTo(1234);
+        when(basicResource.getInt()).thenReturn(4321);
+
+        assertThat(read(root.resolve("number")))
+                .isEqualTo("4321");
     }
 
     @Test
     void testOptionalInt() {
-        assertThat(basicResource.getOptionalInt())
-                .isPresent()
-                .hasValue(1234);
+        when(basicResource.getOptionalInt()).thenReturn(OptionalInt.of(4321));
+
+        assertThat(read(root.resolve("optional-number")))
+                .isEqualTo("4321");
     }
 
     @Test
     void testSetOptionalInt() {
-        basicResource.setOptionalInt(OptionalInt.empty());
-        assertThat(basicResource.getOptionalInt())
-                .isNotPresent();
+        write(root.resolve("optional-number"), "4321");
 
-        basicResource.setOptionalInt(OptionalInt.of(4321));
-        assertThat(basicResource.getOptionalInt())
-                .isPresent()
-                .hasValue(4321);
+        OptionalInt wantedArgument = OptionalInt.of(4321);
+        verify(basicResource, times(1))
+                .setOptionalInt(wantedArgument);
+        verify(basicResource, never())
+                .setOptionalInt(AdditionalMatchers.not(Matchers.eq(wantedArgument)));
     }
 
     @Test
     void testRemoveOptionalInt() {
-        basicResource.removeOptionalInt();
-        assertThat(basicResource.getOptionalInt())
-                .isNotPresent();
+        remove(root.resolve("optional-number"));
+
+        verify(basicResource, times(1))
+                .removeOptionalInt();
     }
 
+    /*
     @Test
     void testOptionalIntEmpty() {
         assertThat(basicResource.getOptionalIntEmpty())

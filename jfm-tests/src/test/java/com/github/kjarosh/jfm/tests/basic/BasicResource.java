@@ -29,16 +29,16 @@ public interface BasicResource {
     int getInt();
 
     @Read
-    @Path("number")
+    @Path("optional-number")
     OptionalInt getOptionalInt();
 
     @Write
-    @Path("number")
+    @Path("optional-number")
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     void setOptionalInt(@Content OptionalInt value);
 
     @Delete
-    @Path("number")
+    @Path("optional-number")
     void removeOptionalInt();
 
     @Read

@@ -41,6 +41,7 @@ public class ReverseProxyFileHandler {
             try {
                 methodHandlingService.handle(method,
                         new ReverseProxyWriteHandler(method, resource, data));
+                return;
             } catch (UnsupportedMethodException e) {
                 continue;
             }
