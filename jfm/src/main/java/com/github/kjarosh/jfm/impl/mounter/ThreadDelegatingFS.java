@@ -50,17 +50,17 @@ public class ThreadDelegatingFS extends AbstractFuseFS {
         try {
             return Optional.of(future.get(10, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
-            logger.error("FUSE method execution has been interrupted", e);
-            return Optional.empty();
+            logger.error("FUSE thread has been interrupted", e);
+            // we cannot interrupt FUSE thread, we have to ignore this
         } catch (ExecutionException e) {
-            logger.error("FUSE method threw an exception", e.getCause());
-            return Optional.empty();
+            logger.error("The mapped method threw an exception", e);
         } catch (TimeoutException e) {
-            logger.error("Timed out waiting for FUSE method to complete", e);
-            return Optional.empty();
+            logger.error("Timed out waiting for the mapped method to complete", e);
         } finally {
             future.cancel(true);
         }
+
+        return Optional.empty();
     }
 
     @Override
