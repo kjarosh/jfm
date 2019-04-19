@@ -5,8 +5,6 @@ import com.github.kjarosh.jfm.tests.JfmMountTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.AdditionalMatchers;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -17,6 +15,8 @@ import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -91,7 +91,7 @@ public class BasicMountTest extends JfmMountTestBase {
         verify(basicResource, times(1))
                 .setOptionalInt(wantedArgument);
         verify(basicResource, never())
-                .setOptionalInt(AdditionalMatchers.not(Matchers.eq(wantedArgument)));
+                .setOptionalInt(not(eq(wantedArgument)));
     }
 
     @Test
@@ -102,20 +102,14 @@ public class BasicMountTest extends JfmMountTestBase {
                 .removeOptionalInt();
     }
 
-    /*
-    @Test
-    void testOptionalIntEmpty() {
-        assertThat(basicResource.getOptionalIntEmpty())
-                .isNotPresent();
-    }
-
-    @Test
+    /*@Test
     void testInteger() {
-        assertThat(basicResource.getInteger())
-                .isEqualTo(1234);
+        when(basicResource.getInteger()).thenReturn(4321);
+
+        write(root.resolve("invalid-integer"), "not integer");
     }
 
-    @Test
+    /*@Test
     void testInvalidNumber() {
         assertThatThrownBy(basicResource::getInvalidInteger)
                 .isInstanceOf(TypeHandlingException.class)

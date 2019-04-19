@@ -46,12 +46,16 @@ public interface BasicResource {
     OptionalInt getOptionalIntEmpty();
 
     @Read
-    @Path("number")
+    @Path("integer")
     Integer getInteger();
 
     @Read
     @Path("invalid-number")
     int getInvalidInteger();
+
+    @Write
+    @Path("invalid-number")
+    void setInvalidInteger(@Content int number);
 
     @Read
     @Path("byte")

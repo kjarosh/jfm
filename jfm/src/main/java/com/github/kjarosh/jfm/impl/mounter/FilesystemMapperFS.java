@@ -208,4 +208,9 @@ public class FilesystemMapperFS extends FuseStubFS {
 
         return 0;
     }
+
+    @Override
+    public int create(String path, long mode, FuseFileInfo fi) {
+        return -ErrorCodes.ENOSYS();
+    }
 }
