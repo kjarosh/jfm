@@ -1,7 +1,6 @@
 package com.github.kjarosh.jfm.tests.basic;
 
 import com.github.kjarosh.jfm.api.annotations.Content;
-import com.github.kjarosh.jfm.api.annotations.Delete;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.api.annotations.Read;
@@ -12,7 +11,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 @FilesystemResource
-public interface BasicResource {
+public interface BasicProxyResource {
     @Read
     @Path("name")
     String getName();
@@ -54,10 +53,6 @@ public interface BasicResource {
     @Path("invalid-number")
     int getInvalidInteger();
 
-    @Write
-    @Path("invalid-number")
-    void setInvalidInteger(@Content int number);
-
     @Read
     @Path("byte")
     byte getByte();
@@ -89,8 +84,4 @@ public interface BasicResource {
     @Write
     @Path("double")
     void setDouble(@Content double value);
-
-    @Delete
-    @Path("removable-string")
-    void removeString();
 }

@@ -28,12 +28,12 @@ public class BasicMountTest extends JfmMountTestBase {
     private final Path root = getRoot();
 
     @Mock
-    private BasicResource basicResource;
+    private BasicMountResource basicMountResource;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        fm.getTarget(root).mount(basicResource);
+        fm.getTarget(root).mount(basicMountResource);
     }
 
     @AfterEach
@@ -43,7 +43,7 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @Test
     void testName() {
-        when(basicResource.getName()).thenReturn("test name");
+        when(basicMountResource.getName()).thenReturn("test name");
 
         assertThat(read(root.resolve("name")))
                 .isEqualTo("test name");
@@ -51,7 +51,7 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @Test
     void testOptionalName() {
-        when(basicResource.getOptionalName()).thenReturn(Optional.of("sample name"));
+        when(basicMountResource.getOptionalName()).thenReturn(Optional.of("sample name"));
 
         assertThat(read(root.resolve("optional-name")))
                 .isEqualTo("sample name");
@@ -59,7 +59,7 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @Test
     void testOptionalEmpty() {
-        when(basicResource.getOptionalName()).thenReturn(Optional.empty());
+        when(basicMountResource.getOptionalName()).thenReturn(Optional.empty());
 
         assertThat(read(root.resolve("optional-name")))
                 .isEmpty();
@@ -67,7 +67,7 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @Test
     void testInt() {
-        when(basicResource.getInt()).thenReturn(4321);
+        when(basicMountResource.getInt()).thenReturn(4321);
 
         assertThat(read(root.resolve("number")))
                 .isEqualTo("4321");
@@ -75,7 +75,7 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @Test
     void testOptionalInt() {
-        when(basicResource.getOptionalInt()).thenReturn(OptionalInt.of(4321));
+        when(basicMountResource.getOptionalInt()).thenReturn(OptionalInt.of(4321));
 
         assertThat(read(root.resolve("optional-number")))
                 .isEqualTo("4321");
@@ -86,9 +86,9 @@ public class BasicMountTest extends JfmMountTestBase {
         write(root.resolve("optional-number"), "4321");
 
         OptionalInt wantedArgument = OptionalInt.of(4321);
-        verify(basicResource, times(1))
+        verify(basicMountResource, times(1))
                 .setOptionalInt(wantedArgument);
-        verify(basicResource, never())
+        verify(basicMountResource, never())
                 .setOptionalInt(not(eq(wantedArgument)));
     }
 
@@ -96,73 +96,73 @@ public class BasicMountTest extends JfmMountTestBase {
     void testRemoveOptionalInt() {
         remove(root.resolve("removable-string"));
 
-        verify(basicResource, times(1))
+        verify(basicMountResource, times(1))
                 .removeString();
     }
 
     /*@Test
     void testInteger() {
-        when(basicResource.getInteger()).thenReturn(4321);
+        when(basicMountResource.getInteger()).thenReturn(4321);
 
         write(root.resolve("invalid-integer"), "not integer");
     }
 
     /*@Test
     void testInvalidNumber() {
-        assertThatThrownBy(basicResource::getInvalidInteger)
+        assertThatThrownBy(basicMountResource::getInvalidInteger)
                 .isInstanceOf(TypeHandlingException.class)
                 .hasCauseInstanceOf(NumberFormatException.class);
     }
 
     @Test
     void testByte() {
-        assertThat(basicResource.getByte())
+        assertThat(basicMountResource.getByte())
                 .isEqualTo((byte) 'a');
     }
 
     @Test
     void testSetByte() {
-        basicResource.setByte((byte) -7);
-        assertThat(basicResource.getByte())
+        basicMountResource.setByte((byte) -7);
+        assertThat(basicMountResource.getByte())
                 .isEqualTo((byte) -7);
     }
 
     @Test
     void testChar() {
-        assertThat(basicResource.getChar())
+        assertThat(basicMountResource.getChar())
                 .isEqualTo('\u0105');
     }
 
     @Test
     void testSetChar() {
-        basicResource.setChar('\u0106');
-        assertThat(basicResource.getChar())
+        basicMountResource.setChar('\u0106');
+        assertThat(basicMountResource.getChar())
                 .isEqualTo('\u0106');
     }
 
     @Test
     void testFloat() {
-        assertThat(basicResource.getFloat())
+        assertThat(basicMountResource.getFloat())
                 .isEqualTo(12.34f);
     }
 
     @Test
     void testSetFloat() {
-        basicResource.setFloat(43.21f);
-        assertThat(basicResource.getFloat())
+        basicMountResource.setFloat(43.21f);
+        assertThat(basicMountResource.getFloat())
                 .isEqualTo(43.21f);
     }
 
     @Test
     void testDouble() {
-        assertThat(basicResource.getDouble())
+        assertThat(basicMountResource.getDouble())
                 .isEqualTo(12.34d);
     }
 
     @Test
     void testSetDouble() {
-        basicResource.setDouble(43.21d);
-        assertThat(basicResource.getDouble())
+        basicMountResource.setDouble(43.21d);
+        assertThat(basicMountResource.getDouble())
                 .isEqualTo(43.21d);
     }*/
 }

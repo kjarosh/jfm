@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BasicProxyTest extends JfmProxyTestBase {
-    private final BasicResource basicResource;
+    private final BasicProxyResource basicProxyResource;
 
     BasicProxyTest() {
         super(root -> {
@@ -30,130 +30,130 @@ class BasicProxyTest extends JfmProxyTestBase {
             Files.write(root.resolve("double"), "12.34".getBytes());
         });
 
-        this.basicResource = FilesystemMapper.instance()
+        this.basicProxyResource = FilesystemMapper.instance()
                 .getTarget(super.getRoot())
-                .proxy(BasicResource.class);
+                .proxy(BasicProxyResource.class);
     }
 
     @Test
     void testName() {
-        assertThat(basicResource.getName())
+        assertThat(basicProxyResource.getName())
                 .isEqualTo("sample name");
     }
 
     @Test
     void testOptionalName() {
-        assertThat(basicResource.getOptionalName())
+        assertThat(basicProxyResource.getOptionalName())
                 .isPresent()
                 .hasValue("sample name");
     }
 
     @Test
     void testOptionalEmpty() {
-        assertThat(basicResource.getOptionalEmpty())
+        assertThat(basicProxyResource.getOptionalEmpty())
                 .isNotPresent();
     }
 
     @Test
     void testInt() {
-        assertThat(basicResource.getInt())
+        assertThat(basicProxyResource.getInt())
                 .isEqualTo(1234);
     }
 
     @Test
     void testOptionalInt() {
-        assertThat(basicResource.getOptionalInt())
+        assertThat(basicProxyResource.getOptionalInt())
                 .isPresent()
                 .hasValue(1234);
     }
 
     @Test
     void testSetOptionalInt() {
-        basicResource.setOptionalInt(OptionalInt.empty());
-        assertThat(basicResource.getOptionalInt())
+        basicProxyResource.setOptionalInt(OptionalInt.empty());
+        assertThat(basicProxyResource.getOptionalInt())
                 .isNotPresent();
 
-        basicResource.setOptionalInt(OptionalInt.of(4321));
-        assertThat(basicResource.getOptionalInt())
+        basicProxyResource.setOptionalInt(OptionalInt.of(4321));
+        assertThat(basicProxyResource.getOptionalInt())
                 .isPresent()
                 .hasValue(4321);
     }
 
     @Test
     void testRemoveOptionalInt() {
-        basicResource.emptyOptionalInt();
-        assertThat(basicResource.getOptionalInt())
+        basicProxyResource.emptyOptionalInt();
+        assertThat(basicProxyResource.getOptionalInt())
                 .isNotPresent();
     }
 
     @Test
     void testOptionalIntEmpty() {
-        assertThat(basicResource.getOptionalIntEmpty())
+        assertThat(basicProxyResource.getOptionalIntEmpty())
                 .isNotPresent();
     }
 
     @Test
     void testInteger() {
-        assertThat(basicResource.getInteger())
+        assertThat(basicProxyResource.getInteger())
                 .isEqualTo(1234);
     }
 
     @Test
     void testInvalidNumber() {
-        assertThatThrownBy(basicResource::getInvalidInteger)
+        assertThatThrownBy(basicProxyResource::getInvalidInteger)
                 .isInstanceOf(TypeHandlingException.class)
                 .hasCauseInstanceOf(NumberFormatException.class);
     }
 
     @Test
     void testByte() {
-        assertThat(basicResource.getByte())
+        assertThat(basicProxyResource.getByte())
                 .isEqualTo((byte) 'a');
     }
 
     @Test
     void testSetByte() {
-        basicResource.setByte((byte) -7);
-        assertThat(basicResource.getByte())
+        basicProxyResource.setByte((byte) -7);
+        assertThat(basicProxyResource.getByte())
                 .isEqualTo((byte) -7);
     }
 
     @Test
     void testChar() {
-        assertThat(basicResource.getChar())
+        assertThat(basicProxyResource.getChar())
                 .isEqualTo('\u0105');
     }
 
     @Test
     void testSetChar() {
-        basicResource.setChar('\u0106');
-        assertThat(basicResource.getChar())
+        basicProxyResource.setChar('\u0106');
+        assertThat(basicProxyResource.getChar())
                 .isEqualTo('\u0106');
     }
 
     @Test
     void testFloat() {
-        assertThat(basicResource.getFloat())
+        assertThat(basicProxyResource.getFloat())
                 .isEqualTo(12.34f);
     }
 
     @Test
     void testSetFloat() {
-        basicResource.setFloat(43.21f);
-        assertThat(basicResource.getFloat())
+        basicProxyResource.setFloat(43.21f);
+        assertThat(basicProxyResource.getFloat())
                 .isEqualTo(43.21f);
     }
 
     @Test
     void testDouble() {
-        assertThat(basicResource.getDouble())
+        assertThat(basicProxyResource.getDouble())
                 .isEqualTo(12.34d);
     }
 
     @Test
     void testSetDouble() {
-        basicResource.setDouble(43.21d);
-        assertThat(basicResource.getDouble())
+        basicProxyResource.setDouble(43.21d);
+        assertThat(basicProxyResource.getDouble())
                 .isEqualTo(43.21d);
     }
 }
