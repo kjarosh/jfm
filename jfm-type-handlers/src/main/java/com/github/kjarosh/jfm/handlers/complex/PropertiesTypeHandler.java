@@ -4,12 +4,8 @@ import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
 
 /**
@@ -24,15 +20,15 @@ public class PropertiesTypeHandler implements TypeHandler<Properties> {
     }
 
     @Override
-    public Properties read(Type actualType, Path path) throws IOException {
+    public Properties read(Type actualType, InputStream input) throws IOException {
         Properties ret = new Properties();
-        ret.load(Files.newInputStream(path));
+        ret.load(input);
         return ret;
     }
 
     @Override
-    public void write(Type actualType, Path path, Properties props) throws IOException {
-        props.store(Files.newOutputStream(path), null);
+    public void write(Type actualType, OutputStream output, Properties props) throws IOException {
+        props.store(output, null);
     }
 
     @Override

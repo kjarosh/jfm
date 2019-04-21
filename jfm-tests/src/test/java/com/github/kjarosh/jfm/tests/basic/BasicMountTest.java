@@ -8,13 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -63,8 +61,8 @@ public class BasicMountTest extends JfmMountTestBase {
     void testOptionalEmpty() {
         when(basicResource.getOptionalName()).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> read(root.resolve("optional-name")))
-                .hasCauseInstanceOf(NoSuchFileException.class);
+        assertThat(read(root.resolve("optional-name")))
+                .isEmpty();
     }
 
     @Test
@@ -96,10 +94,10 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @Test
     void testRemoveOptionalInt() {
-        remove(root.resolve("optional-number"));
+        remove(root.resolve("removable-string"));
 
         verify(basicResource, times(1))
-                .removeOptionalInt();
+                .removeString();
     }
 
     /*@Test

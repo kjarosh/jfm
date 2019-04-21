@@ -8,9 +8,10 @@ import com.github.kjarosh.jfm.spi.types.TypeReference;
 import com.github.kjarosh.jfm.spi.types.TypeReferences;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -27,27 +28,28 @@ public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
     }
 
     @Override
-    public Optional<T> read(Type actualType, Path path) throws IOException {
-        if (!Files.exists(path)) {
+    public Optional<T> read(Type actualType, InputStream input) throws IOException {
+        PushbackInputStream pushbackInput = new PushbackInputStream(input);
+        int read = pushbackInput.read();
+        if (read == -1) {
             return Optional.empty();
         }
+        pushbackInput.unread(read);
 
         Type innerType = getInnerType(actualType);
 
         @SuppressWarnings("unchecked")
         TypeHandler<T> innerHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(innerType);
 
-        return Optional.of(innerHandler.read(innerType, path));
+        return Optional.of(innerHandler.read(innerType, pushbackInput));
     }
 
     @Override
-    public void write(Type actualType, Path path, Optional<T> content) throws IOException {
+    public void write(Type actualType, OutputStream output, Optional<T> content) throws IOException {
         TypeHandler<T> innerHandler = getInnerHandler(actualType);
 
-        if (!content.isPresent()) {
-            Files.deleteIfExists(path);
-        } else {
-            innerHandler.write(actualType, path, content.get());
+        if (content.isPresent()) {
+            innerHandler.write(actualType, output, content.get());
         }
     }
 
@@ -56,12 +58,17 @@ public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
         TypeHandler<T> innerHandler = getInnerHandler(actualType);
 
         return content.map(t -> innerHandler.serialize(actualType, t))
-                .orElse(null);
+                .orElse(new byte[0]);
     }
 
     @Override
     public Optional<T> deserialize(Type actualType, byte[] data) {
-        return Optional.empty();
+        if (data.length == 0) {
+            return Optional.empty();
+        } else {
+            TypeHandler<T> innerHandler = getInnerHandler(actualType);
+            return Optional.of(innerHandler.deserialize(int.class, data));
+        }
     }
 
     @SuppressWarnings("unchecked")

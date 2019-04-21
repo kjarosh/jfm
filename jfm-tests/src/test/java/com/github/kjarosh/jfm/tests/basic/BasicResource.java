@@ -6,6 +6,7 @@ import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
+import com.github.kjarosh.jfm.api.annotations.WriteBytes;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -21,7 +22,7 @@ public interface BasicResource {
     Optional<String> getOptionalName();
 
     @Read
-    @Path("non-existing-file")
+    @Path("optional-empty")
     Optional<String> getOptionalEmpty();
 
     @Read
@@ -37,12 +38,12 @@ public interface BasicResource {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     void setOptionalInt(@Content OptionalInt value);
 
-    @Delete
+    @WriteBytes(value = {})
     @Path("optional-number")
-    void removeOptionalInt();
+    void emptyOptionalInt();
 
     @Read
-    @Path("number-that-does-not-exist")
+    @Path("optional-number-empty")
     OptionalInt getOptionalIntEmpty();
 
     @Read
@@ -88,4 +89,8 @@ public interface BasicResource {
     @Write
     @Path("double")
     void setDouble(@Content double value);
+
+    @Delete
+    @Path("removable-string")
+    void removeString();
 }

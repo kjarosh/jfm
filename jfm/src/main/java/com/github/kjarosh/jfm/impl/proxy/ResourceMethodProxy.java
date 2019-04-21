@@ -2,14 +2,7 @@ package com.github.kjarosh.jfm.impl.proxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
-import com.github.kjarosh.jfm.api.annotations.Delete;
-import com.github.kjarosh.jfm.api.annotations.Listing;
-import com.github.kjarosh.jfm.api.annotations.Read;
-import com.github.kjarosh.jfm.api.annotations.Write;
-import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
-import com.github.kjarosh.jfm.api.annotations.WriteBytes;
-import com.github.kjarosh.jfm.api.annotations.WriteInteger;
-import com.github.kjarosh.jfm.api.annotations.WriteString;
+import com.github.kjarosh.jfm.api.annotations.*;
 import com.github.kjarosh.jfm.impl.MethodHandler;
 import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
@@ -18,6 +11,7 @@ import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * @author Kamil Jarosz
@@ -39,14 +33,14 @@ class ResourceMethodProxy implements MethodHandler<Object> {
         try {
             Type type = invokeContext.getReturnType();
             TypeHandler<?> returnTypeHandler = typeHandlerService.getHandlerFor(type);
-            return returnTypeHandler.read(type, invokeContext.getFinalPath());
+            Path path = invokeContext.getFinalPath();
+            return returnTypeHandler.read(type, Files.newInputStream(path));
         } catch (IOException e) {
             throw newJFMException(e);
         }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Object handleWrite(Write writeAnnotation) {
         return handleWrite0(writeAnnotation);
     }
@@ -61,7 +55,8 @@ class ResourceMethodProxy implements MethodHandler<Object> {
             }
 
             TypeHandler<T> returnTypeHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(type);
-            returnTypeHandler.write(type, invokeContext.getFinalPath(), (T) content);
+            Path path = invokeContext.getFinalPath();
+            returnTypeHandler.write(type, Files.newOutputStream(path), (T) content);
             return null;
         } catch (IOException e) {
             throw newJFMException(e);
@@ -70,7 +65,8 @@ class ResourceMethodProxy implements MethodHandler<Object> {
 
     private <T> Object writeConstantValue(Class<T> type, T value) throws IOException {
         TypeHandler<T> returnTypeHandler = typeHandlerService.getHandlerFor(type);
-        returnTypeHandler.write(type, invokeContext.getFinalPath(), value);
+        Path path = invokeContext.getFinalPath();
+        returnTypeHandler.write(type, Files.newOutputStream(path), value);
         return null;
     }
 

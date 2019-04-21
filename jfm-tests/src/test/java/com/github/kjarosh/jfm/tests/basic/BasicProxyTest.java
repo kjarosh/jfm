@@ -18,9 +18,11 @@ class BasicProxyTest extends JfmProxyTestBase {
         super(root -> {
             Files.write(root.resolve("name"), "sample name".getBytes());
             Files.write(root.resolve("optional-name"), "sample name".getBytes());
+            Files.write(root.resolve("optional-empty"), "".getBytes());
             Files.write(root.resolve("number"), "1234".getBytes());
             Files.write(root.resolve("integer"), "1234".getBytes());
             Files.write(root.resolve("optional-number"), "1234".getBytes());
+            Files.write(root.resolve("optional-number-empty"), "".getBytes());
             Files.write(root.resolve("invalid-number"), "asdf".getBytes());
             Files.write(root.resolve("byte"), "a".getBytes());
             Files.write(root.resolve("char"), "\u0105".getBytes());
@@ -79,7 +81,7 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     @Test
     void testRemoveOptionalInt() {
-        basicResource.removeOptionalInt();
+        basicResource.emptyOptionalInt();
         assertThat(basicResource.getOptionalInt())
                 .isNotPresent();
     }

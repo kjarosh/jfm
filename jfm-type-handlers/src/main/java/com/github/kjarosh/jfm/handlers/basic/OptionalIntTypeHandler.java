@@ -7,9 +7,10 @@ import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.OptionalInt;
 
 /**
@@ -26,22 +27,23 @@ public class OptionalIntTypeHandler<T> implements TypeHandler<OptionalInt> {
     }
 
     @Override
-    public OptionalInt read(Type actualType, Path path) throws IOException {
-        if (!Files.exists(path)) {
+    public OptionalInt read(Type actualType, InputStream input) throws IOException {
+        PushbackInputStream pushbackInput = new PushbackInputStream(input);
+        int read = pushbackInput.read();
+        if (read == -1) {
             return OptionalInt.empty();
         }
+        pushbackInput.unread(read);
 
         TypeHandler<Integer> originalHandler = typeHandlerService.getHandlerFor(int.class);
-        return OptionalInt.of(originalHandler.read(actualType, path));
+        return OptionalInt.of(originalHandler.read(actualType, pushbackInput));
     }
 
     @Override
-    public void write(Type actualType, Path path, OptionalInt content) throws IOException {
+    public void write(Type actualType, OutputStream output, OptionalInt content) throws IOException {
         TypeHandler<Integer> originalHandler = typeHandlerService.getHandlerFor(int.class);
-        if (!content.isPresent()) {
-            Files.deleteIfExists(path);
-        } else {
-            originalHandler.write(actualType, path, content.getAsInt());
+        if (content.isPresent()) {
+            originalHandler.write(actualType, output, content.getAsInt());
         }
     }
 
@@ -49,7 +51,7 @@ public class OptionalIntTypeHandler<T> implements TypeHandler<OptionalInt> {
     public byte[] serialize(Type actualType, OptionalInt content) {
         TypeHandler<Integer> originalHandler = typeHandlerService.getHandlerFor(int.class);
         if (!content.isPresent()) {
-            return null;
+            return new byte[0];
         } else {
             return originalHandler.serialize(int.class, content.getAsInt());
         }
@@ -57,11 +59,11 @@ public class OptionalIntTypeHandler<T> implements TypeHandler<OptionalInt> {
 
     @Override
     public OptionalInt deserialize(Type actualType, byte[] data) {
-        TypeHandler<Integer> originalHandler = typeHandlerService.getHandlerFor(int.class);
-        if (data == null) {
+        if (data.length == 0) {
             return OptionalInt.empty();
         } else {
-            return OptionalInt.of(originalHandler.deserialize(int.class, data));
+            TypeHandler<Integer> innerHandler = typeHandlerService.getHandlerFor(int.class);
+            return OptionalInt.of(innerHandler.deserialize(int.class, data));
         }
     }
 }
