@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.handlers.javatime;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
@@ -12,7 +12,7 @@ import java.time.Duration;
  * @author Kamil Jarosz
  */
 @RegisterTypeHandler
-public class DurationTypeHandler extends AbstractByteArrayTypeHandler<Duration> {
+public class DurationTypeHandler implements TypeHandler<Duration> {
     @Override
     public TypeReference<Duration> getHandledType() {
         return new TypeReference<Duration>() {

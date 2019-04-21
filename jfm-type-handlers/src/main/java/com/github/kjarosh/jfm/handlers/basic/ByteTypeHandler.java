@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.handlers.basic;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
  * @author Kamil Jarosz
  */
 @RegisterTypeHandler
-public class ByteTypeHandler extends AbstractByteArrayTypeHandler<Byte> {
+public class ByteTypeHandler implements TypeHandler<Byte> {
     @Override
     public TypeReference<Byte> getHandledType() {
         return new TypeReference<Byte>() {

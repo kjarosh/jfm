@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.handlers.javatime;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
@@ -12,7 +12,7 @@ import java.time.Instant;
  * @author Kamil Jarosz
  */
 @RegisterTypeHandler
-public class InstantTypeHandler extends AbstractByteArrayTypeHandler<Instant> {
+public class InstantTypeHandler implements TypeHandler<Instant> {
     @Override
     public TypeReference<Instant> getHandledType() {
         return new TypeReference<Instant>() {

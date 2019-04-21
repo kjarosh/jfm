@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.tests.typehandlers;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RegisterTypeHandler
-public class TextListTypeHandler extends AbstractByteArrayTypeHandler<List<Text>> {
+public class TextListTypeHandler implements TypeHandler<List<Text>> {
     @Override
     public TypeReference<List<Text>> getHandledType() {
         return new TypeReference<List<Text>>() {

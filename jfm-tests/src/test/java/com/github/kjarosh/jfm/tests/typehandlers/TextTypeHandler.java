@@ -1,13 +1,13 @@
 package com.github.kjarosh.jfm.tests.typehandlers;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
 
 @RegisterTypeHandler
-public class TextTypeHandler extends AbstractByteArrayTypeHandler<Text> {
+public class TextTypeHandler implements TypeHandler<Text> {
     @Override
     public TypeReference<Text> getHandledType() {
         return new TypeReference<Text>() {

@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.handlers.javatime;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * @author Kamil Jarosz
  */
 @RegisterTypeHandler
-public class LocalDateTypeHandler extends AbstractByteArrayTypeHandler<LocalDate> {
+public class LocalDateTypeHandler implements TypeHandler<LocalDate> {
     @Override
     public TypeReference<LocalDate> getHandledType() {
         return new TypeReference<LocalDate>() {

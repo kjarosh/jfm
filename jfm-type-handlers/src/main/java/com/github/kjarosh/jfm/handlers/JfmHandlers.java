@@ -36,10 +36,6 @@ import java.util.stream.Stream;
  * @author Kamil Jarosz
  */
 public class JfmHandlers {
-    public static String getPackageName() {
-        return JfmHandlers.class.getPackage().getName();
-    }
-
     public static Stream<Class<? extends TypeHandler>> getAllTypeHandlers() {
         return Stream.of(
                 BooleanTypeHandler.class,

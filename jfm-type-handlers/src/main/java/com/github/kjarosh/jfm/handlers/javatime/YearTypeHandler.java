@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.handlers.javatime;
 
-import com.github.kjarosh.jfm.handlers.AbstractByteArrayTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
+import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
 import java.lang.reflect.Type;
@@ -12,7 +12,7 @@ import java.time.Year;
  * @author Kamil Jarosz
  */
 @RegisterTypeHandler
-public class YearTypeHandler extends AbstractByteArrayTypeHandler<Year> {
+public class YearTypeHandler implements TypeHandler<Year> {
     @Override
     public TypeReference<Year> getHandledType() {
         return new TypeReference<Year>() {
