@@ -5,7 +5,6 @@ import com.github.kjarosh.jfm.spi.types.TypeHandlingException;
 import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
 import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,21 +14,6 @@ class BasicProxyTest extends JfmProxyTestBase {
     private final BasicProxyResource basicProxyResource;
 
     BasicProxyTest() {
-        super(root -> {
-            Files.write(root.resolve("name"), "sample name".getBytes());
-            Files.write(root.resolve("optional-name"), "sample name".getBytes());
-            Files.write(root.resolve("optional-empty"), "".getBytes());
-            Files.write(root.resolve("number"), "1234".getBytes());
-            Files.write(root.resolve("integer"), "1234".getBytes());
-            Files.write(root.resolve("optional-number"), "1234".getBytes());
-            Files.write(root.resolve("optional-number-empty"), "".getBytes());
-            Files.write(root.resolve("invalid-number"), "asdf".getBytes());
-            Files.write(root.resolve("byte"), "a".getBytes());
-            Files.write(root.resolve("char"), "\u0105".getBytes());
-            Files.write(root.resolve("float"), "12.34".getBytes());
-            Files.write(root.resolve("double"), "12.34".getBytes());
-        });
-
         this.basicProxyResource = FilesystemMapper.instance()
                 .getTarget(super.getRoot())
                 .proxy(BasicProxyResource.class);
@@ -37,12 +21,16 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     @Test
     void testName() {
+        write(root.resolve("name"), "sample name");
+
         assertThat(basicProxyResource.getName())
                 .isEqualTo("sample name");
     }
 
     @Test
     void testOptionalName() {
+        write(root.resolve("optional-name"), "sample name");
+
         assertThat(basicProxyResource.getOptionalName())
                 .isPresent()
                 .hasValue("sample name");
@@ -50,18 +38,24 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     @Test
     void testOptionalEmpty() {
+        write(root.resolve("optional-empty"), "");
+
         assertThat(basicProxyResource.getOptionalEmpty())
                 .isNotPresent();
     }
 
     @Test
     void testInt() {
+        write(root.resolve("int"), "1234");
+
         assertThat(basicProxyResource.getInt())
                 .isEqualTo(1234);
     }
 
     @Test
     void testOptionalInt() {
+        write(root.resolve("optional-int"), "1234");
+
         assertThat(basicProxyResource.getOptionalInt())
                 .isPresent()
                 .hasValue(1234);
@@ -80,26 +74,25 @@ class BasicProxyTest extends JfmProxyTestBase {
     }
 
     @Test
-    void testRemoveOptionalInt() {
-        basicProxyResource.emptyOptionalInt();
-        assertThat(basicProxyResource.getOptionalInt())
-                .isNotPresent();
-    }
-
-    @Test
     void testOptionalIntEmpty() {
+        write(root.resolve("optional-int-empty"), "");
+
         assertThat(basicProxyResource.getOptionalIntEmpty())
                 .isNotPresent();
     }
 
     @Test
     void testInteger() {
+        write(root.resolve("integer"), "1234");
+
         assertThat(basicProxyResource.getInteger())
                 .isEqualTo(1234);
     }
 
     @Test
     void testInvalidNumber() {
+        write(root.resolve("invalid-number"), "asdf");
+
         assertThatThrownBy(basicProxyResource::getInvalidInteger)
                 .isInstanceOf(TypeHandlingException.class)
                 .hasCauseInstanceOf(NumberFormatException.class);
@@ -107,6 +100,8 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     @Test
     void testByte() {
+        write(root.resolve("byte"), "a");
+
         assertThat(basicProxyResource.getByte())
                 .isEqualTo((byte) 'a');
     }
@@ -114,12 +109,15 @@ class BasicProxyTest extends JfmProxyTestBase {
     @Test
     void testSetByte() {
         basicProxyResource.setByte((byte) -7);
-        assertThat(basicProxyResource.getByte())
-                .isEqualTo((byte) -7);
+
+        assertThat(read(root.resolve("byte")))
+                .isEqualTo(new String(new byte[]{-7}));
     }
 
     @Test
     void testChar() {
+        write(root.resolve("char"), "\u0105");
+
         assertThat(basicProxyResource.getChar())
                 .isEqualTo('\u0105');
     }
@@ -127,12 +125,15 @@ class BasicProxyTest extends JfmProxyTestBase {
     @Test
     void testSetChar() {
         basicProxyResource.setChar('\u0106');
-        assertThat(basicProxyResource.getChar())
-                .isEqualTo('\u0106');
+
+        assertThat(read(root.resolve("char")))
+                .isEqualTo("\u0106");
     }
 
     @Test
     void testFloat() {
+        write(root.resolve("float"), "12.34");
+
         assertThat(basicProxyResource.getFloat())
                 .isEqualTo(12.34f);
     }
@@ -140,12 +141,15 @@ class BasicProxyTest extends JfmProxyTestBase {
     @Test
     void testSetFloat() {
         basicProxyResource.setFloat(43.21f);
-        assertThat(basicProxyResource.getFloat())
-                .isEqualTo(43.21f);
+
+        assertThat(read(root.resolve("float")))
+                .isEqualTo("43.21");
     }
 
     @Test
     void testDouble() {
+        write(root.resolve("double"), "12.34");
+
         assertThat(basicProxyResource.getDouble())
                 .isEqualTo(12.34d);
     }
@@ -153,7 +157,8 @@ class BasicProxyTest extends JfmProxyTestBase {
     @Test
     void testSetDouble() {
         basicProxyResource.setDouble(43.21d);
-        assertThat(basicProxyResource.getDouble())
-                .isEqualTo(43.21d);
+
+        assertThat(read(root.resolve("double")))
+                .isEqualTo("43.21");
     }
 }

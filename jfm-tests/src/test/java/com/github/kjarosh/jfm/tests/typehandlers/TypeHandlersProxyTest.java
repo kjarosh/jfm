@@ -2,9 +2,9 @@ package com.github.kjarosh.jfm.tests.typehandlers;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,17 +13,18 @@ class TypeHandlersProxyTest extends JfmProxyTestBase {
     private final TypeHandlersResource typeHandlersResource;
 
     TypeHandlersProxyTest() {
-        super(root -> {
-            Files.write(root.resolve("text"), "asdf".getBytes());
-            Files.write(root.resolve("list"), "a,b,c".getBytes());
-        });
-
         FilesystemMapper.instance().getTypeHandlerService()
                 .registerHandlersFromPackage(TypeHandlersProxyTest.class.getPackage());
 
         this.typeHandlersResource = FilesystemMapper.instance()
                 .getTarget(super.getRoot())
                 .proxy(TypeHandlersResource.class);
+    }
+
+    @BeforeEach
+    void setUp() {
+        write(root.resolve("text"), "asdf");
+        write(root.resolve("list"), "a,b,c");
     }
 
     @Test

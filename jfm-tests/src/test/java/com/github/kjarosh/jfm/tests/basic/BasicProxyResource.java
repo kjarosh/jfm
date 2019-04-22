@@ -5,7 +5,6 @@ import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.api.annotations.Read;
 import com.github.kjarosh.jfm.api.annotations.Write;
-import com.github.kjarosh.jfm.api.annotations.WriteBytes;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -25,24 +24,20 @@ public interface BasicProxyResource {
     Optional<String> getOptionalEmpty();
 
     @Read
-    @Path("number")
+    @Path("int")
     int getInt();
 
     @Read
-    @Path("optional-number")
+    @Path("optional-int")
     OptionalInt getOptionalInt();
 
     @Write
-    @Path("optional-number")
+    @Path("optional-int")
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     void setOptionalInt(@Content OptionalInt value);
 
-    @WriteBytes(value = {})
-    @Path("optional-number")
-    void emptyOptionalInt();
-
     @Read
-    @Path("optional-number-empty")
+    @Path("optional-int-empty")
     OptionalInt getOptionalIntEmpty();
 
     @Read

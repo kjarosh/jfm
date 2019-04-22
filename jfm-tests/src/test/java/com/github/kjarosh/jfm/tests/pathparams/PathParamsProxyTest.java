@@ -10,15 +10,6 @@ class PathParamsProxyTest extends JfmProxyTestBase {
     private final PathParamsResource pathParamsResource;
 
     PathParamsProxyTest() {
-        super(root -> {
-            write(root.resolve("first"), "1");
-            write(root.resolve("second"), "2");
-            write(root.resolve("third"), "3");
-            write(root.resolve("first.d/int"), "1");
-            write(root.resolve("second.d/int"), "2");
-            write(root.resolve("third.d/int"), "3");
-        });
-
         this.pathParamsResource = FilesystemMapper.instance()
                 .getTarget(super.getRoot())
                 .proxy(PathParamsResource.class);
@@ -26,6 +17,10 @@ class PathParamsProxyTest extends JfmProxyTestBase {
 
     @Test
     void testInteger() {
+        write(root.resolve("first"), "1");
+        write(root.resolve("second"), "2");
+        write(root.resolve("third"), "3");
+
         assertThat(pathParamsResource.getInteger("first"))
                 .isEqualTo(1);
         assertThat(pathParamsResource.getInteger("second"))
@@ -36,6 +31,10 @@ class PathParamsProxyTest extends JfmProxyTestBase {
 
     @Test
     void testInnerInteger() {
+        write(root.resolve("first.d/int"), "1");
+        write(root.resolve("second.d/int"), "2");
+        write(root.resolve("third.d/int"), "3");
+
         assertThat(pathParamsResource.getInnerInteger("first.d"))
                 .isEqualTo(1);
         assertThat(pathParamsResource.getInnerInteger("second.d"))
@@ -45,18 +44,20 @@ class PathParamsProxyTest extends JfmProxyTestBase {
     }
 
     @Test
-    void testListNames() {
-        assertThat(pathParamsResource.listNames())
-                .containsExactlyInAnyOrder(
-                        "first", "second", "third",
-                        "first.d", "second.d", "third.d");
-    }
+    void testListing() {
+        write(root.resolve("first"), "");
+        write(root.resolve("second"), "");
+        write(root.resolve("third"), "");
+        write(root.resolve("first.d/int"), "");
+        write(root.resolve("second.d/int"), "");
+        write(root.resolve("third.d/int"), "");
 
-    @Test
-    void testStreamNames() {
+        String[] expectedListing = {"first", "second", "third",
+                "first.d", "second.d", "third.d"};
+
+        assertThat(pathParamsResource.listNames())
+                .containsExactlyInAnyOrder(expectedListing);
         assertThat(pathParamsResource.streamNames())
-                .containsExactlyInAnyOrder(
-                        "first", "second", "third",
-                        "first.d", "second.d", "third.d");
+                .containsExactlyInAnyOrder(expectedListing);
     }
 }

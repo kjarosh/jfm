@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Kamil Jarosz
  */
-public class BasicMountTest extends JfmMountTestBase {
+class BasicMountTest extends JfmMountTestBase {
     private FilesystemMapper fm = FilesystemMapper.instance();
     private final Path root = getRoot();
 
@@ -32,7 +31,6 @@ public class BasicMountTest extends JfmMountTestBase {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
         fm.getTarget(root).mount(basicMountResource);
     }
 
