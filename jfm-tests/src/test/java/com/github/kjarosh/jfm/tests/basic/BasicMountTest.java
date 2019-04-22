@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.when;
  */
 class BasicMountTest extends JfmMountTestBase {
     private FilesystemMapper fm = FilesystemMapper.instance();
-    private final Path root = getRoot();
 
     @Mock
     private BasicMountResource basicMountResource;
@@ -107,7 +105,7 @@ class BasicMountTest extends JfmMountTestBase {
 
     /*@Test
     void testInvalidNumber() {
-        assertThatThrownBy(basicMountResource::getInvalidInteger)
+        assertThatThrownBy(basicMountResource::getInvalidInt)
                 .isInstanceOf(TypeHandlingException.class)
                 .hasCauseInstanceOf(NumberFormatException.class);
     }

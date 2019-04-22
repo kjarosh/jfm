@@ -42,22 +42,4 @@ class PathParamsProxyTest extends JfmProxyTestBase {
         assertThat(pathParamsResource.getInnerInteger("third.d"))
                 .isEqualTo(3);
     }
-
-    @Test
-    void testListing() {
-        write(root.resolve("first"), "");
-        write(root.resolve("second"), "");
-        write(root.resolve("third"), "");
-        write(root.resolve("first.d/int"), "");
-        write(root.resolve("second.d/int"), "");
-        write(root.resolve("third.d/int"), "");
-
-        String[] expectedListing = {"first", "second", "third",
-                "first.d", "second.d", "third.d"};
-
-        assertThat(pathParamsResource.listNames())
-                .containsExactlyInAnyOrder(expectedListing);
-        assertThat(pathParamsResource.streamNames())
-                .containsExactlyInAnyOrder(expectedListing);
-    }
 }

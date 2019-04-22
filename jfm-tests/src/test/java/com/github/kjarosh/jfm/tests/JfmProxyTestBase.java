@@ -6,10 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class JfmProxyTestBase extends JfmTestBase {
-    public JfmProxyTestBase() {
-        super("proxy");
-    }
-
     @AfterEach
     void tearDown() throws IOException {
         Files.walkFileTree(getRoot(), new DeletingFileVisitor());

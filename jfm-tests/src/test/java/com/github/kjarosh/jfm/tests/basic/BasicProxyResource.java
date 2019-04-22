@@ -1,6 +1,7 @@
 package com.github.kjarosh.jfm.tests.basic;
 
 import com.github.kjarosh.jfm.api.annotations.Content;
+import com.github.kjarosh.jfm.api.annotations.Delete;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.api.annotations.Read;
@@ -12,20 +13,16 @@ import java.util.OptionalInt;
 @FilesystemResource
 public interface BasicProxyResource {
     @Read
-    @Path("name")
-    String getName();
+    @Path("string")
+    String getString();
 
     @Read
-    @Path("optional-name")
-    Optional<String> getOptionalName();
+    @Path("optional-string")
+    Optional<String> getOptionalString();
 
     @Read
-    @Path("optional-empty")
-    Optional<String> getOptionalEmpty();
-
-    @Read
-    @Path("int")
-    int getInt();
+    @Path("optional-string-empty")
+    Optional<String> getOptionalStringEmpty();
 
     @Read
     @Path("optional-int")
@@ -41,12 +38,16 @@ public interface BasicProxyResource {
     OptionalInt getOptionalIntEmpty();
 
     @Read
-    @Path("integer")
-    Integer getInteger();
+    @Path("int")
+    int getInt();
 
     @Read
-    @Path("invalid-number")
-    int getInvalidInteger();
+    @Path("invalid-int")
+    int getInvalidInt();
+
+    @Read
+    @Path("integer")
+    Integer getInteger();
 
     @Read
     @Path("byte")
@@ -79,4 +80,8 @@ public interface BasicProxyResource {
     @Write
     @Path("double")
     void setDouble(@Content double value);
+
+    @Delete
+    @Path("removable-file")
+    void removeFile();
 }

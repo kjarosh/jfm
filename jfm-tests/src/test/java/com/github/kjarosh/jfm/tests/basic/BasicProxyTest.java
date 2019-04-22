@@ -5,6 +5,7 @@ import com.github.kjarosh.jfm.spi.types.TypeHandlingException;
 import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
 import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,26 +22,26 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     @Test
     void testName() {
-        write(root.resolve("name"), "sample name");
+        write(root.resolve("string"), "sample string");
 
-        assertThat(basicProxyResource.getName())
-                .isEqualTo("sample name");
+        assertThat(basicProxyResource.getString())
+                .isEqualTo("sample string");
     }
 
     @Test
     void testOptionalName() {
-        write(root.resolve("optional-name"), "sample name");
+        write(root.resolve("optional-string"), "sample string");
 
-        assertThat(basicProxyResource.getOptionalName())
+        assertThat(basicProxyResource.getOptionalString())
                 .isPresent()
-                .hasValue("sample name");
+                .hasValue("sample string");
     }
 
     @Test
     void testOptionalEmpty() {
-        write(root.resolve("optional-empty"), "");
+        write(root.resolve("optional-string-empty"), "");
 
-        assertThat(basicProxyResource.getOptionalEmpty())
+        assertThat(basicProxyResource.getOptionalStringEmpty())
                 .isNotPresent();
     }
 
@@ -91,9 +92,9 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     @Test
     void testInvalidNumber() {
-        write(root.resolve("invalid-number"), "asdf");
+        write(root.resolve("invalid-int"), "asdf");
 
-        assertThatThrownBy(basicProxyResource::getInvalidInteger)
+        assertThatThrownBy(basicProxyResource::getInvalidInt)
                 .isInstanceOf(TypeHandlingException.class)
                 .hasCauseInstanceOf(NumberFormatException.class);
     }
@@ -160,5 +161,15 @@ class BasicProxyTest extends JfmProxyTestBase {
 
         assertThat(read(root.resolve("double")))
                 .isEqualTo("43.21");
+    }
+
+    @Test
+    void testRemoveFile() {
+        write(root.resolve("removable-file"), "text");
+
+        basicProxyResource.removeFile();
+
+        assertThat(Files.exists(root.resolve("removable-file")))
+                .isFalse();
     }
 }
