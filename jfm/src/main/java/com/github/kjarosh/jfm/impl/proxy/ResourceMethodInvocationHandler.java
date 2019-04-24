@@ -2,7 +2,7 @@ package com.github.kjarosh.jfm.impl.proxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
-import com.github.kjarosh.jfm.impl.MethodHandlingService;
+import com.github.kjarosh.jfm.impl.AnnotationHandlingService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
  * @author Kamil Jarosz
  */
 public class ResourceMethodInvocationHandler<T> implements InvocationHandler {
-    private final MethodHandlingService methodHandlingService = new MethodHandlingService();
+    private final AnnotationHandlingService annotationHandlingService = new AnnotationHandlingService();
     private final Path path;
 
     public ResourceMethodInvocationHandler(Class<T> resourceClass, Path path) {
@@ -30,7 +30,7 @@ public class ResourceMethodInvocationHandler<T> implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         InvokeContext ic = new InvokeContext(path, method, args);
-        ResourceMethodProxy invoker = new ResourceMethodProxy(ic);
-        return methodHandlingService.handle(method, invoker);
+        ResourceMethodAnnotationHandler handler = new ResourceMethodAnnotationHandler(ic);
+        return annotationHandlingService.handle(method, handler);
     }
 }

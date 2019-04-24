@@ -9,7 +9,7 @@ import java.nio.file.Files;
 public class JfmProxyTestBase extends JfmTestBase {
     @AfterEach
     void tearDown() throws IOException {
-        Files.walkFileTree(root, new DeletingFileVisitor());
+        Files.walkFileTree(root, new DeletingFileVisitor(root));
     }
 
     protected <T> T proxy(Class<T> resourceClass) {

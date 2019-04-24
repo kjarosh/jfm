@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.impl.mounter.rproxy;
+package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.annotations.Write;
@@ -6,8 +6,8 @@ import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
 import com.github.kjarosh.jfm.api.annotations.WriteBytes;
 import com.github.kjarosh.jfm.api.annotations.WriteInteger;
 import com.github.kjarosh.jfm.api.annotations.WriteString;
-import com.github.kjarosh.jfm.impl.MethodHandler;
-import com.github.kjarosh.jfm.impl.UnsupportedMethodException;
+import com.github.kjarosh.jfm.impl.AnnotationHandler;
+import com.github.kjarosh.jfm.impl.UnsupportedAnnotationException;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
@@ -19,7 +19,7 @@ import java.util.Arrays;
 /**
  * @author Kamil Jarosz
  */
-public class ReverseProxyWriteHandler implements MethodHandler<Void> {
+public class ReverseProxyWriteHandler implements AnnotationHandler<Void> {
     private final TypeHandlerService typeHandlerService = FilesystemMapper.instance()
             .getTypeHandlerService();
     private final ResourceMethodInvoker invoker;
@@ -42,7 +42,7 @@ public class ReverseProxyWriteHandler implements MethodHandler<Void> {
 
     private void handleWriteBytes(byte[] bytes) {
         if (!Arrays.equals(bytes, data)) {
-            throw new UnsupportedMethodException();
+            throw new UnsupportedAnnotationException();
         }
 
         invoker.invoke();

@@ -8,10 +8,18 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 class DeletingFileVisitor extends SimpleFileVisitor<Path> {
+    private Path root;
+
+    DeletingFileVisitor(Path root) {
+        this.root = root;
+    }
+
     @Override
     public FileVisitResult postVisitDirectory(
             Path dir, IOException exc) throws IOException {
-        Files.delete(dir);
+        if (root == null || !root.equals(dir)) {
+            Files.deleteIfExists(dir);
+        }
         return FileVisitResult.CONTINUE;
     }
 
@@ -19,7 +27,7 @@ class DeletingFileVisitor extends SimpleFileVisitor<Path> {
     public FileVisitResult visitFile(
             Path file, BasicFileAttributes attrs)
             throws IOException {
-        Files.delete(file);
+        Files.deleteIfExists(file);
         return FileVisitResult.CONTINUE;
     }
 }

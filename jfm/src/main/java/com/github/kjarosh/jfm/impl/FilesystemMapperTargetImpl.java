@@ -8,7 +8,7 @@ import com.github.kjarosh.jfm.impl.proxy.ResourceMethodInvocationHandler;
 
 import java.lang.reflect.Proxy;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +17,8 @@ import java.util.Set;
  * @author Kamil Jarosz
  */
 public class FilesystemMapperTargetImpl implements FilesystemMapperTarget {
-    private final Map<Object, FilesystemMapperMounter> mounters = new HashMap<>(1);
-    private FilesystemMapperMounterFactory mounterFactory;
+    private final Map<Object, FilesystemMapperMounter> mounters = new IdentityHashMap<>(1);
+    private final FilesystemMapperMounterFactory mounterFactory;
     private final Path path;
 
     FilesystemMapperTargetImpl(FilesystemMapperMounterFactory mounterFactory, Path path) {

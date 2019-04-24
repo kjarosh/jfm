@@ -1,14 +1,14 @@
-package com.github.kjarosh.jfm.impl.mounter.rproxy;
+package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.annotations.Delete;
-import com.github.kjarosh.jfm.impl.MethodHandler;
+import com.github.kjarosh.jfm.impl.AnnotationHandler;
 
 import java.lang.reflect.Method;
 
 /**
  * @author Kamil Jarosz
  */
-public class ReverseProxyDeleteHandler implements MethodHandler<Void> {
+public class ReverseProxyDeleteHandler implements AnnotationHandler<Void> {
     private final ResourceMethodInvoker invoker;
 
     ReverseProxyDeleteHandler(Method method, Object resource) {

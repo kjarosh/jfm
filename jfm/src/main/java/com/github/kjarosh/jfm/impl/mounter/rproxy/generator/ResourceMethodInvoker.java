@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.impl.mounter.rproxy;
+package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Content;

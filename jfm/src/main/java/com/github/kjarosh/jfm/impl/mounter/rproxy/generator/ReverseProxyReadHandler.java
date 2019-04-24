@@ -1,8 +1,8 @@
-package com.github.kjarosh.jfm.impl.mounter.rproxy;
+package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.annotations.Read;
-import com.github.kjarosh.jfm.impl.MethodHandler;
+import com.github.kjarosh.jfm.impl.AnnotationHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 /**
  * @author Kamil Jarosz
  */
-public class ReverseProxyReadHandler implements MethodHandler<byte[]> {
+public class ReverseProxyReadHandler implements AnnotationHandler<byte[]> {
     private final TypeHandlerService typeHandlerService = FilesystemMapper.instance()
             .getTypeHandlerService();
     private final ResourceMethodInvoker invoker;

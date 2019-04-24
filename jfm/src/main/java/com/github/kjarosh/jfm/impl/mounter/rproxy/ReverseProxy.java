@@ -1,77 +1,55 @@
 package com.github.kjarosh.jfm.impl.mounter.rproxy;
 
-import com.github.kjarosh.jfm.impl.util.PathUtils;
+import com.github.kjarosh.jfm.api.FilesystemMapperException;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.generator.ReverseProxyGenerator;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VirtualDirectory;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Kamil Jarosz
  */
 public class ReverseProxy {
-    private Map<String, ReverseProxyFileHandler> fileHandlers = new HashMap<>();
+    private VirtualDirectory root;
     private Object resource;
 
     public ReverseProxy(Class<?> resourceClass, Object resource) {
         this.resource = resource;
-        prepareHandlers(resourceClass);
-    }
-
-    private void prepareHandlers(Class<?> resourceClass) {
-        for (Method method : resourceClass.getDeclaredMethods()) {
-            String path = new ReverseProxyPathResolver(method).resolve();
-            ReverseProxyFileHandler handler = assertCreated(path);
-            handler.addHandlingMethod(method);
-        }
-    }
-
-    private ReverseProxyFileHandler assertCreated(String path) {
-        if (!fileHandlers.containsKey(path)) {
-            fileHandlers.put(path, new ReverseProxyFileHandler(path, getResource()));
-        }
-
-        return getFileHandler(path);
-    }
-
-    private ReverseProxyFileHandler getFileHandler(String path) {
-        return fileHandlers.get(path);
-    }
-
-    public List<String> list(String path) {
-        String dirPath = PathUtils.toDirPath(path);
-
-        return fileHandlers.keySet()
-                .stream()
-                .filter(p -> p.startsWith(dirPath))
-                .map(p -> p.substring(dirPath.length()))
-                .map(PathUtils::getFirstName)
-                .collect(Collectors.toList());
+        this.root = ReverseProxyGenerator.generateVirtualFS(resourceClass, resource);
     }
 
     public boolean isDirectory(String path) {
-        String dirPath = PathUtils.toDirPath(path);
-        return fileHandlers.keySet()
-                .stream()
-                .anyMatch(f -> f.startsWith(dirPath));
+        return root.resolve(path)
+                .map(f -> f instanceof VirtualDirectory)
+                .orElse(false);
     }
 
     public boolean exists(String path) {
-        return fileHandlers.containsKey(path);
+        return root.resolve(path).isPresent();
     }
 
     public byte[] readFile(String path) {
-        return getFileHandler(path).read();
+        return root.resolve(path)
+                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .read();
     }
 
     public void writeFile(String path, byte[] data) {
-        getFileHandler(path).write(data);
+        root.resolve(path)
+                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .write(data);
     }
 
     public void deleteFile(String path) {
-        getFileHandler(path).delete();
+        root.resolve(path)
+                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .delete();
+    }
+
+    public List<String> list(String path) {
+        return root.resolve(path)
+                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .list();
     }
 
     public Object getResource() {

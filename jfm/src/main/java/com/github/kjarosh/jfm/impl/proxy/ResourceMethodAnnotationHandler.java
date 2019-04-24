@@ -2,8 +2,15 @@ package com.github.kjarosh.jfm.impl.proxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
-import com.github.kjarosh.jfm.api.annotations.*;
-import com.github.kjarosh.jfm.impl.MethodHandler;
+import com.github.kjarosh.jfm.api.annotations.Delete;
+import com.github.kjarosh.jfm.api.annotations.Listing;
+import com.github.kjarosh.jfm.api.annotations.Read;
+import com.github.kjarosh.jfm.api.annotations.Write;
+import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
+import com.github.kjarosh.jfm.api.annotations.WriteBytes;
+import com.github.kjarosh.jfm.api.annotations.WriteInteger;
+import com.github.kjarosh.jfm.api.annotations.WriteString;
+import com.github.kjarosh.jfm.impl.AnnotationHandler;
 import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
@@ -16,15 +23,15 @@ import java.nio.file.Path;
 /**
  * @author Kamil Jarosz
  */
-class ResourceMethodProxy implements MethodHandler<Object> {
+class ResourceMethodAnnotationHandler implements AnnotationHandler<Object> {
     private final TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
     private final InvokeContext invokeContext;
 
-    ResourceMethodProxy(InvokeContext invokeContext) {
+    ResourceMethodAnnotationHandler(InvokeContext invokeContext) {
         this.invokeContext = invokeContext;
     }
 
-    private FilesystemMapperException newJFMException(IOException e) {
+    private FilesystemMapperException newJfmException(IOException e) {
         return new FilesystemMapperException(
                 "IO Exception while invoking a method " + invokeContext.getFullName(), e);
     }
@@ -36,7 +43,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
             Path path = invokeContext.getFinalPath();
             return returnTypeHandler.read(type, Files.newInputStream(path));
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -59,7 +66,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
             returnTypeHandler.write(type, Files.newOutputStream(path), (T) content);
             return null;
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -75,7 +82,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
         try {
             return writeConstantValue(byte[].class, writeBytes.value());
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -84,7 +91,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
         try {
             return writeConstantValue(String.class, writeString.value());
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -93,7 +100,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
         try {
             return writeConstantValue(boolean.class, writeBoolean.value());
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -102,7 +109,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
         try {
             return writeConstantValue(int.class, writeInteger.value());
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -117,7 +124,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
 
             return null;
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 
@@ -128,7 +135,7 @@ class ResourceMethodProxy implements MethodHandler<Object> {
             ListingTypeHandler<?> typeHandler = typeHandlerService.getListingHandlerFor(type);
             return typeHandler.list(type, invokeContext.getFinalPath());
         } catch (IOException e) {
-            throw newJFMException(e);
+            throw newJfmException(e);
         }
     }
 }

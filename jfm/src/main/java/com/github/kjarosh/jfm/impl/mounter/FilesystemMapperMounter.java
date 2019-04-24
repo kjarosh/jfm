@@ -47,8 +47,8 @@ public class FilesystemMapperMounter {
     }
 
     public void umount() {
-        Runtime.getRuntime().removeShutdownHook(shutdownHook);
         fuseFs.umount();
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
     }
 
     private Class<?> getResourceClass(Class<?> clazz) {

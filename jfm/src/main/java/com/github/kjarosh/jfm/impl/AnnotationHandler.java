@@ -12,36 +12,36 @@ import com.github.kjarosh.jfm.api.annotations.WriteString;
 /**
  * @author Kamil Jarosz
  */
-public interface MethodHandler<T> {
+public interface AnnotationHandler<T> {
     default T handleRead(Read read) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleWrite(Write write) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleWriteBytes(WriteBytes writeBytes) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleWriteString(WriteString writeString) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleWriteBoolean(WriteBoolean writeBoolean) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleWriteInteger(WriteInteger writeInteger) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleDelete(Delete delete) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 
     default T handleListing(Listing listing) {
-        throw new UnsupportedMethodException();
+        throw new UnsupportedAnnotationException();
     }
 }

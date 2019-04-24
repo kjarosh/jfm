@@ -17,8 +17,8 @@ import java.util.stream.Stream;
 /**
  * @author Kamil Jarosz
  */
-public class MethodHandlingService {
-    public <R> R handle(Method method, MethodHandler<R> invoker){
+public class AnnotationHandlingService {
+    public <R> R handle(Method method, AnnotationHandler<R> handler){
         Read read = method.getAnnotation(Read.class);
         Write write = method.getAnnotation(Write.class);
         WriteString writeString = method.getAnnotation(WriteString.class);
@@ -37,21 +37,21 @@ public class MethodHandlingService {
             throw new FilesystemMapperException(
                     "Method " + method.getName() + " is not properly annotated");
         } else if (read != null) {
-            return invoker.handleRead(read);
+            return handler.handleRead(read);
         } else if (write != null) {
-            return invoker.handleWrite(write);
+            return handler.handleWrite(write);
         } else if (writeBytes != null) {
-            return invoker.handleWriteBytes(writeBytes);
+            return handler.handleWriteBytes(writeBytes);
         } else if (writeString != null) {
-            return invoker.handleWriteString(writeString);
+            return handler.handleWriteString(writeString);
         } else if (writeBoolean != null) {
-            return invoker.handleWriteBoolean(writeBoolean);
+            return handler.handleWriteBoolean(writeBoolean);
         } else if (writeInteger != null) {
-            return invoker.handleWriteInteger(writeInteger);
+            return handler.handleWriteInteger(writeInteger);
         } else if (delete != null) {
-            return invoker.handleDelete(delete);
+            return handler.handleDelete(delete);
         } else if (listing != null) {
-            return invoker.handleListing(listing);
+            return handler.handleListing(listing);
         }
 
         throw new FilesystemMapperException(

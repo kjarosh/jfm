@@ -1,4 +1,4 @@
-package com.github.kjarosh.jfm.impl.mounter.rproxy;
+package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.annotations.Path;
 import com.github.kjarosh.jfm.impl.util.PathUtils;
@@ -9,14 +9,18 @@ import java.lang.reflect.Method;
 /**
  * @author Kamil Jarosz
  */
-class ReverseProxyPathResolver {
+public class ReverseProxyPathResolver {
     private final Method method;
 
-    ReverseProxyPathResolver(Method method) {
+    private ReverseProxyPathResolver(Method method) {
         this.method = method;
     }
 
-    String resolve() {
+    public static String resolveFor(Method method) {
+        return new ReverseProxyPathResolver(method).resolve();
+    }
+
+    public String resolve() {
         return resolve(resolveClass(method.getDeclaringClass()), method);
     }
 

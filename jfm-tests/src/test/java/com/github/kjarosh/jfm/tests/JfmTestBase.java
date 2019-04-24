@@ -25,9 +25,14 @@ public class JfmTestBase {
     }
 
     @AfterAll
-    static void tearDownTestDirectory() throws IOException {
-        Files.walkFileTree(root, new DeletingFileVisitor());
-        Files.delete(root);
+    static void tearDownTestDirectory() {
+        try {
+            Files.walkFileTree(root, new DeletingFileVisitor(root));
+            Files.delete(root);
+            root = null;
+        } catch (IOException ignored) {
+
+        }
     }
 
     @BeforeEach
