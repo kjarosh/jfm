@@ -1,6 +1,5 @@
 package com.github.kjarosh.jfm.tests.pathparams;
 
-import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
@@ -10,9 +9,7 @@ class PathParamsProxyTest extends JfmProxyTestBase {
     private final PathParamsResource pathParamsResource;
 
     PathParamsProxyTest() {
-        this.pathParamsResource = FilesystemMapper.instance()
-                .getTarget(super.getRoot())
-                .proxy(PathParamsResource.class);
+        this.pathParamsResource = proxy(PathParamsResource.class);
     }
 
     @Test

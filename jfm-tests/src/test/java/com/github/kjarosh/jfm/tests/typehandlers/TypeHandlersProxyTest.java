@@ -16,9 +16,7 @@ class TypeHandlersProxyTest extends JfmProxyTestBase {
         FilesystemMapper.instance().getTypeHandlerService()
                 .registerHandlersFromPackage(TypeHandlersProxyTest.class.getPackage());
 
-        this.typeHandlersResource = FilesystemMapper.instance()
-                .getTarget(super.getRoot())
-                .proxy(TypeHandlersResource.class);
+        this.typeHandlersResource = proxy(TypeHandlersResource.class);
     }
 
     @BeforeEach

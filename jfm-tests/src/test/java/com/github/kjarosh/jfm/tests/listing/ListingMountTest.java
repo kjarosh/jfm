@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.tests.listing;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
-import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
+import com.github.kjarosh.jfm.tests.JfmMountTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-class ListingMountTest extends JfmProxyTestBase {
+class ListingMountTest extends JfmMountTestBase {
     private FilesystemMapper fm = FilesystemMapper.instance();
 
     @Mock

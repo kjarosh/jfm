@@ -1,5 +1,7 @@
 package com.github.kjarosh.jfm.tests;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 
@@ -13,24 +15,24 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class JfmTestBase {
     private static final Path TEST_DIR = Paths.get("./jfm-tests");
-    protected final Path root;
 
-    public JfmTestBase() {
-        try {
-            Files.createDirectories(TEST_DIR);
-            this.root = Files.createTempDirectory(TEST_DIR, "jfm-test-");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected static Path root;
+
+    @BeforeAll
+    static void setUpTestDirectory() throws IOException {
+        Files.createDirectories(TEST_DIR);
+        root = Files.createTempDirectory(TEST_DIR, "jfm-test-");
+    }
+
+    @AfterAll
+    static void tearDownTestDirectory() throws IOException {
+        Files.walkFileTree(root, new DeletingFileVisitor());
+        Files.delete(root);
     }
 
     @BeforeEach
     void setUpMocks() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    protected Path getRoot() {
-        return root;
     }
 
     protected String read(Path file) {
@@ -40,7 +42,7 @@ public class JfmTestBase {
             byte[] readBytes = Files.readAllBytes(file);
             return new String(readBytes);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
     }
 
@@ -51,7 +53,7 @@ public class JfmTestBase {
             Files.createDirectories(file.getParent());
             Files.write(file, value.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
     }
 
@@ -61,7 +63,7 @@ public class JfmTestBase {
         try {
             Files.delete(file);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
     }
 
@@ -73,12 +75,12 @@ public class JfmTestBase {
                     .map(Path::getFileName)
                     .map(Path::toString);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
     }
 
     private void checkTestFilePath(Path file) {
-        if (file.normalize().startsWith(getRoot())) {
+        if (file.normalize().startsWith(root)) {
             fail("Wrong path: " + file);
         }
     }

@@ -16,7 +16,7 @@ class BasicProxyTest extends JfmProxyTestBase {
 
     BasicProxyTest() {
         this.basicProxyResource = FilesystemMapper.instance()
-                .getTarget(super.getRoot())
+                .getTarget(root)
                 .proxy(BasicProxyResource.class);
     }
 

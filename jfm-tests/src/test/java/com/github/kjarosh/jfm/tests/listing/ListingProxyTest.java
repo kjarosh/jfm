@@ -1,6 +1,5 @@
 package com.github.kjarosh.jfm.tests.listing;
 
-import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
@@ -10,9 +9,7 @@ class ListingProxyTest extends JfmProxyTestBase {
     private final ListingProxyResource listingProxyResource;
 
     ListingProxyTest() {
-        this.listingProxyResource = FilesystemMapper.instance()
-                .getTarget(super.getRoot())
-                .proxy(ListingProxyResource.class);
+        this.listingProxyResource = proxy(ListingProxyResource.class);
     }
 
     @Test
