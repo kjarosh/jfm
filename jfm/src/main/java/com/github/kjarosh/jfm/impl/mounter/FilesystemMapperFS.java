@@ -48,6 +48,7 @@ public class FilesystemMapperFS extends FuseStubFS {
         try {
             code.run();
         } catch (NoHandlerMethodException e) {
+            // TODO
             throw new ErrorCodeException(-ErrorCodes.ENOENT());
         }
     }
