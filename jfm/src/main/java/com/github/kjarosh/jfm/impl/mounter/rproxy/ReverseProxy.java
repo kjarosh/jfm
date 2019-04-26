@@ -11,10 +11,8 @@ import java.util.List;
  */
 public class ReverseProxy {
     private VirtualDirectory root;
-    private Object resource;
 
     public ReverseProxy(Class<?> resourceClass, Object resource) {
-        this.resource = resource;
         this.root = ReverseProxyGenerator.generateVirtualFS(resourceClass, resource);
     }
 
@@ -30,29 +28,29 @@ public class ReverseProxy {
 
     public byte[] readFile(String path) {
         return root.resolve(path)
-                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .orElseThrow(() -> unknownPathException(path))
                 .read();
     }
 
     public void writeFile(String path, byte[] data) {
         root.resolve(path)
-                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .orElseThrow(() -> unknownPathException(path))
                 .write(data);
     }
 
     public void deleteFile(String path) {
         root.resolve(path)
-                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .orElseThrow(() -> unknownPathException(path))
                 .delete();
     }
 
     public List<String> list(String path) {
         return root.resolve(path)
-                .orElseThrow(() -> new FilesystemMapperException("Unknown path: " + path))
+                .orElseThrow(() -> unknownPathException(path))
                 .list();
     }
 
-    public Object getResource() {
-        return resource;
+    private FilesystemMapperException unknownPathException(String path) {
+        return new FilesystemMapperException("Unknown path: " + path);
     }
 }
