@@ -2,9 +2,12 @@ package com.github.kjarosh.jfm.tests.listing;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmMountTestBase;
+import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 
@@ -27,7 +30,7 @@ class ListingMountTest extends JfmMountTestBase {
         fm.getTarget(root).umountAll();
     }
 
-    // TODO @Test
+    @Test
     void testList() {
         String[] listing = {"a", "b", "c", "f"};
 
@@ -36,5 +39,19 @@ class ListingMountTest extends JfmMountTestBase {
 
         assertThat(list(root.resolve("list")))
                 .containsExactlyInAnyOrder(listing);
+    }
+
+    @Test
+    void testListAsDummyMap() {
+        when(listingMountResource.listRootAsDummyMap())
+                .thenReturn(ImmutableMap.of(
+                        "dummy1", Mockito.mock(DummyResource.class),
+                        "dummy2", Mockito.mock(DummyResource.class),
+                        "dummy3", Mockito.mock(DummyResource.class)));
+
+        String[] expectedListing = {"dummy1", "dummy2", "dummy3"};
+
+        assertThat(list(root.resolve("list-as-map")))
+                .containsExactlyInAnyOrder(expectedListing);
     }
 }

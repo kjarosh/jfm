@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
  * @author Kamil Jarosz
  */
 public class FilesystemMapperMounterFactory {
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newCachedThreadPool(new ReverseProxyThreadFactory());
 
     private FilesystemMapperMounterFactory() {
 

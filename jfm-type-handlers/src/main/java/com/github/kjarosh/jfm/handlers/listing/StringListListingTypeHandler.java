@@ -29,4 +29,9 @@ public class StringListListingTypeHandler implements ListingTypeHandler<List<Str
                 .map(Path::toString)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<String> itemize(Type actualType, List<String> list) {
+        return list;
+    }
 }

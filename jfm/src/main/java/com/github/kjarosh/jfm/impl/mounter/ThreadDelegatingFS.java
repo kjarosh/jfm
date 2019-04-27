@@ -53,7 +53,7 @@ public class ThreadDelegatingFS extends AbstractFuseFS {
             logger.error("FUSE thread has been interrupted", e);
             // we cannot interrupt FUSE thread, we have to ignore this
         } catch (ExecutionException e) {
-            logger.error("The mapped method threw an exception", e);
+            logger.error("The delegate method threw an exception", e);
         } catch (TimeoutException e) {
             logger.error("Timed out waiting for the mapped method to complete", e);
         } finally {

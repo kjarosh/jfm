@@ -24,6 +24,7 @@ import com.github.kjarosh.jfm.handlers.javatime.OffsetTimeTypeHandler;
 import com.github.kjarosh.jfm.handlers.javatime.YearTypeHandler;
 import com.github.kjarosh.jfm.handlers.javatime.ZonedDateTimeTypeHandler;
 import com.github.kjarosh.jfm.handlers.listing.FilesystemResourceListListingTypeHandler;
+import com.github.kjarosh.jfm.handlers.listing.FilesystemResourceMapListingTypeHandler;
 import com.github.kjarosh.jfm.handlers.listing.FilesystemResourceStreamListingTypeHandler;
 import com.github.kjarosh.jfm.handlers.listing.StringListListingTypeHandler;
 import com.github.kjarosh.jfm.handlers.listing.StringStreamListingTypeHandler;
@@ -67,6 +68,7 @@ public class JfmHandlers {
 
     public static Stream<Class<? extends ListingTypeHandler>> getAllListingTypeHandlers() {
         return Stream.of(
+                FilesystemResourceMapListingTypeHandler.class,
                 FilesystemResourceListListingTypeHandler.class,
                 FilesystemResourceStreamListingTypeHandler.class,
                 StringListListingTypeHandler.class,

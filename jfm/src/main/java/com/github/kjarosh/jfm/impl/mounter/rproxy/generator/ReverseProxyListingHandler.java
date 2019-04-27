@@ -3,9 +3,12 @@ package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.annotations.Listing;
 import com.github.kjarosh.jfm.impl.AnnotationHandler;
+import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,6 +25,18 @@ public class ReverseProxyListingHandler implements AnnotationHandler<List<String
 
     @Override
     public List<String> handleListing(Listing listing) {
-        return null;
+        return handleListing0();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> List<String> handleListing0() {
+        Object readObject = invoker.invoke();
+        if (readObject == null) {
+            return Collections.emptyList();
+        }
+
+        Type type = invoker.getReturnType();
+        ListingTypeHandler<T> returnTypeHandler = (ListingTypeHandler<T>) typeHandlerService.getListingHandlerFor(type);
+        return returnTypeHandler.itemize(type, (T) readObject);
     }
 }

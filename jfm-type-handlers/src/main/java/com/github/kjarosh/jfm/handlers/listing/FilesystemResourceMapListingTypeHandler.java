@@ -1,5 +1,6 @@
 package com.github.kjarosh.jfm.handlers.listing;
 
+import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
@@ -8,18 +9,22 @@ import com.github.kjarosh.jfm.spi.types.TypeReferences;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * @author Kamil Jarosz
  */
 @RegisterTypeHandler
-public class FilesystemResourceListListingTypeHandler<T> implements ListingTypeHandler<List<T>> {
+public class FilesystemResourceMapListingTypeHandler<T> implements ListingTypeHandler<Map<String, T>> {
     @Override
-    public TypeReference<List<T>> getHandledType() {
-        return new TypeReference<List<T>>() {
+    public TypeReference<Map<String, T>> getHandledType() {
+        return new TypeReference<Map<String, T>>() {
         };
     }
 
@@ -31,18 +36,21 @@ public class FilesystemResourceListListingTypeHandler<T> implements ListingTypeH
     }
 
     @Override
-    public List<T> list(Type actualType, Path path) throws IOException {
+    public Map<String, T> list(Type actualType, Path path) throws IOException {
         Class<T> resourceClass = getResourceClass(actualType);
-
-        return streamHandler().list(resourceClass, path)
-                .collect(Collectors.toList());
+        FilesystemMapper instance = FilesystemMapper.instance();
+        return Files.list(path).collect(Collectors.toMap(
+                p -> p.getFileName().toString(),
+                p -> instance.getTarget(p).proxy(resourceClass),
+                (a, b) -> {
+                    throw new AssertionError("Duplicate filename while listing " + path);
+                },
+                LinkedHashMap::new));
     }
 
     @Override
-    public List<String> itemize(Type actualType, List<T> list) {
-        Class<T> resourceClass = getResourceClass(actualType);
-
-        return streamHandler().reverse(resourceClass, list.stream());
+    public List<String> itemize(Type actualType, Map<String, T> map) {
+        return new ArrayList<>(map.keySet());
     }
 
     @SuppressWarnings("unchecked")
@@ -53,9 +61,5 @@ public class FilesystemResourceListListingTypeHandler<T> implements ListingTypeH
     private Type getResourceType(Type actualType) {
         return TypeReferences.getTypeFromVariable(TypeReferences.getType(getHandledType()), actualType, "T")
                 .orElseThrow(AssertionError::new);
-    }
-
-    private FilesystemResourceStreamListingTypeHandler<T> streamHandler() {
-        return new FilesystemResourceStreamListingTypeHandler<>();
     }
 }

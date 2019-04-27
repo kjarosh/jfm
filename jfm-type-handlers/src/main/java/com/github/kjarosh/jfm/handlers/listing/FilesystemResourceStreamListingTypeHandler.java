@@ -1,6 +1,7 @@
 package com.github.kjarosh.jfm.handlers.listing;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
+import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
 import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -42,6 +44,16 @@ public class FilesystemResourceStreamListingTypeHandler<T> implements ListingTyp
         return Files.list(path)
                 .map(instance::getTarget)
                 .map(t -> t.proxy(resourceClass));
+    }
+
+    @Override
+    public List<String> itemize(Type actualType, Stream<T> stream) {
+        Class<T> resourceClass = getResourceClass(actualType);
+        return reverse(resourceClass, stream);
+    }
+
+    public List<String> reverse(Class<T> resourceClass, Stream<T> stream) {
+        throw new FilesystemMapperException("Cannot use this type handler in reverse proxy");
     }
 
     @SuppressWarnings("unchecked")
