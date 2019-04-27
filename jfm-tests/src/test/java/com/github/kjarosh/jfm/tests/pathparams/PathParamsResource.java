@@ -14,4 +14,12 @@ public interface PathParamsResource {
     @Read
     @Path("{name}/int")
     int getInnerInteger(@PathParam("name") String name);
+
+    @Read
+    @Path("{path}")
+    int getAnyInteger(@PathParam(value = "path", allowSeparators = true) String path);
+
+    @Read
+    @Path("{name}")
+    int getIntegerWithRegex(@PathParam(value = "name", regex = "[a-z/]+") String name);
 }

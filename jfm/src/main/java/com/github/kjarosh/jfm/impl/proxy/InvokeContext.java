@@ -3,8 +3,8 @@ package com.github.kjarosh.jfm.impl.proxy;
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.Content;
 import com.github.kjarosh.jfm.api.annotations.PathParam;
+import com.github.kjarosh.jfm.impl.util.PathParamValidator;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -16,6 +16,8 @@ import java.util.Map;
  * @author Kamil Jarosz
  */
 class InvokeContext {
+    private final PathParamValidator pathParamValidator = new PathParamValidator();
+
     private final Path finalPath;
     private final Method method;
 
@@ -44,17 +46,18 @@ class InvokeContext {
         if (parameter.isAnnotationPresent(PathParam.class)) {
             PathParam pathParam = parameter.getAnnotation(PathParam.class);
             String paramName = pathParam.value();
+            if (paramName.isEmpty()) {
+                throw new FilesystemMapperException(
+                        "Empty path param name on " + getFullName());
+            }
+
             if (pathParams.containsKey(paramName)) {
                 throw new FilesystemMapperException(
                         "Duplicate path param: " + paramName + " on " + getFullName());
             }
 
             String paramValue = String.valueOf(value);
-            if (!pathParam.allowSeparators() &&
-                    (paramValue.contains("/") || paramValue.contains(File.separator))) {
-                throw new FilesystemMapperException(
-                        "Parameter value contains separators: " + paramValue);
-            }
+            pathParamValidator.validate(pathParam, paramValue);
             pathParams.put(paramName, paramValue);
         }
 
