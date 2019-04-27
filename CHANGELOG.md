@@ -2,12 +2,14 @@
 
 ## Pre-releases
 
-### _next_
+### 0.2.0
 
 - TypeHandlers now use `InputStream`s and `OutputStream`s instead of paths.
 - Changed the behavior of optionals, an empty value now maps to an empty
   file, not to a non-existing file.
-- Various bug fixes.
+- Added `itemize` method to `ListingTypeHandler`.
+- Now JFM generates a virtual file system for reverse proxy.
+- Various bug fixes and implementations of missing features.
 
 ### 0.1.0
 
