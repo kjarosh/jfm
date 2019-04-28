@@ -15,8 +15,8 @@ public class PathUtils {
     }
 
     public static String getName(String path) {
-        path = toFilePath(path);
-        return path.contains("/") ? path.substring(path.lastIndexOf('/') + 1) : path;
+        String trimmed = toFilePath(path);
+        return trimmed.contains("/") ? trimmed.substring(trimmed.lastIndexOf('/') + 1) : trimmed;
     }
 
     public static String getFirstName(String path) {
@@ -33,10 +33,10 @@ public class PathUtils {
     }
 
     public static Optional<String> getParent(String path) {
-        path = toFilePath(path);
+        String trimmed = toFilePath(path);
 
-        if (path.contains("/")) {
-            return Optional.of(path.substring(0, path.lastIndexOf('/')));
+        if (trimmed.contains("/")) {
+            return Optional.of(trimmed.substring(0, trimmed.lastIndexOf('/')));
         } else {
             return Optional.empty();
         }

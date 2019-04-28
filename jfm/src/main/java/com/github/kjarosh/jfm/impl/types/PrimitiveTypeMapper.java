@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Kamil Jarosz
  */
-public class PrimitiveTypeMapper {
+class PrimitiveTypeMapper {
     private static final ConcurrentMap<Type, Type> PRIMITIVE_MAP = new ConcurrentHashMap<>();
 
     static {
@@ -22,7 +22,7 @@ public class PrimitiveTypeMapper {
         PRIMITIVE_MAP.put(void.class, Void.class);
     }
 
-    public static Type mapPossiblePrimitive(Type possiblePrimitive) {
+    static Type mapPossiblePrimitive(Type possiblePrimitive) {
         Type type = PRIMITIVE_MAP.get(possiblePrimitive);
         return type != null ? type : possiblePrimitive;
     }
