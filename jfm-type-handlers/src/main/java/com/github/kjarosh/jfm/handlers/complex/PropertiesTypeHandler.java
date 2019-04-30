@@ -4,7 +4,11 @@ import com.github.kjarosh.jfm.spi.types.RegisterTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeReference;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.Properties;
 
@@ -37,7 +41,7 @@ public class PropertiesTypeHandler implements TypeHandler<Properties> {
         try {
             props.store(stream, null);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
         return stream.toByteArray();
     }
@@ -48,7 +52,7 @@ public class PropertiesTypeHandler implements TypeHandler<Properties> {
         try {
             ret.load(new ByteArrayInputStream(data));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AssertionError(e);
         }
         return ret;
     }
