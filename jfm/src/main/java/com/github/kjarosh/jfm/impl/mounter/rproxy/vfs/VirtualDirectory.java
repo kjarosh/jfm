@@ -67,13 +67,13 @@ public class VirtualDirectory implements VirtualFile {
     }
 
     @Override
-    public byte[] read() {
-        throw new FilesystemMapperException("Cannot read a directory");
+    public byte[] read() throws VFSException {
+        throw new IsDirectoryException();
     }
 
     @Override
-    public void write(byte[] data) {
-        throw new FilesystemMapperException("Cannot write a directory");
+    public void write(byte[] data) throws VFSException {
+        throw new IsDirectoryException();
     }
 
     @Override

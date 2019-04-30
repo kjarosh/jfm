@@ -26,7 +26,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * @author Kamil Jarosz
  */
-public class ThreadDelegatingFS extends AbstractFuseFS {
+class ThreadDelegatingFS extends AbstractFuseFS {
     private static final Logger logger = LoggerFactory.getLogger(ThreadDelegatingFS.class);
     private static final int ERROR = -ErrorCodes.EBADFD();
 

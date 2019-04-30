@@ -2,11 +2,17 @@ package com.github.kjarosh.jfm.impl.mounter;
 
 import com.github.kjarosh.jfm.impl.mounter.rproxy.NoHandlerMethodException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.ReverseProxy;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.DirectoryRemovalException;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.IsDirectoryException;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VFSException;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VFSRunnable;
 import jnr.constants.platform.OpenFlags;
 import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
 import jnr.ffi.types.off_t;
 import jnr.ffi.types.size_t;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.serce.jnrfuse.ErrorCodes;
 import ru.serce.jnrfuse.FuseFillDir;
 import ru.serce.jnrfuse.FuseStubFS;
@@ -26,6 +32,8 @@ import java.util.Objects;
  * @author Kamil Jarosz
  */
 public class FilesystemMapperFS extends FuseStubFS {
+    private static final Logger logger = LoggerFactory.getLogger(FilesystemMapperFS.class);
+
     private ReverseProxy reverseProxy;
 
     private Map<String, byte[]> openFiles = new HashMap<>();
@@ -44,12 +52,19 @@ public class FilesystemMapperFS extends FuseStubFS {
                 Arrays.asList(OpenFlags.O_RDWR, OpenFlags.O_WRONLY));
     }
 
-    private void handleErrorCodes(Runnable code) throws ErrorCodeException {
+    private void handleExceptions(VFSRunnable code) {
         try {
             code.run();
         } catch (NoHandlerMethodException e) {
             // TODO
             throw new ErrorCodeException(-ErrorCodes.ENOENT());
+        } catch (IsDirectoryException e) {
+            throw new ErrorCodeException(-ErrorCodes.EISDIR());
+        } catch (DirectoryRemovalException e) {
+            throw new ErrorCodeException(-ErrorCodes.EPERM());
+        } catch (VFSException e) {
+            logger.error("Unknown VFS error", e);
+            throw new ErrorCodeException(-ErrorCodes.EBADFD());
         }
     }
 
@@ -69,7 +84,7 @@ public class FilesystemMapperFS extends FuseStubFS {
         int res = 0;
         if (Objects.equals(path, "/") || reverseProxy.isDirectory(path)) {
             stat.st_mode.set(FileStat.S_IFDIR | 0755);
-            stat.st_nlink.set(1 + reverseProxy.list(path).size());
+            handleExceptions(() -> stat.st_nlink.set(1 + reverseProxy.list(path).size()));
         } else if (reverseProxy.exists(path)) {
             stat.st_mode.set(FileStat.S_IFREG | 0444);
             stat.st_nlink.set(1);
@@ -87,8 +102,10 @@ public class FilesystemMapperFS extends FuseStubFS {
 
         filter.apply(buf, ".", null, 0);
         filter.apply(buf, "..", null, 0);
-        reverseProxy.list(path)
-                .forEach(file -> filter.apply(buf, file, null, 0));
+
+        handleExceptions(() -> reverseProxy.list(path)
+                .forEach(file -> filter.apply(buf, file, null, 0)));
+
         return 0;
     }
 
@@ -102,12 +119,8 @@ public class FilesystemMapperFS extends FuseStubFS {
             return -ErrorCodes.EISDIR();
         }
 
-        try {
-            handleErrorCodes(() -> openFiles.put(path, reverseProxy.readFile(path)));
-            handleErrorCodes(() -> openFileFlags.put(path, mapOpenFlags(fi.flags)));
-        } catch (ErrorCodeException e) {
-            return e.getErrorCode();
-        }
+        handleExceptions(() -> openFiles.put(path, reverseProxy.readFile(path)));
+        handleExceptions(() -> openFileFlags.put(path, mapOpenFlags(fi.flags)));
 
         return 0;
     }
@@ -122,11 +135,7 @@ public class FilesystemMapperFS extends FuseStubFS {
             return 0;
         }
 
-        try {
-            handleErrorCodes(() -> reverseProxy.writeFile(path, openFiles.get(path)));
-        } catch (ErrorCodeException e) {
-            return e.getErrorCode();
-        }
+        handleExceptions(() -> reverseProxy.writeFile(path, openFiles.get(path)));
 
         return 0;
     }
@@ -201,11 +210,7 @@ public class FilesystemMapperFS extends FuseStubFS {
 
     @Override
     public int unlink(String path) {
-        try {
-            handleErrorCodes(() -> reverseProxy.deleteFile(path));
-        } catch (ErrorCodeException e) {
-            return e.getErrorCode();
-        }
+        handleExceptions(() -> reverseProxy.deleteFile(path));
 
         return 0;
     }

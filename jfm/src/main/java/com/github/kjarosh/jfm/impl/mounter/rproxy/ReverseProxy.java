@@ -2,6 +2,7 @@ package com.github.kjarosh.jfm.impl.mounter.rproxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.generator.ReverseProxyGenerator;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VFSException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VirtualDirectory;
 
 import java.util.List;
@@ -26,25 +27,25 @@ public class ReverseProxy {
         return root.resolve(path).isPresent();
     }
 
-    public byte[] readFile(String path) {
+    public byte[] readFile(String path) throws VFSException {
         return root.resolve(path)
                 .orElseThrow(() -> unknownPathException(path))
                 .read();
     }
 
-    public void writeFile(String path, byte[] data) {
+    public void writeFile(String path, byte[] data) throws VFSException {
         root.resolve(path)
                 .orElseThrow(() -> unknownPathException(path))
                 .write(data);
     }
 
-    public void deleteFile(String path) {
+    public void deleteFile(String path) throws VFSException {
         root.resolve(path)
                 .orElseThrow(() -> unknownPathException(path))
                 .delete();
     }
 
-    public List<String> list(String path) {
+    public List<String> list(String path) throws VFSException {
         return root.resolve(path)
                 .orElseThrow(() -> unknownPathException(path))
                 .list();

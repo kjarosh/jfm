@@ -6,11 +6,11 @@ import java.util.List;
  * @author Kamil Jarosz
  */
 public interface VirtualFile {
-    byte[] read();
+    byte[] read() throws VFSException;
 
-    void write(byte[] data);
+    void write(byte[] data) throws VFSException;
 
-    void delete();
+    void delete() throws VFSException;
 
-    List<String> list();
+    List<String> list() throws VFSException;
 }

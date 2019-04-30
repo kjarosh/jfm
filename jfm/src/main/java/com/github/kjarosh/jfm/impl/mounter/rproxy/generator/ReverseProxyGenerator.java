@@ -44,8 +44,13 @@ public class ReverseProxyGenerator {
     private VirtualDirectory getParentDirectory(Method method, String path) {
         return PathUtils.getParent(path)
                 .map(parentPath -> root.ensureDirectoryCreated(parentPath)
-                        .orElseThrow(() -> new FilesystemMapperException("Invalid path for " + method)))
+                        .orElseThrow(() -> parentIsNotADirectoryException(method)))
                 .orElse(root);
+    }
+
+    private FilesystemMapperException parentIsNotADirectoryException(Method method) {
+        return new FilesystemMapperException("Invalid path for " + method
+                + ", another method defines parent path as a file");
     }
 
     private VirtualFile generateFile(Method method, VirtualFile existingFile) {
