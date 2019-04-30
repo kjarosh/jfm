@@ -2,5 +2,15 @@ language: java
 cache:
   directories:
     - "$HOME/.m2"
+
 install:
   - cp .travis/settings.xml $HOME/.m2/settings.xml
+  - pip install --user -U pip
+  - pip install --user codecov
+
+script:
+  - mvn compile
+  - mvn verify
+
+after_success:
+  - codecov
