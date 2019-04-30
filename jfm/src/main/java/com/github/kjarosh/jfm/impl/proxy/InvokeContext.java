@@ -84,6 +84,10 @@ class InvokeContext {
         return method.getDeclaringClass().getName() + "." + method.getName();
     }
 
+    public boolean isContentAvailable() {
+        return contentType != null;
+    }
+
     public Type getContentType() {
         return contentType;
     }

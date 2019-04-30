@@ -6,7 +6,7 @@ import com.github.kjarosh.jfm.api.annotations.PathParam;
 import com.github.kjarosh.jfm.api.annotations.Read;
 
 @FilesystemResource
-public interface PathParamsResource {
+public interface PathParamsProxyResource {
     @Read
     @Path("{name}")
     int getInteger(@PathParam("name") String name);

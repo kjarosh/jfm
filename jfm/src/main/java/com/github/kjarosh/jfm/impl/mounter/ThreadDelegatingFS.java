@@ -55,7 +55,7 @@ public class ThreadDelegatingFS extends AbstractFuseFS {
         } catch (ExecutionException e) {
             logger.error("The delegate method threw an exception", e);
         } catch (TimeoutException e) {
-            logger.error("Timed out waiting for the mapped method to complete", e);
+            logger.error("Timed out waiting for the delegate method to complete", e);
         } finally {
             future.cancel(true);
         }

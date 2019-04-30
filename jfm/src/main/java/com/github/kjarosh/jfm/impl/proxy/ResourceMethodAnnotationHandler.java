@@ -49,21 +49,21 @@ class ResourceMethodAnnotationHandler implements AnnotationHandler<Object> {
 
     @Override
     public Object handleWrite(Write writeAnnotation) {
-        return handleWrite0(writeAnnotation);
+        return handleWrite0();
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Object handleWrite0(Write writeAnnotation) {
+    private <T> Object handleWrite0() {
         try {
             Object content = invokeContext.getContent();
-            Type type = invokeContext.getContentType();
-            if (type == null) {
+            if (!invokeContext.isContentAvailable()) {
                 throw new FilesystemMapperException("No content found on " + invokeContext.getFullName());
             }
 
-            TypeHandler<T> returnTypeHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(type);
+            Type contentType = invokeContext.getContentType();
+            TypeHandler<T> returnTypeHandler = (TypeHandler<T>) typeHandlerService.getHandlerFor(contentType);
             Path path = invokeContext.getFinalPath();
-            returnTypeHandler.write(type, Files.newOutputStream(path), (T) content);
+            returnTypeHandler.write(contentType, Files.newOutputStream(path), (T) content);
             return null;
         } catch (IOException e) {
             throw newJfmException(e);

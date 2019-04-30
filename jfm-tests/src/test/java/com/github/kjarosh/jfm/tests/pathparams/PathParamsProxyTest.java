@@ -8,10 +8,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathParamsProxyTest extends JfmProxyTestBase {
-    private final PathParamsResource pathParamsResource;
+    private final PathParamsProxyResource pathParamsProxyResource;
 
     PathParamsProxyTest() {
-        this.pathParamsResource = proxy(PathParamsResource.class);
+        this.pathParamsProxyResource = proxy(PathParamsProxyResource.class);
     }
 
     @Test
@@ -20,11 +20,11 @@ class PathParamsProxyTest extends JfmProxyTestBase {
         write(root.resolve("second"), "2");
         write(root.resolve("third"), "3");
 
-        assertThat(pathParamsResource.getInteger("first"))
+        assertThat(pathParamsProxyResource.getInteger("first"))
                 .isEqualTo(1);
-        assertThat(pathParamsResource.getInteger("second"))
+        assertThat(pathParamsProxyResource.getInteger("second"))
                 .isEqualTo(2);
-        assertThat(pathParamsResource.getInteger("third"))
+        assertThat(pathParamsProxyResource.getInteger("third"))
                 .isEqualTo(3);
     }
 
@@ -34,11 +34,11 @@ class PathParamsProxyTest extends JfmProxyTestBase {
         write(root.resolve("second.d/int"), "2");
         write(root.resolve("third.d/int"), "3");
 
-        assertThat(pathParamsResource.getInnerInteger("first.d"))
+        assertThat(pathParamsProxyResource.getInnerInteger("first.d"))
                 .isEqualTo(1);
-        assertThat(pathParamsResource.getInnerInteger("second.d"))
+        assertThat(pathParamsProxyResource.getInnerInteger("second.d"))
                 .isEqualTo(2);
-        assertThat(pathParamsResource.getInnerInteger("third.d"))
+        assertThat(pathParamsProxyResource.getInnerInteger("third.d"))
                 .isEqualTo(3);
     }
 
@@ -46,7 +46,7 @@ class PathParamsProxyTest extends JfmProxyTestBase {
     void testDenySeparators() {
         write(root.resolve("first.d/int"), "1");
 
-        assertThatThrownBy(() -> pathParamsResource.getInteger("first.d/int"))
+        assertThatThrownBy(() -> pathParamsProxyResource.getInteger("first.d/int"))
                 .isInstanceOf(FilesystemMapperException.class)
                 .hasMessageContaining("Parameter value contains separators");
     }
@@ -57,11 +57,11 @@ class PathParamsProxyTest extends JfmProxyTestBase {
         write(root.resolve("second.d/int"), "2");
         write(root.resolve("third.d/int"), "3");
 
-        assertThat(pathParamsResource.getAnyInteger("first.d/int"))
+        assertThat(pathParamsProxyResource.getAnyInteger("first.d/int"))
                 .isEqualTo(1);
-        assertThat(pathParamsResource.getAnyInteger("second.d/int"))
+        assertThat(pathParamsProxyResource.getAnyInteger("second.d/int"))
                 .isEqualTo(2);
-        assertThat(pathParamsResource.getAnyInteger("third.d/int"))
+        assertThat(pathParamsProxyResource.getAnyInteger("third.d/int"))
                 .isEqualTo(3);
     }
 
@@ -71,12 +71,12 @@ class PathParamsProxyTest extends JfmProxyTestBase {
         write(root.resolve("second.int"), "2");
         write(root.resolve("third"), "3");
 
-        assertThat(pathParamsResource.getIntegerWithRegex("first"))
+        assertThat(pathParamsProxyResource.getIntegerWithRegex("first"))
                 .isEqualTo(1);
-        assertThatThrownBy(() -> pathParamsResource.getIntegerWithRegex("second.int"))
+        assertThatThrownBy(() -> pathParamsProxyResource.getIntegerWithRegex("second.int"))
                 .isInstanceOf(FilesystemMapperException.class)
                 .hasMessageContaining("Parameter value is not compliant with regular expression");
-        assertThatThrownBy(() -> pathParamsResource.getIntegerWithRegex("third/int"))
+        assertThatThrownBy(() -> pathParamsProxyResource.getIntegerWithRegex("third/int"))
                 .isInstanceOf(FilesystemMapperException.class)
                 .hasMessageContaining("Parameter value contains separators");
     }
