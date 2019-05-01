@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Kamil Jarosz
  */
 class PathUtilsTest {
-
     @Test
     void toDirPath() {
         assertThat(PathUtils.toDirPath("a"))

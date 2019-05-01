@@ -5,7 +5,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Kamil Jarosz
@@ -23,11 +26,15 @@ public class TypeReferences {
         return genericInterface.getActualTypeArguments()[0];
     }
 
-    public static <T> Optional<Type> getTypeFromVariable(TypeReference<T> reference, Type actualType, String variableName) {
+    public static Optional<Type> getTypeFromVariable(TypeReference<?> reference, Type actualType, String variableName) {
         return getTypeFromVariable(getType(reference), actualType, variableName);
     }
 
     public static Optional<Type> getTypeFromVariable(Type typeTemplate, Type actualType, String variableName) {
+        Objects.requireNonNull(typeTemplate);
+        Objects.requireNonNull(actualType);
+        Objects.requireNonNull(variableName);
+
         if (typeTemplate instanceof TypeVariable) {
             if (((TypeVariable) typeTemplate).getName().equals(variableName)) {
                 return Optional.of(actualType);
@@ -52,10 +59,8 @@ public class TypeReferences {
             }
 
             return getTypeFromVariable((ParameterizedType) typeTemplate, (ParameterizedType) actualType, variableName);
-        } else if (typeTemplate instanceof WildcardType) {
-            throw new UnsupportedOperationException();
         } else {
-            throw new UnsupportedOperationException();
+            return Optional.empty();
         }
     }
 
@@ -72,12 +77,17 @@ public class TypeReferences {
             return Optional.empty();
         }
 
+        Set<Type> found = new HashSet<>();
         for (int i = 0; i < argsCount; ++i) {
             Optional<Type> ret = getTypeFromVariable(newTypeTemplates[i], newActualTypes[i], variableName);
-            if (ret.isPresent()) return ret;
+            ret.ifPresent(found::add);
         }
 
-        return Optional.empty();
+        if (found.size() == 1) {
+            return Optional.of(found.iterator().next());
+        } else {
+            return Optional.empty();
+        }
     }
 
     public static Optional<Integer> calculateSimilarity(Type type, Type other) {
