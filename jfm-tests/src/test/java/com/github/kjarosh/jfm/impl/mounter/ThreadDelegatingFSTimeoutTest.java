@@ -19,7 +19,9 @@ import static org.mockito.Mockito.when;
 /**
  * @author Kamil Jarosz
  */
-class ThreadDelegatingFSTest extends FuseFSTestBase {
+class ThreadDelegatingFSTimeoutTest extends FuseFSTestBase {
+    private static long timeoutMillis = 10;
+
     @Mock
     private FuseFS inner;
 
@@ -31,30 +33,22 @@ class ThreadDelegatingFSTest extends FuseFSTestBase {
 
         threadDelegatingFS = new ThreadDelegatingFS(
                 Executors.newSingleThreadExecutor(), inner,
-                Duration.ofSeconds(2));
+                Duration.ofMillis(timeoutMillis));
     }
 
     protected Stream<DynamicTest> testMockedMethod(Function<FuseFS, Integer> method) {
         return Stream.of(
                 DynamicTest.dynamicTest(
-                        "Test valid value returning",
-                        () -> testValidReturn(method)),
-                DynamicTest.dynamicTest(
-                        "Test exception thrown",
-                        () -> testExceptionThrown(method)));
+                        "Test timeout",
+                        () -> testTimeout(method)));
     }
 
-    private void testValidReturn(Function<FuseFS, Integer> method) {
+    private void testTimeout(Function<FuseFS, Integer> method) {
         when(method.apply(inner))
-                .thenReturn(17);
-
-        assertThat(method.apply(threadDelegatingFS))
-                .isEqualTo(17);
-    }
-
-    private void testExceptionThrown(Function<FuseFS, Integer> method) {
-        when(method.apply(inner))
-                .thenThrow(new RuntimeException());
+                .thenAnswer(invocation -> {
+                    Thread.sleep(timeoutMillis * 10);
+                    return 0;
+                });
 
         assertThat(method.apply(threadDelegatingFS))
                 .isEqualTo(-ErrorCodes.EBADFD());
