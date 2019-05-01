@@ -4,11 +4,6 @@ import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmProxyTestBase;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +18,9 @@ class ComplexProxyTest extends JfmProxyTestBase {
     }
 
     @Test
-    void testProperties() throws IOException {
+    void testProperties() {
         Properties props = prepareProperties();
-        String expectedProps = propsToString(props);
+        String expectedProps = PropertiesUtils.propsToString(props);
 
         write(root.resolve("props"), expectedProps);
 
@@ -34,14 +29,14 @@ class ComplexProxyTest extends JfmProxyTestBase {
     }
 
     @Test
-    void testSetProperties() throws IOException {
+    void testSetProperties() {
         Properties props = prepareProperties();
-        String expectedProps = propsToString(props);
+        String[] expectedProps = PropertiesUtils.propsToStrings(props);
 
         complexProxyResource.setProperties(props);
 
         assertThat(read(root.resolve("props")))
-                .isEqualTo(expectedProps);
+                .contains(expectedProps);
     }
 
     private Properties prepareProperties() {
@@ -49,12 +44,5 @@ class ComplexProxyTest extends JfmProxyTestBase {
         props.setProperty("prop1", "value1");
         props.setProperty("prop2", "value2");
         return props;
-    }
-
-    private String propsToString(Properties props) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Writer w = new OutputStreamWriter(bos);
-        props.store(w, null);
-        return new String(bos.toByteArray(), StandardCharsets.UTF_8);
     }
 }

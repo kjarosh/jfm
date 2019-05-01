@@ -7,11 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,20 +34,20 @@ class ComplexMountTest extends JfmMountTestBase {
     }
 
     @Test
-    void testProperties() throws IOException {
+    void testProperties() {
         Properties props = prepareProperties();
-        String expectedProps = propsToString(props);
+        String[] expectedProps = PropertiesUtils.propsToStrings(props);
 
         when(complexMountResource.getProperties()).thenReturn(props);
 
         assertThat(read(root.resolve("props")))
-                .isEqualTo(expectedProps);
+                .contains(expectedProps);
     }
 
     @Test
-    void testSetProperties() throws IOException {
+    void testSetProperties() {
         Properties props = prepareProperties();
-        String expectedProps = propsToString(props);
+        String expectedProps = PropertiesUtils.propsToString(props);
 
         write(root.resolve("props"), expectedProps);
 
@@ -65,12 +60,5 @@ class ComplexMountTest extends JfmMountTestBase {
         props.setProperty("prop1", "value1");
         props.setProperty("prop2", "value2");
         return props;
-    }
-
-    private String propsToString(Properties props) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Writer w = new OutputStreamWriter(bos);
-        props.store(w, null);
-        return new String(bos.toByteArray(), StandardCharsets.UTF_8);
     }
 }
