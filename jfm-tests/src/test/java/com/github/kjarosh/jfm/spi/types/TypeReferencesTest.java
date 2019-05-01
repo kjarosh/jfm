@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,15 @@ class TypeReferencesTest {
 
         assertThat(type)
                 .isEqualTo(String.class);
+    }
+
+    @Test
+    <T> void getTypeT() {
+        Type type = TypeReferences.getType(new TypeReference<T>() {
+        });
+
+        assertThat(type)
+                .isInstanceOf(TypeVariable.class);
     }
 
     @Test

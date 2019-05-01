@@ -4,16 +4,18 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @author Kamil Jarosz
  */
 public class TypeReferences {
+    private static final Function<Integer, Integer> increaseSimilarity = i -> i + 1;
+
     public static <T> Type getType(TypeReference<T> ref) {
         Type[] genericInterfaces = ((TypeReference<?>) ref).getClass().getGenericInterfaces();
 
@@ -90,66 +92,93 @@ public class TypeReferences {
         }
     }
 
-    public static Optional<Integer> calculateSimilarity(Type type, Type other) {
-        if (type instanceof TypeVariable || other instanceof TypeVariable) {
-            return Optional.of(1);
+    public static Optional<Integer> calculateSimilarity(Type actual, Type template) {
+        Objects.requireNonNull(actual);
+        Objects.requireNonNull(template);
+
+        if (actual instanceof TypeVariable) {
+            throw new IllegalArgumentException("Actual type has variables");
         }
 
-        if (type instanceof Class<?>) {
-            if (!(other instanceof Class<?>)) {
+        if (template instanceof TypeVariable) {
+            return Optional.of(0);
+        }
+
+        if (template instanceof GenericArrayType) {
+            if (!(actual instanceof Class<?>)) {
                 return Optional.empty();
             }
 
-            return calculateSimilarity((Class<?>) type, (Class<?>) other);
-        } else if (type instanceof GenericArrayType) {
-            if (!(other instanceof GenericArrayType)) {
+            return calculateSimilarity((Class<?>) actual, (GenericArrayType) template);
+        } else if (template instanceof Class<?>) {
+            if (!(actual instanceof Class<?>)) {
                 return Optional.empty();
             }
 
-            return calculateSimilarity((GenericArrayType) type, (GenericArrayType) other);
-        } else if (type instanceof ParameterizedType) {
-            if (!(other instanceof ParameterizedType)) {
+            return calculateSimilarity((Class<?>) actual, (Class<?>) template);
+        } else if (template instanceof ParameterizedType) {
+            if (!(actual instanceof ParameterizedType)) {
                 return Optional.empty();
             }
 
-            return calculateSimilarity((ParameterizedType) type, (ParameterizedType) other);
-        } else if (type instanceof WildcardType) {
-            throw new UnsupportedOperationException();
+            return calculateSimilarity((ParameterizedType) actual, (ParameterizedType) template);
         } else {
-            throw new UnsupportedOperationException();
+            return Optional.empty();
         }
     }
 
-    private static Optional<Integer> calculateSimilarity(Class<?> type, Class<?> other) {
-        if (type == other) {
+    private static Optional<Integer> calculateSimilarity(Class<?> actual, Class<?> template) {
+        Objects.requireNonNull(actual);
+        Objects.requireNonNull(template);
+
+        if (template.isArray()) {
+            if (!actual.isArray()) {
+                return Optional.empty();
+            }
+
+            return calculateSimilarity(actual.getComponentType(), template.getComponentType())
+                    .map(increaseSimilarity);
+        }
+
+        if (actual == template) {
             return Optional.of(1);
         } else {
             return Optional.empty();
         }
     }
 
-    private static Optional<Integer> calculateSimilarity(GenericArrayType type, GenericArrayType other) {
+    private static Optional<Integer> calculateSimilarity(Class<?> actual, GenericArrayType template) {
+        Objects.requireNonNull(actual);
+        Objects.requireNonNull(template);
+
+        if (!actual.isArray()) {
+            return Optional.empty();
+        }
+
         return calculateSimilarity(
-                type.getGenericComponentType(),
-                other.getGenericComponentType())
-                .map(i -> i + 1);
+                actual.getComponentType(),
+                template.getGenericComponentType())
+                .map(increaseSimilarity);
     }
 
-    private static Optional<Integer> calculateSimilarity(ParameterizedType type, ParameterizedType other) {
-        if (!calculateSimilarity(type.getRawType(), other.getRawType()).isPresent()) {
+    private static Optional<Integer> calculateSimilarity(ParameterizedType actual, ParameterizedType template) {
+        Objects.requireNonNull(actual);
+        Objects.requireNonNull(template);
+
+        if (!calculateSimilarity(actual.getRawType(), template.getRawType()).isPresent()) {
             return Optional.empty();
         }
 
-        int parametersCount = type.getActualTypeArguments().length;
-        if (parametersCount != other.getActualTypeArguments().length) {
+        int parametersCount = actual.getActualTypeArguments().length;
+        if (parametersCount != template.getActualTypeArguments().length) {
             return Optional.empty();
         }
 
         int ret = 1;
         for (int i = 0; i < parametersCount; ++i) {
             Optional<Integer> similarity = calculateSimilarity(
-                    type.getActualTypeArguments()[i],
-                    other.getActualTypeArguments()[i]);
+                    actual.getActualTypeArguments()[i],
+                    template.getActualTypeArguments()[i]);
             if (similarity.isPresent()) {
                 ret += similarity.get();
             } else {
