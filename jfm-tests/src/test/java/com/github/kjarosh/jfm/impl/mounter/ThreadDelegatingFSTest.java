@@ -43,7 +43,10 @@ class ThreadDelegatingFSTest extends FuseFSTestBase {
                         () -> testValidReturn(method)),
                 DynamicTest.dynamicTest(
                         "Test timeout",
-                        () -> testTimeout(method)));
+                        () -> testTimeout(method)),
+                DynamicTest.dynamicTest(
+                        "Test exception thrown",
+                        () -> testExceptionThrown(method)));
     }
 
     private void testValidReturn(Function<FuseFS, Integer> method) {
@@ -60,6 +63,14 @@ class ThreadDelegatingFSTest extends FuseFSTestBase {
                     Thread.sleep(TIMEOUT_MILLIS * 2);
                     return 0;
                 });
+
+        assertThat(method.apply(threadDelegatingFS))
+                .isEqualTo(-ErrorCodes.EBADFD());
+    }
+
+    private void testExceptionThrown(Function<FuseFS, Integer> method) {
+        when(method.apply(inner))
+                .thenThrow(new RuntimeException());
 
         assertThat(method.apply(threadDelegatingFS))
                 .isEqualTo(-ErrorCodes.EBADFD());
