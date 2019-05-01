@@ -15,6 +15,7 @@ import ru.serce.jnrfuse.struct.FusePollhandle;
 import ru.serce.jnrfuse.struct.Statvfs;
 import ru.serce.jnrfuse.struct.Timespec;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -32,10 +33,12 @@ class ThreadDelegatingFS extends AbstractFuseFS {
 
     private final ExecutorService executorService;
     private final FuseFS inner;
+    private final Duration timeout;
 
-    ThreadDelegatingFS(ExecutorService executorService, FuseFS inner) {
+    ThreadDelegatingFS(ExecutorService executorService, FuseFS inner, Duration timeout) {
         this.executorService = executorService;
         this.inner = inner;
+        this.timeout = timeout;
     }
 
     private void delegate(Runnable task) {
@@ -48,7 +51,7 @@ class ThreadDelegatingFS extends AbstractFuseFS {
     private <T> Optional<T> delegate(Callable<T> task) {
         Future<T> future = executorService.submit(task);
         try {
-            return Optional.ofNullable(future.get(10, TimeUnit.SECONDS));
+            return Optional.ofNullable(future.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
         } catch (InterruptedException e) {
             logger.error("FUSE thread has been interrupted", e);
             // we cannot interrupt FUSE thread, we have to ignore this

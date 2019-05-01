@@ -8,6 +8,7 @@ import ru.serce.jnrfuse.FuseFS;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -39,11 +40,17 @@ public class FilesystemMapperMounter {
 
         ReverseProxy rp = new ReverseProxy(resourceClass, resource);
 
-        this.fuseFs = new ThreadDelegatingFS(executorService, new ErrorCodeExceptionHandlingFS(new FilesystemMapperFS(rp)));
+        this.fuseFs = createFs(rp);
         this.fuseFs.mount(path, false, FilesystemMapperProperties.mountInDebugMode(), MOUNT_OPTS);
         this.shutdownHook = new Thread(fuseFs::umount);
 
         Runtime.getRuntime().addShutdownHook(shutdownHook);
+    }
+
+    private ThreadDelegatingFS createFs(ReverseProxy rp) {
+        return new ThreadDelegatingFS(executorService,
+                new ErrorCodeExceptionHandlingFS(new FilesystemMapperFS(rp)),
+                Duration.ofSeconds(10));
     }
 
     public void umount() {
