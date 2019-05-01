@@ -172,4 +172,37 @@ class BasicProxyTest extends JfmProxyTestBase {
         assertThat(Files.exists(root.resolve("removable-file")))
                 .isFalse();
     }
+
+    @Test
+    void testSetConstantBytes() {
+        basicProxyResource.setConstantBytes();
+
+        assertThat(read(root.resolve("constant-bytes")))
+                .isEqualTo("asdf");
+
+    }
+
+    @Test
+    void testSetConstantInt() {
+        basicProxyResource.setConstantInt();
+
+        assertThat(read(root.resolve("constant-int")))
+                .isEqualTo("7");
+    }
+
+    @Test
+    void testSetConstantBoolean() {
+        basicProxyResource.setConstantBoolean();
+
+        assertThat(read(root.resolve("constant-boolean")))
+                .isEqualTo("true");
+    }
+
+    @Test
+    void testSetConstantString() {
+        basicProxyResource.setConstantString();
+
+        assertThat(read(root.resolve("constant-string")))
+                .isEqualTo("asdf");
+    }
 }
