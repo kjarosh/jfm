@@ -4,7 +4,6 @@ import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmMountTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -14,7 +13,6 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Kamil Jarosz
  */
-@Disabled // TODO
 class ConstantsMountTest extends JfmMountTestBase {
     private FilesystemMapper fm = FilesystemMapper.instance();
 

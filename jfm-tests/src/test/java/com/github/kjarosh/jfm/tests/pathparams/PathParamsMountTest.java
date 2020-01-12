@@ -4,6 +4,8 @@ import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.tests.JfmMountTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +27,8 @@ class PathParamsMountTest extends JfmMountTestBase {
         fm.getTarget(root).umountAll();
     }
 
-    // TODO @Test
+    @Test
+    @Disabled
     void testInteger() {
         when(pathParamsMountResource.getInteger("something"))
                 .thenReturn(1234);

@@ -4,8 +4,10 @@ import com.github.kjarosh.jfm.impl.mounter.rproxy.NoHandlerMethodException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.ReverseProxy;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.DirectoryRemovalException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.IsDirectoryException;
+import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VFSCallable;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VFSException;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VFSRunnable;
+import com.github.kjarosh.jfm.impl.util.Lazy;
 import jnr.constants.platform.OpenFlags;
 import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
@@ -36,7 +38,7 @@ public class FilesystemMapperFS extends FuseStubFS {
 
     private ReverseProxy reverseProxy;
 
-    private Map<String, byte[]> openFiles = new HashMap<>();
+    private Map<String, Lazy<byte[], VFSException>> openFiles = new HashMap<>();
     private Map<String, EnumSet<OpenFlags>> openFileFlags = new HashMap<>();
 
     FilesystemMapperFS(ReverseProxy reverseProxy) {
@@ -52,9 +54,9 @@ public class FilesystemMapperFS extends FuseStubFS {
                 Arrays.asList(OpenFlags.O_RDWR, OpenFlags.O_WRONLY));
     }
 
-    private void handleExceptions(VFSRunnable code) {
+    private <T> T handleExceptions(VFSCallable<T> code) {
         try {
-            code.run();
+            return code.call();
         } catch (NoHandlerMethodException e) {
             // TODO
             throw new ErrorCodeException(-ErrorCodes.ENOENT());
@@ -66,6 +68,13 @@ public class FilesystemMapperFS extends FuseStubFS {
             logger.error("Unknown VFS error", e);
             throw new ErrorCodeException(-ErrorCodes.EBADFD());
         }
+    }
+
+    private void handleExceptions(VFSRunnable code) {
+        handleExceptions((VFSCallable<Void>) () -> {
+            code.run();
+            return null;
+        });
     }
 
     private EnumSet<OpenFlags> mapOpenFlags(Struct.Signed32 flags) {
@@ -119,7 +128,7 @@ public class FilesystemMapperFS extends FuseStubFS {
             return -ErrorCodes.EISDIR();
         }
 
-        handleExceptions(() -> openFiles.put(path, reverseProxy.readFile(path)));
+        handleExceptions(() -> openFiles.put(path, Lazy.of(() -> reverseProxy.readFile(path))));
         handleExceptions(() -> openFileFlags.put(path, mapOpenFlags(fi.flags)));
 
         return 0;
@@ -135,7 +144,7 @@ public class FilesystemMapperFS extends FuseStubFS {
             return 0;
         }
 
-        handleExceptions(() -> reverseProxy.writeFile(path, openFiles.get(path)));
+        handleExceptions(() -> reverseProxy.writeFile(path, openFiles.get(path).get()));
 
         return 0;
     }
@@ -159,7 +168,7 @@ public class FilesystemMapperFS extends FuseStubFS {
             if (r != 0) return r;
         }
 
-        byte[] bytes = openFiles.get(path);
+        byte[] bytes = handleExceptions(() -> openFiles.get(path).get());
         int length = bytes.length;
         if (offset < length) {
             if (offset + size > length) {
@@ -182,10 +191,10 @@ public class FilesystemMapperFS extends FuseStubFS {
             return -ErrorCodes.EBADFD();
         }
 
-        byte[] bytes = openFiles.get(path);
+        byte[] bytes = handleExceptions(() -> openFiles.get(path).get());
         if (bytes.length < offset + size) {
             bytes = Arrays.copyOf(bytes, (int) (offset + size));
-            openFiles.put(path, bytes);
+            openFiles.put(path, Lazy.ofEager(bytes));
         }
         buf.get(0, bytes, (int) offset, (int) size);
         return (int) size;
@@ -197,8 +206,13 @@ public class FilesystemMapperFS extends FuseStubFS {
             return -ErrorCodes.EBADFD();
         }
 
-        byte[] oldBytes = openFiles.get(path);
-        openFiles.put(path, Arrays.copyOf(oldBytes, (int) size));
+        if (size == 0) {
+            openFiles.put(path, Lazy.ofEager(new byte[0]));
+        } else {
+            byte[] oldBytes = handleExceptions(() -> openFiles.get(path).get());
+            openFiles.put(path, Lazy.ofEager(Arrays.copyOf(oldBytes, (int) size)));
+        }
+
         return 0;
     }
 
