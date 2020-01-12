@@ -2,6 +2,7 @@ package com.github.kjarosh.jfm.api;
 
 import org.reflections.Reflections;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**
@@ -9,9 +10,9 @@ import java.util.Set;
  */
 class FilesystemMapperProvider {
     private static final Object instanceLock = new Object();
-    private static final Reflections jfmReflections = new Reflections("com.github.kjarosh.jfm");
 
-    private static FilesystemMapper instance;
+    static Reflections jfmReflections = new Reflections("com.github.kjarosh.jfm.impl");
+    static FilesystemMapper instance;
 
     static FilesystemMapper getInstance() {
         if (instance == null) {
@@ -38,8 +39,11 @@ class FilesystemMapperProvider {
         }
 
         try {
-            return implementations.iterator().next().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return implementations.iterator().next().getConstructor().newInstance();
+        } catch (InstantiationException |
+                IllegalAccessException |
+                NoSuchMethodException |
+                InvocationTargetException e) {
             throw new ImplementationLookupException("Cannot instantiate impl class", e);
         }
     }
