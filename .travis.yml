@@ -9,8 +9,7 @@ install:
   - pip install --user codecov
 
 script:
-  - mvn compile
-  - mvn verify
+  - mvn clean verify
 
 after_success:
   - codecov

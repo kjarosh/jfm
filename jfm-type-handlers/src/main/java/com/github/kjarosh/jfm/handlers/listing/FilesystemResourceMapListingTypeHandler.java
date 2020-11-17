@@ -32,7 +32,7 @@ public class FilesystemResourceMapListingTypeHandler<T> implements ListingTypeHa
     public boolean isAppropriate(Type actualType) {
         Type resourceType = getResourceType(actualType);
         return resourceType instanceof Class<?> &&
-                ((Class) resourceType).isAnnotationPresent(FilesystemResource.class);
+                ((Class<?>) resourceType).isAnnotationPresent(FilesystemResource.class);
     }
 
     @Override
