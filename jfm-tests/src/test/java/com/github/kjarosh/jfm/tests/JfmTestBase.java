@@ -2,8 +2,8 @@ package com.github.kjarosh.jfm.tests;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+@ExtendWith(MockitoExtension.class)
 public class JfmTestBase {
     private static final Path TEST_DIR = Paths.get("./jfm-tests");
 
@@ -35,11 +36,6 @@ public class JfmTestBase {
         } catch (IOException ignored) {
 
         }
-    }
-
-    @BeforeEach
-    void setUpMocks() {
-        MockitoAnnotations.initMocks(this);
     }
 
     protected String read(Path file) {

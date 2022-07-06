@@ -3,8 +3,9 @@ package com.github.kjarosh.jfm.impl.mounter;
 import com.github.kjarosh.jfm.tests.util.FuseFSTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.serce.jnrfuse.ErrorCodes;
 import ru.serce.jnrfuse.FuseFS;
 
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Kamil Jarosz
  */
+@ExtendWith(MockitoExtension.class)
 class ThreadDelegatingFSTest extends FuseFSTestBase {
     @Mock
     private FuseFS inner;
@@ -26,9 +28,7 @@ class ThreadDelegatingFSTest extends FuseFSTestBase {
     private ThreadDelegatingFS threadDelegatingFS;
 
     @BeforeEach
-    void setUpMocks() {
-        MockitoAnnotations.initMocks(this);
-
+    void setUp() {
         threadDelegatingFS = new ThreadDelegatingFS(
                 Executors.newSingleThreadExecutor(), inner,
                 Duration.ofSeconds(2));

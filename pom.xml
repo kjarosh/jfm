@@ -29,7 +29,7 @@
         <junit.version>5.8.2</junit.version>
         <reflections.version>0.10.2</reflections.version>
         <jnr-fuse.version>0.5.7</jnr-fuse.version>
-        <mockito.version>1.10.19</mockito.version>
+        <mockito.version>4.6.1</mockito.version>
         <lombok.version>1.18.24</lombok.version>
     </properties>
 
@@ -85,7 +85,13 @@
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>

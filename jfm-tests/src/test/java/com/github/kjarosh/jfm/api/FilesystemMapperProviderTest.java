@@ -5,8 +5,9 @@ import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.reflections.Reflections;
 
 import java.nio.file.Path;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Kamil Jarosz
  */
+@ExtendWith(MockitoExtension.class)
 class FilesystemMapperProviderTest {
     @Mock
     private Reflections reflections;
@@ -32,9 +34,7 @@ class FilesystemMapperProviderTest {
     private Reflections oldReflections;
 
     @BeforeEach
-    void setUpMocks() {
-        MockitoAnnotations.initMocks(this);
-
+    void setUp() {
         FilesystemMapperProvider.instance = null;
         oldReflections = FilesystemMapperProvider.jfmReflections;
         FilesystemMapperProvider.jfmReflections = reflections;
