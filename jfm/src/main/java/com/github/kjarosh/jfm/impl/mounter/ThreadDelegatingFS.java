@@ -1,8 +1,7 @@
 package com.github.kjarosh.jfm.impl.mounter;
 
 import jnr.ffi.Pointer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import ru.serce.jnrfuse.AbstractFuseFS;
 import ru.serce.jnrfuse.ErrorCodes;
 import ru.serce.jnrfuse.FuseFS;
@@ -27,8 +26,8 @@ import java.util.concurrent.TimeoutException;
 /**
  * @author Kamil Jarosz
  */
+@Slf4j
 class ThreadDelegatingFS extends AbstractFuseFS {
-    private static final Logger logger = LoggerFactory.getLogger(ThreadDelegatingFS.class);
     private static final int ERROR = -ErrorCodes.EBADFD();
 
     private final ExecutorService executorService;
@@ -53,12 +52,12 @@ class ThreadDelegatingFS extends AbstractFuseFS {
         try {
             return Optional.ofNullable(future.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
         } catch (InterruptedException e) {
-            logger.error("FUSE thread has been interrupted", e);
+            log.error("FUSE thread has been interrupted", e);
             // we cannot interrupt FUSE thread, we have to ignore this
         } catch (ExecutionException e) {
-            logger.error("The delegate method threw an exception", e);
+            log.error("The delegate method threw an exception", e);
         } catch (TimeoutException e) {
-            logger.error("Timed out waiting for the delegate method to complete", e);
+            log.error("Timed out waiting for the delegate method to complete", e);
         } finally {
             future.cancel(true);
         }

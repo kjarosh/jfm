@@ -30,6 +30,7 @@
         <reflections.version>0.10.2</reflections.version>
         <jnr-fuse.version>0.5.7</jnr-fuse.version>
         <mockito.version>1.10.19</mockito.version>
+        <lombok.version>1.18.24</lombok.version>
     </properties>
 
     <repositories>
@@ -107,6 +108,12 @@
                 <groupId>com.github.serceman</groupId>
                 <artifactId>jnr-fuse</artifactId>
                 <version>${jnr-fuse.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

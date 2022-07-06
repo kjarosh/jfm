@@ -13,8 +13,7 @@ import jnr.ffi.Pointer;
 import jnr.ffi.Struct;
 import jnr.ffi.types.off_t;
 import jnr.ffi.types.size_t;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import ru.serce.jnrfuse.ErrorCodes;
 import ru.serce.jnrfuse.FuseFillDir;
 import ru.serce.jnrfuse.FuseStubFS;
@@ -33,9 +32,8 @@ import java.util.Objects;
 /**
  * @author Kamil Jarosz
  */
+@Slf4j
 public class FilesystemMapperFS extends FuseStubFS {
-    private static final Logger logger = LoggerFactory.getLogger(FilesystemMapperFS.class);
-
     private final ReverseProxy reverseProxy;
 
     private final Map<String, Lazy<byte[], VFSException>> openFiles = new HashMap<>();
@@ -65,7 +63,7 @@ public class FilesystemMapperFS extends FuseStubFS {
         } catch (DirectoryRemovalException e) {
             throw new ErrorCodeException(-ErrorCodes.EPERM());
         } catch (VFSException e) {
-            logger.error("Unknown VFS error", e);
+            log.error("Unknown VFS error", e);
             throw new ErrorCodeException(-ErrorCodes.EBADFD());
         }
     }

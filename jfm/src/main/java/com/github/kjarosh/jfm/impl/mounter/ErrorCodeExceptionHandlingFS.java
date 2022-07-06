@@ -1,8 +1,6 @@
 package com.github.kjarosh.jfm.impl.mounter;
 
 import jnr.ffi.Pointer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.serce.jnrfuse.AbstractFuseFS;
 import ru.serce.jnrfuse.FuseFS;
 import ru.serce.jnrfuse.FuseFillDir;
@@ -20,8 +18,6 @@ import java.util.function.Supplier;
  * @author Kamil Jarosz
  */
 class ErrorCodeExceptionHandlingFS extends AbstractFuseFS {
-    private static final Logger logger = LoggerFactory.getLogger(ErrorCodeExceptionHandlingFS.class);
-
     private final FuseFS inner;
 
     ErrorCodeExceptionHandlingFS(FuseFS inner) {
