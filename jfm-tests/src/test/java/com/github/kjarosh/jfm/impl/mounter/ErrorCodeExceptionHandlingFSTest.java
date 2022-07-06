@@ -3,8 +3,9 @@ package com.github.kjarosh.jfm.impl.mounter;
 import com.github.kjarosh.jfm.tests.util.FuseFSTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.serce.jnrfuse.FuseFS;
 
 import java.util.function.Function;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Kamil Jarosz
  */
+@ExtendWith(MockitoExtension.class)
 class ErrorCodeExceptionHandlingFSTest extends FuseFSTestBase {
     @Mock
     private FuseFS inner;
@@ -23,9 +25,7 @@ class ErrorCodeExceptionHandlingFSTest extends FuseFSTestBase {
     private ErrorCodeExceptionHandlingFS exceptionHandlingFS;
 
     @BeforeEach
-    void setUpMocks() {
-        MockitoAnnotations.initMocks(this);
-
+    void setUp() {
         exceptionHandlingFS = new ErrorCodeExceptionHandlingFS(inner);
     }
 
