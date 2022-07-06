@@ -1,7 +1,6 @@
 package com.github.kjarosh.jfm.impl.mounter;
 
 import jnr.ffi.Pointer;
-import ru.serce.jnrfuse.AbstractFuseFS;
 import ru.serce.jnrfuse.FuseFS;
 import ru.serce.jnrfuse.FuseFillDir;
 import ru.serce.jnrfuse.struct.FileStat;
@@ -12,12 +11,13 @@ import ru.serce.jnrfuse.struct.FusePollhandle;
 import ru.serce.jnrfuse.struct.Statvfs;
 import ru.serce.jnrfuse.struct.Timespec;
 
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 /**
  * @author Kamil Jarosz
  */
-class ErrorCodeExceptionHandlingFS extends AbstractFuseFS {
+class ErrorCodeExceptionHandlingFS implements FuseFS {
     private final FuseFS inner;
 
     ErrorCodeExceptionHandlingFS(FuseFS inner) {
@@ -240,5 +240,17 @@ class ErrorCodeExceptionHandlingFS extends AbstractFuseFS {
     @Override
     public int fallocate(String path, int mode, long off, long length, FuseFileInfo fi) {
         return handle(() -> inner.fallocate(path, mode, off, length, fi));
+    }
+
+    @Override
+    public void mount(Path mountPoint, boolean blocking, boolean debug, String[] fuseOpts) {
+        synchronized (System.class) {
+            inner.mount(mountPoint, blocking, debug, fuseOpts);
+        }
+    }
+
+    @Override
+    public void umount() {
+        inner.umount();
     }
 }

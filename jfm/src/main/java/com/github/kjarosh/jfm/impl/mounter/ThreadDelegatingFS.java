@@ -2,7 +2,6 @@ package com.github.kjarosh.jfm.impl.mounter;
 
 import jnr.ffi.Pointer;
 import lombok.extern.slf4j.Slf4j;
-import ru.serce.jnrfuse.AbstractFuseFS;
 import ru.serce.jnrfuse.ErrorCodes;
 import ru.serce.jnrfuse.FuseFS;
 import ru.serce.jnrfuse.FuseFillDir;
@@ -14,6 +13,7 @@ import ru.serce.jnrfuse.struct.FusePollhandle;
 import ru.serce.jnrfuse.struct.Statvfs;
 import ru.serce.jnrfuse.struct.Timespec;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
  * @author Kamil Jarosz
  */
 @Slf4j
-class ThreadDelegatingFS extends AbstractFuseFS {
+class ThreadDelegatingFS implements FuseFS {
     private static final int ERROR = -ErrorCodes.EBADFD();
 
     private final ExecutorService executorService;
@@ -50,7 +50,7 @@ class ThreadDelegatingFS extends AbstractFuseFS {
     private <T> Optional<T> delegate(Callable<T> task) {
         Future<T> future = executorService.submit(task);
         try {
-            return Optional.ofNullable(future.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
+            return Optional.of(future.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
         } catch (InterruptedException e) {
             log.error("FUSE thread has been interrupted", e);
             // we cannot interrupt FUSE thread, we have to ignore this
@@ -273,5 +273,15 @@ class ThreadDelegatingFS extends AbstractFuseFS {
     @Override
     public int fallocate(String path, int mode, long off, long length, FuseFileInfo fi) {
         return delegate(() -> inner.fallocate(path, mode, off, length, fi)).orElse(ERROR);
+    }
+
+    @Override
+    public void mount(Path mountPoint, boolean blocking, boolean debug, String[] fuseOpts) {
+        inner.mount(mountPoint, blocking, debug, fuseOpts);
+    }
+
+    @Override
+    public void umount() {
+        inner.umount();
     }
 }
