@@ -35,7 +35,7 @@ public class AnnotationHandlingService {
 
         if (annotationsCount > 1) {
             throw new FilesystemMapperException(
-                    "Method " + method.getName() + " is not properly annotated");
+                    "Method " + getMethodFullName(method) + " is not properly annotated");
         } else if (read != null) {
             return handler.handleRead(read);
         } else if (write != null) {
@@ -55,6 +55,10 @@ public class AnnotationHandlingService {
         }
 
         throw new FilesystemMapperException(
-                "Method " + method.getName() + " is not annotated with any JFM annotation");
+                "Method " + getMethodFullName(method) + " is not annotated with any JFM annotation");
+    }
+
+    private String getMethodFullName(Method method) {
+        return method.getDeclaringClass().getName() + "." + method.getName();
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * @author Kamil Jarosz
  */
 public class ReverseProxy {
-    private VirtualDirectory root;
+    private final VirtualDirectory root;
 
     public ReverseProxy(Class<?> resourceClass, Object resource) {
         this.root = ReverseProxyGenerator.generateVirtualFS(resourceClass, resource);
