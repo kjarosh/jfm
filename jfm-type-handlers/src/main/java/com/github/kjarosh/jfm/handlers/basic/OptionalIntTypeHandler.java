@@ -18,7 +18,7 @@ import java.util.OptionalInt;
  */
 @RegisterTypeHandler
 public class OptionalIntTypeHandler<T> implements TypeHandler<OptionalInt> {
-    private TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
+    private final TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
 
     @Override
     public TypeReference<OptionalInt> getHandledType() {

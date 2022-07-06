@@ -22,6 +22,7 @@ class LazyTest {
         assertThat(lazy.get()).isEqualTo("a");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void lazyValue() {
         ThrowingSupplier<String, RuntimeException> supplier = Mockito.mock(ThrowingSupplier.class);
@@ -35,6 +36,7 @@ class LazyTest {
         verify(supplier, times(1)).get();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void simultaneous() {
         ExecutorService es = Executors.newFixedThreadPool(2);

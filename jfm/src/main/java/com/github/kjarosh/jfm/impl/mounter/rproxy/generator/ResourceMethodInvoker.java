@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
  */
 public class ResourceMethodInvoker {
     private final Method method;
-    private Object resource;
+    private final Object resource;
 
     private Type contentType;
     private int contentPosition;

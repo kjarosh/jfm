@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author Kamil Jarosz
  */
 class MountingTest extends JfmTestBase {
-    private FilesystemMapper fm = FilesystemMapper.instance();
+    private final FilesystemMapper fm = FilesystemMapper.instance();
 
     @Test
     void testMountUnmount() {

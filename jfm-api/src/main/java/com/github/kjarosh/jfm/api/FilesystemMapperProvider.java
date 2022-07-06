@@ -12,7 +12,7 @@ class FilesystemMapperProvider {
     private static final Object instanceLock = new Object();
 
     static Reflections jfmReflections = new Reflections("com.github.kjarosh.jfm.impl");
-    static FilesystemMapper instance;
+    static volatile FilesystemMapper instance;
 
     static FilesystemMapper getInstance() {
         if (instance == null) {

@@ -10,8 +10,8 @@ import java.util.Map;
  * @author Kamil Jarosz
  */
 class ProxyPathResolver {
-    private java.nio.file.Path root;
-    private Map<String, String> pathParams;
+    private final java.nio.file.Path root;
+    private final Map<String, String> pathParams;
 
     ProxyPathResolver(java.nio.file.Path root, Map<String, String> pathParams) {
         this.root = root;

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
  * @author Kamil Jarosz
  */
 class ThreadDelegatingFSTimeoutTest extends FuseFSTestBase {
-    private static long timeoutMillis = 10;
+    private static final long timeoutMillis = 10;
 
     @Mock
     private FuseFS inner;

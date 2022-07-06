@@ -37,6 +37,7 @@ import java.util.stream.Stream;
  * @author Kamil Jarosz
  */
 public class JfmHandlers {
+    @SuppressWarnings("rawtypes")
     public static Stream<Class<? extends TypeHandler>> getAllTypeHandlers() {
         return Stream.of(
                 BooleanTypeHandler.class,
@@ -66,6 +67,7 @@ public class JfmHandlers {
                 ZonedDateTimeTypeHandler.class);
     }
 
+    @SuppressWarnings("rawtypes")
     public static Stream<Class<? extends ListingTypeHandler>> getAllListingTypeHandlers() {
         return Stream.of(
                 FilesystemResourceMapListingTypeHandler.class,

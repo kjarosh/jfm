@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 class ListingMountTest extends JfmMountTestBase {
-    private FilesystemMapper fm = FilesystemMapper.instance();
+    private final FilesystemMapper fm = FilesystemMapper.instance();
 
     @Mock
     private ListingMountResource listingMountResource;

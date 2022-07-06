@@ -13,6 +13,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -30,20 +31,23 @@ public class FilesystemResourceStreamListingTypeHandler<T> implements ListingTyp
     public boolean isAppropriate(Type actualType) {
         Type resourceType = getResourceType(actualType);
         return resourceType instanceof Class<?> &&
-                ((Class) resourceType).isAnnotationPresent(FilesystemResource.class);
+                ((Class<?>) resourceType).isAnnotationPresent(FilesystemResource.class);
     }
 
     @Override
     public Stream<T> list(Type actualType, Path path) throws IOException {
         Class<T> resourceClass = getResourceClass(actualType);
-        return list(resourceClass, path);
+        return list(resourceClass, path).stream();
     }
 
-    public Stream<T> list(Class<T> resourceClass, Path path) throws IOException {
+    public List<T> list(Class<T> resourceClass, Path path) throws IOException {
         FilesystemMapper instance = FilesystemMapper.instance();
-        return Files.list(path)
-                .map(instance::getTarget)
-                .map(t -> t.proxy(resourceClass));
+        try (Stream<Path> list = Files.list(path)) {
+            return list
+                    .map(instance::getTarget)
+                    .map(t -> t.proxy(resourceClass))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override

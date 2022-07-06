@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Kamil Jarosz
@@ -27,15 +26,14 @@ public class FilesystemResourceListListingTypeHandler<T> implements ListingTypeH
     public boolean isAppropriate(Type actualType) {
         Type resourceType = getResourceType(actualType);
         return resourceType instanceof Class<?> &&
-                ((Class) resourceType).isAnnotationPresent(FilesystemResource.class);
+                ((Class<?>) resourceType).isAnnotationPresent(FilesystemResource.class);
     }
 
     @Override
     public List<T> list(Type actualType, Path path) throws IOException {
         Class<T> resourceClass = getResourceClass(actualType);
 
-        return streamHandler().list(resourceClass, path)
-                .collect(Collectors.toList());
+        return streamHandler().list(resourceClass, path);
     }
 
     @Override

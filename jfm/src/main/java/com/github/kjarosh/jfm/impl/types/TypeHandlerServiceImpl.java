@@ -64,6 +64,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         initialized = true;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void addHandler(Class<? extends TypeHandler> handlerClass) {
         registerTypeHandler(instantiateHandler(handlerClass), handlers);
@@ -82,11 +83,13 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
                 .stream().filter(filter));
     }
 
+    @SuppressWarnings("rawtypes")
     private void addHandlers(Stream<Class<? extends TypeHandler>> handlerClasses) {
         handlerClasses.map(this::instantiateHandler)
                 .forEach(handler -> registerTypeHandler(handler, handlers));
     }
 
+    @SuppressWarnings("rawtypes")
     private void addListingHandlers(Stream<Class<? extends ListingTypeHandler>> handlerClasses) {
         handlerClasses.map(this::instantiateHandler)
                 .forEach(handler -> registerTypeHandler(handler, listingHandlers));

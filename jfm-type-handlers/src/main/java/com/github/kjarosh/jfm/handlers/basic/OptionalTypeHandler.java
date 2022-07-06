@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 @RegisterTypeHandler
 public class OptionalTypeHandler<T> implements TypeHandler<Optional<T>> {
-    private TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
+    private final TypeHandlerService typeHandlerService = FilesystemMapper.instance().getTypeHandlerService();
 
     @Override
     public TypeReference<Optional<T>> getHandledType() {

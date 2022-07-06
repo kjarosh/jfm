@@ -12,6 +12,7 @@ public interface TypeHandlerService {
 
     ListingTypeHandler<?> getListingHandlerFor(Type type);
 
+    @SuppressWarnings("rawtypes")
     void addHandler(Class<? extends TypeHandler> handlerClass);
 
     default void registerHandlersFromPackage(Package pkg) {

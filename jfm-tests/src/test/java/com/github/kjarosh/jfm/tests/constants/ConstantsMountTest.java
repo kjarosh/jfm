@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
  * @author Kamil Jarosz
  */
 class ConstantsMountTest extends JfmMountTestBase {
-    private FilesystemMapper fm = FilesystemMapper.instance();
+    private final FilesystemMapper fm = FilesystemMapper.instance();
 
     @Mock
     private ConstantsMountResource constantsMountResource;

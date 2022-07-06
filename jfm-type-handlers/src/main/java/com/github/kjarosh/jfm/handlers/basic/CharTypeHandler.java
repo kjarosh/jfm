@@ -25,6 +25,6 @@ public class CharTypeHandler implements TypeHandler<Character> {
 
     @Override
     public byte[] serialize(Type actualType, Character content) {
-        return new String(new char[]{content}).getBytes(StandardCharsets.UTF_8);
+        return String.valueOf(content).getBytes(StandardCharsets.UTF_8);
     }
 }

@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Kamil Jarosz
@@ -24,10 +25,12 @@ public class StringListListingTypeHandler implements ListingTypeHandler<List<Str
 
     @Override
     public List<String> list(Type actualType, Path path) throws IOException {
-        return Files.list(path)
-                .map(Path::getFileName)
-                .map(Path::toString)
-                .collect(Collectors.toList());
+        try (Stream<Path> list = Files.list(path)) {
+            return list
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
