@@ -2,7 +2,7 @@ package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.FilesystemMapper;
 import com.github.kjarosh.jfm.api.annotations.Read;
-import com.github.kjarosh.jfm.impl.AnnotationHandler;
+import com.github.kjarosh.jfm.impl.annotation.AnnotationHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 

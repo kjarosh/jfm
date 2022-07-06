@@ -1,7 +1,7 @@
 package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.annotations.Delete;
-import com.github.kjarosh.jfm.impl.AnnotationHandler;
+import com.github.kjarosh.jfm.impl.annotation.AnnotationHandler;
 
 import java.lang.reflect.Method;
 

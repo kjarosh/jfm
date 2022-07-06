@@ -10,7 +10,7 @@ import com.github.kjarosh.jfm.api.annotations.WriteBoolean;
 import com.github.kjarosh.jfm.api.annotations.WriteBytes;
 import com.github.kjarosh.jfm.api.annotations.WriteInteger;
 import com.github.kjarosh.jfm.api.annotations.WriteString;
-import com.github.kjarosh.jfm.impl.AnnotationHandler;
+import com.github.kjarosh.jfm.impl.annotation.AnnotationHandler;
 import com.github.kjarosh.jfm.spi.types.ListingTypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
