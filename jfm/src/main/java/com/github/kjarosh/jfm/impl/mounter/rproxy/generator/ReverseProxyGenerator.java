@@ -1,7 +1,8 @@
 package com.github.kjarosh.jfm.impl.mounter.rproxy.generator;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
-import com.github.kjarosh.jfm.impl.AnnotationHandlingService;
+import com.github.kjarosh.jfm.impl.annotation.AnnotatedMethod;
+import com.github.kjarosh.jfm.impl.annotation.AnnotationHandlingService;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VirtualDirectory;
 import com.github.kjarosh.jfm.impl.mounter.rproxy.vfs.VirtualFile;
 import com.github.kjarosh.jfm.impl.util.PathUtils;
@@ -31,6 +32,10 @@ public class ReverseProxyGenerator {
 
     private void generateVfs() {
         for (Method method : resourceClass.getDeclaredMethods()) {
+            if (!AnnotatedMethod.of(method).isAnnotated()) {
+                continue;
+            }
+
             String path = ReverseProxyPathResolver.resolveFor(method);
 
             VirtualDirectory parentDirectory = getParentDirectory(method, path);

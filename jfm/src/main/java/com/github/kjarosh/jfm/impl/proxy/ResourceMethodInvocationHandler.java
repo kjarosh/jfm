@@ -2,7 +2,7 @@ package com.github.kjarosh.jfm.impl.proxy;
 
 import com.github.kjarosh.jfm.api.FilesystemMapperException;
 import com.github.kjarosh.jfm.api.annotations.FilesystemResource;
-import com.github.kjarosh.jfm.impl.AnnotationHandlingService;
+import com.github.kjarosh.jfm.impl.annotation.AnnotationHandlingService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
