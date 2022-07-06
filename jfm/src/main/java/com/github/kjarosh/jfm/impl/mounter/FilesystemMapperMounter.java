@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
  * @author Kamil Jarosz
  */
 public class FilesystemMapperMounter {
-    private static final String[] MOUNT_OPTS = {"-odirect_io"};
+    private static final String[] MOUNT_OPTS = {"-o", "direct_io", "-o", "auto_unmount"};
 
     private final ExecutorService executorService;
     private final Path path;
@@ -55,7 +55,9 @@ public class FilesystemMapperMounter {
 
     public void umount() {
         fuseFs.umount();
-        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        if (shutdownHook != null) {
+            Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        }
     }
 
     private Class<?> getResourceClass(Class<?> clazz) {
