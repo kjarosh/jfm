@@ -24,7 +24,7 @@ public class JfmTestBase {
     @BeforeAll
     static void setUpTestDirectory() throws IOException {
         Files.createDirectories(TEST_DIR);
-        root = Files.createTempDirectory(TEST_DIR, "jfm-test-");
+        root = Files.createTempDirectory(TEST_DIR, ".jfm-test-");
     }
 
     @AfterAll
