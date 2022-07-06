@@ -14,7 +14,7 @@ public class Lazy<R, T extends Throwable> {
     }
 
     private Lazy(R value) {
-        this.supplier = null;
+        this.supplier = () -> value;
         this.valueComputed = true;
         this.value = value;
     }

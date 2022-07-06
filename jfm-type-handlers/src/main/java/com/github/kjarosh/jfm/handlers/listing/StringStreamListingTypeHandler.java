@@ -25,9 +25,13 @@ public class StringStreamListingTypeHandler implements ListingTypeHandler<Stream
 
     @Override
     public Stream<String> list(Type actualType, Path path) throws IOException {
-        return Files.list(path)
-                .map(Path::getFileName)
-                .map(Path::toString);
+        try (Stream<Path> list = Files.list(path)) {
+            return list
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toList())
+                    .stream();
+        }
     }
 
     @Override

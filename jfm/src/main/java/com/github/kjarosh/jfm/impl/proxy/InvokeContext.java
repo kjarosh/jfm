@@ -21,7 +21,7 @@ class InvokeContext {
     private final Path finalPath;
     private final Method method;
 
-    private Map<String, String> pathParams = new HashMap<>();
+    private final Map<String, String> pathParams = new HashMap<>();
     private Object content = null;
     private Type contentType = null;
 

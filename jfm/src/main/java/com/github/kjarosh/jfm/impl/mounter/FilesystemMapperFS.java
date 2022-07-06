@@ -36,10 +36,10 @@ import java.util.Objects;
 public class FilesystemMapperFS extends FuseStubFS {
     private static final Logger logger = LoggerFactory.getLogger(FilesystemMapperFS.class);
 
-    private ReverseProxy reverseProxy;
+    private final ReverseProxy reverseProxy;
 
-    private Map<String, Lazy<byte[], VFSException>> openFiles = new HashMap<>();
-    private Map<String, EnumSet<OpenFlags>> openFileFlags = new HashMap<>();
+    private final Map<String, Lazy<byte[], VFSException>> openFiles = new HashMap<>();
+    private final Map<String, EnumSet<OpenFlags>> openFileFlags = new HashMap<>();
 
     FilesystemMapperFS(ReverseProxy reverseProxy) {
         this.reverseProxy = reverseProxy;

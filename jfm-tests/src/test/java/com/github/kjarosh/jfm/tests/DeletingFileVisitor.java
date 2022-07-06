@@ -8,7 +8,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 class DeletingFileVisitor extends SimpleFileVisitor<Path> {
-    private Path root;
+    private final Path root;
 
     DeletingFileVisitor(Path root) {
         this.root = root;

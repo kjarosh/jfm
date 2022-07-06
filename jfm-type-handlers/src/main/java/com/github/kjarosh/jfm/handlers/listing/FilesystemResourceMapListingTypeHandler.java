@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Kamil Jarosz
@@ -39,13 +40,15 @@ public class FilesystemResourceMapListingTypeHandler<T> implements ListingTypeHa
     public Map<String, T> list(Type actualType, Path path) throws IOException {
         Class<T> resourceClass = getResourceClass(actualType);
         FilesystemMapper instance = FilesystemMapper.instance();
-        return Files.list(path).collect(Collectors.toMap(
-                p -> p.getFileName().toString(),
-                p -> instance.getTarget(p).proxy(resourceClass),
-                (a, b) -> {
-                    throw new AssertionError("Duplicate filename while listing " + path);
-                },
-                LinkedHashMap::new));
+        try (Stream<Path> list = Files.list(path)) {
+            return list.collect(Collectors.toMap(
+                    p -> p.getFileName().toString(),
+                    p -> instance.getTarget(p).proxy(resourceClass),
+                    (a, b) -> {
+                        throw new AssertionError("Duplicate filename while listing " + path);
+                    },
+                    LinkedHashMap::new));
+        }
     }
 
     @Override

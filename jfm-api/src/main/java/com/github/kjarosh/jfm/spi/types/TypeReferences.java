@@ -17,7 +17,7 @@ public class TypeReferences {
     private static final Function<Integer, Integer> increaseSimilarity = i -> i + 1;
 
     public static <T> Type getType(TypeReference<T> ref) {
-        Type[] genericInterfaces = ((TypeReference<?>) ref).getClass().getGenericInterfaces();
+        Type[] genericInterfaces = ref.getClass().getGenericInterfaces();
 
         if (genericInterfaces.length != 1 || !(genericInterfaces[0] instanceof ParameterizedType)) {
             throw new InvalidTypeReferenceException();
@@ -38,7 +38,7 @@ public class TypeReferences {
         Objects.requireNonNull(variableName);
 
         if (typeTemplate instanceof TypeVariable) {
-            if (((TypeVariable) typeTemplate).getName().equals(variableName)) {
+            if (((TypeVariable<?>) typeTemplate).getName().equals(variableName)) {
                 return Optional.of(actualType);
             } else {
                 return Optional.empty();

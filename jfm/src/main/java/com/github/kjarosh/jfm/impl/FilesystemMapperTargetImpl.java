@@ -31,7 +31,7 @@ public class FilesystemMapperTargetImpl implements FilesystemMapperTarget {
     public <T> T proxy(Class<T> resourceClass) {
         return (T) Proxy.newProxyInstance(resourceClass.getClassLoader(),
                 new Class[]{resourceClass},
-                new ResourceMethodInvocationHandler(resourceClass, path));
+                new ResourceMethodInvocationHandler<>(resourceClass, path));
     }
 
     @Override

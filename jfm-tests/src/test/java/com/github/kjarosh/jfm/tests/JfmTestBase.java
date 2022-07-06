@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -72,13 +74,14 @@ public class JfmTestBase {
         }
     }
 
-    protected Stream<String> list(Path file) {
+    protected List<String> list(Path file) {
         checkTestFilePath(file);
 
-        try {
-            return Files.list(file)
+        try (Stream<Path> list = Files.list(file)) {
+            return list
                     .map(Path::getFileName)
-                    .map(Path::toString);
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             throw new AssertionError(e);
         }

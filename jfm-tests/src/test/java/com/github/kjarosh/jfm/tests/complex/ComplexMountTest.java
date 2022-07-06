@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
  * @author Kamil Jarosz
  */
 class ComplexMountTest extends JfmMountTestBase {
-    private FilesystemMapper fm = FilesystemMapper.instance();
+    private final FilesystemMapper fm = FilesystemMapper.instance();
 
     @Mock
     private ComplexMountResource complexMountResource;
