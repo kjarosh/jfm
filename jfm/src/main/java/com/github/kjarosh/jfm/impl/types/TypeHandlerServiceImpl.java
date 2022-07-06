@@ -8,9 +8,8 @@ import com.github.kjarosh.jfm.spi.types.TypeHandler;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerBase;
 import com.github.kjarosh.jfm.spi.types.TypeHandlerService;
 import com.github.kjarosh.jfm.spi.types.TypeReferences;
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
@@ -27,9 +26,8 @@ import java.util.stream.Stream;
 /**
  * @author Kamil Jarosz
  */
+@Slf4j
 public class TypeHandlerServiceImpl implements TypeHandlerService {
-    private static final Logger logger = LoggerFactory.getLogger(TypeHandlerServiceImpl.class);
-
     private final ConcurrentMap<Type, TypeHandler<?>> handlers = new ConcurrentHashMap<>();
     private final ConcurrentMap<Type, ListingTypeHandler<?>> listingHandlers = new ConcurrentHashMap<>();
 
@@ -55,7 +53,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
             addHandlers(JfmHandlers.getAllTypeHandlers());
             addListingHandlers(JfmHandlers.getAllListingTypeHandlers());
         } catch (Exception e) {
-            logger.error("Exception while initializing", e);
+            log.error("Exception while initializing", e);
             initializeFailed = true;
         } finally {
             initializing = false;
@@ -108,7 +106,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
         Type type = TypeReferences.getType(handler.getHandledType());
         if (handlers.containsKey(type)) {
             if (handlers.get(type).getClass() == handler.getClass()) {
-                logger.info("The handler " + handler.getClass() + " has already been registered");
+                log.info("The handler " + handler.getClass() + " has already been registered");
                 return;
             }
 
@@ -117,7 +115,7 @@ public class TypeHandlerServiceImpl implements TypeHandlerService {
                             " duplicates " + handlers.get(type).getClass());
         }
         handlers.put(type, handler);
-        logger.info("Registered a handler for " + type + " (" + handler.getClass() + ")");
+        log.info("Registered a handler for " + type + " (" + handler.getClass() + ")");
     }
 
     @SuppressWarnings("unchecked")
