@@ -11,7 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 class MethodResolvingMountTest extends JfmMountTestBase {
-    private FilesystemMapper fm = FilesystemMapper.instance();
+    private final FilesystemMapper fm = FilesystemMapper.instance();
 
     @Mock
     private MethodResolvingMountResource methodResolvingMountResource;
