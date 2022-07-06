@@ -1,6 +1,6 @@
 # Java Filesystem Mapper
 
-![Build Status](https://github.com/kjarosh/jfm/actions/workflows/maven/badge.svg)
+[![Build Status](https://github.com/kjarosh/jfm/actions/workflows/maven.yml/badge.svg)](https://github.com/kjarosh/jfm/actions/workflows/maven.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/73a0054f65344a96867c51361c9486c8)](https://www.codacy.com/app/kjarosh/jfm?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kjarosh/jfm&amp;utm_campaign=Badge_Grade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6585b2f62e6e75643704/maintainability)](https://codeclimate.com/github/kjarosh/jfm/maintainability)
 [![Release](https://jitpack.io/v/kjarosh/jfm.svg)](https://jitpack.io/#kjarosh/jfm)
